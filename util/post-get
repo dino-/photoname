@@ -1,0 +1,3 @@
+#! /bin/sh
+
+ln -s dist/build/photoname/photoname

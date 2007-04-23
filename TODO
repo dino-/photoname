@@ -1,0 +1,30 @@
+What's our specification?
+
+- For each file processed
+   - Has an exif date? Rename based on that.
+   - Has no date but is named with b36? Use that date.
+
+- Check for file existance, don't clobber anything.
+- Include a -n --no-action switch
+- Include a -f --force switch?
+- Include a -r --rename switch?
+   Default behavior is to hard link files to new locations, which is safer,
+   but may not be supported by your operating environment. Use the -r
+   switch to rename (move) files instead.
+- Include a -p --permissions switch?
+   Alter the original (or only) file's permissions?
+
+- How are we going to select the _0000?
+- What do the Panasonic FX07 filenames look like? Olympus?
+
+
+- For each file
+   - Does it have EXIF date?
+   - Can we get a date out of its filename?
+      - b36 format
+      - literal format (like mobile phone files)
+   - Does it have EXIF Image Number?
+   - Does it have Image Number in filename?
+
+
+- Use time manipulation code in System.Time

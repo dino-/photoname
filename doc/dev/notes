@@ -1,0 +1,41 @@
+I've been running this on all my personal photos like this:
+
+   $ cd <dir-to-photos>
+   $ find . -name *.jpg -print0 | xargs -0 <path-to-photoname-binary> | less
+
+The -print0 | .. -0 because of the many dirs with spaces. Ugh.
+
+
+Photo naming scheme (this info needs to go into usage help at some point)
+
+yyyymmdd_[oth_]nnn[-e[n]].jpg
+
+date: year month day
+other author: 2 or 3 character initials
+photo serial: last 3 digits of camera-supplied number, if possible
+e or s: edited or sized, optional number for more than one
+   -sp -ep : sized/edited for printing
+   -sd -ed : sized/edited for desktop
+   -sw -ew : sized/edited for web
+
+Photo serial: Note that 3-digits is standard for Panasonic cameras. 4 digits is standard for Canon cameras. But we'll use 3 digits for Canon too, seems like unique within each day.
+
+
+These files are arranged into a dir structure
+
+top-level/
+   0000/
+      0000-00-00/
+         00000000_001.jpg   -- Unknown pictures
+         00000000_002.jpg
+   2006/
+      2006-10-13/
+         20061013_431.jpg
+         20061013_509.jpg
+   2007/
+      2007-01-30/
+         20070130_002.jpg
+         20070130_119-ew.jpg
+      2007-04-19/
+         20070419_bmd_323.jpg
+         20070419_bmd_325-sd.jpg

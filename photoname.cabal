@@ -1,0 +1,13 @@
+Name:                photoname
+Version:             001
+Description:         Name and store JPEG photo files based on shoot date
+License:             GPL
+License-file:        LICENSE
+Author:              Dino Morelli 
+Maintainer:          <dino@ui3.info>
+Build-Depends:       base, exif, FilePath, parsec, time, unix
+
+Executable:          photoname
+Main-is:             Main.hs
+ghc-options:         -O -Wall
+hs-source-dirs:      src
