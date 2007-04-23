@@ -115,7 +115,7 @@ buildNewPath newDir oldPath = do
    case maybeDs of
       Just ds  -> do
          let date = readDate ds
-         maybeSerial <- getSerial oldPath
+         let maybeSerial = getSerial oldPath
          case maybeSerial of
             Just serial -> do
                let year = formatYear date
