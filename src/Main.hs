@@ -66,14 +66,6 @@ getDate exif =
       ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
 
 
--- XXX Not using this
-showInfo :: FilePath -> IO ()
-showInfo filePath = do
-   exif <- Exif.fromFile filePath
-   date <- getDate exif
-   printf "%-19s  %s\n" (fromMaybe "NONE" date) filePath
-
-
 {- Take a file path to a JPEG file and use EXIF information available to 
    move the file to a new location below the given basedir.
 -}
@@ -138,5 +130,4 @@ buildNewPath newDir oldPath = do
 main :: IO ()
 main = do
    (dir:filePaths) <- getArgs
-   --mapM_ showInfo filePaths
    mapM_ (createNewLink dir) filePaths
