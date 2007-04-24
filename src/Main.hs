@@ -38,12 +38,6 @@ modeDir = ownerModes       `unionFileModes`
           groupExecuteMode
 
 
-modeFile :: FileMode
-modeFile = ownerReadMode  `unionFileModes`
-           ownerWriteMode `unionFileModes`
-           groupReadMode
-
-
 {- Given a list of lists, make a new list where each sublist element 
    consists of the accumulation of all parts that came before it. 
    Like this:
@@ -116,10 +110,9 @@ createNewLink flags newDir oldPath = do
                   -- Make the new hard link
                   createLink oldPath newPath
 
-                  -- Set permissions on the new link
-                  -- Don't need this? Perms come from original file?
-                  -- Need this later when we move files.
-                  --setFileMode newPath modeFile
+                  -- If user has specified, remove the original link
+                  when (Opts.Move `elem` flags) $
+                     removeLink oldPath
 
 
 {- Ensuring that a directory with subs exists turned out to be a painful 
