@@ -41,7 +41,9 @@ listAcc (x:xs) = listAcc' x xs
 
 {- Execute a sequence of m (Maybe a) actions until the first non-Nothing
    evaluation, eval to that.
+
    Thanks to sjanssen et al on #haskell
+
    XXX Can this be genericized to be :: (Monad m, Monad n) =>
        [m (n a)] -> m (n a)
    XXX Put this in a more common module.
