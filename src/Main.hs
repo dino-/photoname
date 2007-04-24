@@ -161,6 +161,7 @@ executeCommands (flags, (dir:filePaths)) = do
    actualPaths <- filterM
       (\p -> getFileStatus p >>= return . isRegularFile) filePaths
 
+   -- Notify user of the switches that will be in effect.
    when (Opts.NoAction `elem` flags) $
       putStrLn "No-action mode, nothing will be changed."
 
