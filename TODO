@@ -1,12 +1,7 @@
 + Check for file existance, don't clobber anything.
 + Include a -n --no-action switch
 - Include a -f --force switch?
-- Include a -r --rename switch?
-   Default behavior is to hard link files to new locations, which is safer,
-   but may not be supported by your operating environment. Use the -r
-   switch to rename (move) files instead.
-- Include a -p --permissions switch?
-   Alter the original (or only) file's permissions?
++ Include a --move switch?
 
 
 - For each file
