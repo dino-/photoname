@@ -76,7 +76,6 @@ createNewLink :: [Opts.Flag] -> FilePath -> FilePath -> IO ()
 createNewLink flags newDir oldPath = do
    e <- buildNewPath newDir oldPath
    case e of
-      -- XXX Print this to STDERR
       Left err      -> putStrLn err
       Right newPath -> do
          -- Check for existance of the target file
