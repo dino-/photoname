@@ -164,6 +164,10 @@ executeCommands (flags, (dir:filePaths)) = do
    when (Opts.NoAction `elem` flags) $
       putStrLn "No-action mode, nothing will be changed."
 
+   when (Opts.Move `elem` flags) $
+      putStrLn "Removing original links after new links are in place."
+
+   -- Do the link manipulations.
    mapM_ (createNewLink flags dir) actualPaths
 
 

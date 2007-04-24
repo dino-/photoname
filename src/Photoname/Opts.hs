@@ -31,6 +31,7 @@ import System.Console.GetOpt
 data Flag
    = NoAction
    | Quiet
+   | Move
    | Help
    deriving Eq
 
@@ -42,7 +43,9 @@ options =
          "Display what would be done, but do nothing"
    , Option ['q'] ["quiet"]  (NoArg Quiet) 
          "Suppress normal output of what's being done"
-   , Option ['h'] ["help"]    (NoArg Help)
+   , Option []    ["move"] (NoArg Move)
+         "Move the files, don't just hard-link to the new locations"
+   , Option ['h'] ["help"] (NoArg Help)
          "This help text"
    ]
 
