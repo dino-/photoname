@@ -1,8 +1,7 @@
 module Main
    where
 
-import Control.Monad ( unless )
-import Data.Maybe ( fromMaybe )
+import Control.Monad ( filterM, unless, when )
 import qualified Graphics.Exif as Exif
 import Photoname.Date
 import qualified Photoname.Opts as Opts
@@ -10,7 +9,6 @@ import Photoname.Serial
 import System.Environment ( getArgs )
 import System.FilePath
 import System.Posix
-import Text.Printf ( printf )
 
 
 modeDir :: FileMode
