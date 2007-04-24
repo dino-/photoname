@@ -162,7 +162,7 @@ executeCommands ((Opts.Help:_), _) = putStrLn Opts.usageText
 -- User gave no files at all. Display help
 executeCommands (_, []) = putStrLn Opts.usageText
 
--- Otherwise, calculate results for all paths given
+-- Normal program operation, process the files with the args.
 executeCommands (flags, (dir:filePaths)) = do
    -- Get rid of anything not a regular file from the list of paths
    actualPaths <- filterM
