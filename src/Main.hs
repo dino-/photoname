@@ -5,6 +5,7 @@ import Control.Monad ( unless )
 import Data.Maybe ( fromMaybe )
 import qualified Graphics.Exif as Exif
 import Photoname.Date
+import qualified Photoname.Opts as Opts
 import Photoname.Serial
 import System.Environment ( getArgs )
 import System.FilePath
@@ -69,8 +70,8 @@ getDate exif =
 {- Take a file path to a JPEG file and use EXIF information available to 
    move the file to a new location below the given basedir.
 -}
-createNewLink :: FilePath -> FilePath -> IO ()
-createNewLink newDir oldPath = do
+createNewLink :: [Opts.Flag] -> FilePath -> FilePath -> IO ()
+createNewLink flags newDir oldPath = do
    e <- buildNewPath newDir oldPath
    case e of
       -- XXX Print this to STDERR
@@ -82,18 +83,20 @@ createNewLink newDir oldPath = do
             then putStrLn $ newPath ++ " exists!"
             else do
                -- Display what will be done
-               putStrLn (oldPath ++ " -> " ++ newPath)
+               unless (Opts.Quiet `elem` flags) $ 
+                  putStrLn (oldPath ++ " -> " ++ newPath)
 
-               -- Make the target dir
-               makeDirectory $ takeDirectory newPath
+               unless (Opts.NoAction `elem` flags) $ do
+                  -- Make the target dir
+                  makeDirectory $ takeDirectory newPath
 
-               -- Make the new hard link
-               createLink oldPath newPath
+                  -- Make the new hard link
+                  createLink oldPath newPath
 
-               -- Set permissions on the new link
-               -- Don't need this? Perms come from original file?
-               -- Need this later when we move files.
-               --setFileMode newPath modeFile
+                  -- Set permissions on the new link
+                  -- Don't need this? Perms come from original file?
+                  -- Need this later when we move files.
+                  --setFileMode newPath modeFile
 
 
 {- Ensuring that a directory with subs exists turned out to be a painful 
@@ -127,7 +130,28 @@ buildNewPath newDir oldPath = do
       Nothing  -> return $ Left $ "File " ++ oldPath ++ " has no EXIF date."
 
 
+-- Figure out and execute what the user wants based on the supplied args.
+executeCommands :: ([Opts.Flag], [String]) -> IO ()
+
+-- User requested help. Display it and that's it
+executeCommands ((Opts.Help:_), _) = putStrLn Opts.usageText
+
+-- User gave no files at all. Display help
+executeCommands (_, []) = putStrLn Opts.usageText
+
+-- Otherwise, calculate results for all paths given
+executeCommands (flags, (dir:filePaths)) = do
+   -- Get rid of anything not a regular file from the list of paths
+   actualPaths <- filterM
+      (\p -> getFileStatus p >>= return . isRegularFile) filePaths
+
+   when (Opts.NoAction `elem` flags) $
+      putStrLn "No-action mode, nothing will be changed."
+
+   mapM_ (createNewLink flags dir) actualPaths
+
+
 main :: IO ()
 main = do
-   (dir:filePaths) <- getArgs
-   mapM_ (createNewLink dir) filePaths
+   args <- getArgs
+   Opts.parseOpts args >>= executeCommands
