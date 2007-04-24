@@ -81,7 +81,8 @@ createNewLink flags newDir oldPath = do
          -- Check for existance of the target file
          exists <- fileExist newPath
          if exists
-            then putStrLn $ newPath ++ " exists!"
+            then putStrLn $
+               "** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"
             else do
                -- Display what will be done
                unless (Opts.Quiet `elem` flags) $ 
