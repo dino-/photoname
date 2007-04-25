@@ -32,17 +32,19 @@ import Text.ParserCombinators.Parsec
 skipTill :: GenParser tok st t1 -> GenParser tok st t -> GenParser tok st t
 skipTill p end = scan
    where
-      scan = do { end }
+      scan = do { end }     -- If end succeeds, return that.
              <|>
-             do { p; scan }
+             do { p; scan } -- Otherwise, match p and recurse.
 
 
 serialNum :: GenParser Char st [Char]
 serialNum =
-   skipTill anyChar $ try $ do
-      x <- count 3 digit
-      string ".jpg"
-      return x
+   skipTill anyChar $ try $ do  -- Skip anything up to..
+      serial <- count 3 digit   -- 3 digits..
+      char '.'                  -- followed by a period..
+      count 3 alphaNum          -- followed by 3 alphaNumS..
+      eof                       -- at the end of the string.
+      return serial             -- Return those 3 digits
 
 
 -- Evaluates one or more parsers trying to find the serial number in the
