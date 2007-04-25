@@ -28,12 +28,21 @@ module Photoname.Serial (
 import Text.ParserCombinators.Parsec
 
 
--- Parses the syntax of Canon camera file paths for the serial number.
-parserCanon :: GenParser Char st [Char]
-parserCanon = do
-   manyTill anyChar $ try (string "img_")
-   digit
-   count 3 digit
+-- Combinator similar to manyTill, but evaluates to end instead of p
+skipTill :: GenParser tok st t1 -> GenParser tok st t -> GenParser tok st t
+skipTill p end = scan
+   where
+      scan = do { end }
+             <|>
+             do { p; scan }
+
+
+serialNum :: GenParser Char st [Char]
+serialNum =
+   skipTill anyChar $ try $ do
+      x <- count 3 digit
+      string ".jpg"
+      return x
 
 
 -- Evaluates one or more parsers trying to find the serial number in the
@@ -45,4 +54,4 @@ getSerial s =
       --Left err  -> trace (show err) Nothing
       Right x -> Just x
    where
-      parser = parserCanon
+      parser = serialNum
