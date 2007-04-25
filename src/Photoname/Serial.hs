@@ -24,6 +24,7 @@ module Photoname.Serial (
 )
    where
 
+--import Debug.Trace
 import Text.ParserCombinators.Parsec
 
 
@@ -37,11 +38,11 @@ parserCanon = do
 
 -- Evaluates one or more parsers trying to find the serial number in the
 -- supplied path. Transforms the result from Either to Maybe
--- XXX Maybe a debug flag here for the error messages.
 getSerial :: FilePath -> Maybe String
 getSerial s =
    case (parse parser "" s) of
       Left _  -> Nothing
+      --Left err  -> trace (show err) Nothing
       Right x -> Just x
    where
       parser = parserCanon
