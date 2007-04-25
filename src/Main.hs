@@ -127,6 +127,10 @@ makeDirectory d =
    in  mapM_ makeOneDir $ listAcc $ splitPath d
 
 
+{- Given a path to a file with EXIF data, construct a new path based on the
+   date and some serial number info we can parse out of the filename.
+   This function got complicated, there are several ways this can fail.
+-}
 buildNewPath :: FilePath -> FilePath -> IO (Either String FilePath)
 buildNewPath newDir oldPath = do
    exif <- Exif.fromFile oldPath
