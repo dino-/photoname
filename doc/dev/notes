@@ -1,9 +1,10 @@
-I've been running this on all my personal photos like this:
+File serial number formats:
 
-   $ cd <dir-to-photos>
-   $ find . -name *.jpg -print0 | xargs -0 <path-to-photoname-binary> | less
-
-The -print0 | .. -0 because of the many dirs with spaces. Ugh.
+Panasonic:  P###0###.jpg
+   First part is dir, second is serial. We can use the second part.
+Canon:      img_####.jpg
+   Can use the last 3 digits of this
+Olympus:
 
 
 Photo naming scheme (this info needs to go into usage help at some point)

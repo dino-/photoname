@@ -1,20 +1,9 @@
-+ Check for file existance, don't clobber anything.
-+ Include a -n --no-action switch
-- Include a -f --force switch?
-+ Include a --move switch?
+features that would be nice:
 
+- Allow user to specify permissions for newly-created dirs and files. Bonus points for parsing the octal codes everyone knows and loves.
 
-- For each file
-   - Does it have EXIF date?
-   - Can we get a date out of its filename?
-      - literal format (like mobile phone files)
-   - Does it have Image Number in filename?
+- Add a --force switch to disregard existing links.
 
+- Need to write testing script(s)
 
-File serial number formats:
-
-Panasonic:  P###0###
-   First part is dir, second is serial. We can use the second part.
-Canon:      img_####
-   Can use the last 3 digits of this
-Olympus:
+- Deal gracefully with unknown dates. This means not just putting pictures into the 0000/0000-00-00 directory, but making sure that the _### serial number part is incremented from the highest one in there.
