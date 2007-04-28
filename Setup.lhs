@@ -1,3 +1,10 @@
 #!/usr/bin/env runhaskell
+
 > import Distribution.Simple
-> main = defaultMain
+> import System.Cmd
+
+
+> main = defaultMainWithHooks (defaultUserHooks { runTests = testRunner } )
+>     where
+>        testRunner _ _ _ _ =
+>           system $ "runhaskell -itestsuite testsuite/runtests.hs"

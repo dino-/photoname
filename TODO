@@ -4,6 +4,4 @@ features that would be nice:
 
 - Add a --force switch to disregard existing links.
 
-- Need to write testing script(s)
-
 - Deal gracefully with unknown dates. This means not just putting pictures into the 0000/0000-00-00 directory, but making sure that the _### serial number part is incremented from the highest one in there.
