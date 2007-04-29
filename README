@@ -1,1 +1,28 @@
+photoname
+----------
 
+author: Dino Morelli <dino@ui3.info>
+
+
+*about*
+
+photoname is a command-line utility for renaming/moving photo image
+files. The new folder location and naming are determined by two things:
+the photo shoot date information contained within the file's EXIF tags
+and the usually-camera-assigned serial number, often appearing in the
+filename.
+
+This program is known to work with GHC 6.6 on systems where System.Posix
+(unix) packages are available.
+
+
+*install*
+
+Build and install in the typical way for Cabalized software:
+
+   $ runhaskell Setup.lhs configure
+   $ runhaskell Setup.lhs build
+   $ runhaskell Setup.lhs test
+   $ runhaskell Setup.lhs install
+
+A Debian .deb package is available for this project at its home page: http://ui3.info/d/proj/photoname.html
