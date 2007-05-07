@@ -1,5 +1,20 @@
 features that would be nice:
 
+- First, I think I'd like to see the PARENTDIR argument become a named switch (-d --parent-dir), to better differentiate it from the list of files to be processed.
+
+- Second, I'd like to start using a config file (~/.photoname) that will contain things like default parent dir:
+   parent-dir=/foo/bar/baz
+
+   This would be used in the event that none was specified. Other switches could be specified here perhaps.
+
+   This config file behavior will require a config file API, I can try to use the one I started a few months ago.
+
+- I'm wondering if it would be possible to have a post-command switch that could specify something to be done after other processing is done. This came up when i was thinking about rolling jhead -autorot rotation behavior into this program. But I'm reluctant to make this program have direct knowledge of such tools and procedures.
+   An example:
+   --post-cmd='jhead -autorot %f'
+
+   What syntax to use for variables in such strings?
+
 - Allow user to specify permissions for newly-created dirs and files. Bonus points for parsing the octal codes everyone knows and loves.
 
 - Add a --force switch to disregard existing links.
