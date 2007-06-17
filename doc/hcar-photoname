@@ -1,0 +1,21 @@
+This information is for this project's entry in the _Haskell Communities and Activities Report_ (http://www.haskell.org/communities/)
+
+entry begins below
+
+----------
+[section 6 Applications]
+
+6.x  photoname
+
+-----
+Reported by: Dino Morelli
+Status: stable, maintained
+-----
+
+photoname is a command-line utility for renaming/moving photo image files. The new folder location and naming are determined by the EXIF photo shoot date and the usually-camera-assigned serial number, often appearing in the filename.
+
+
+Further reading
+
+ * Project page: http://ui3.info/d/proj/photoname.html
+ * Source repository: darcs get http://ui3.info/darcs/photoname
