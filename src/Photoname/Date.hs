@@ -26,6 +26,7 @@ module Photoname.Date (
    where
 
 import Data.Time.Calendar
+import Data.Time.Format
 import Data.Time.LocalTime
 import System.Locale ( defaultTimeLocale )
 import Text.ParserCombinators.Parsec

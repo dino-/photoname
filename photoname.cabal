@@ -5,7 +5,7 @@ License:             GPL
 License-file:        LICENSE
 Author:              Dino Morelli 
 Maintainer:          <dino@ui3.info>
-Build-Depends:       base, exif, FilePath, parsec, time, unix
+Build-Depends:       base, exif, filepath, parsec, time, unix
 
 Executable:          photoname
 Main-is:             Main.hs
