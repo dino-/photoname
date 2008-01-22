@@ -154,7 +154,8 @@ buildNewPath newDir oldPath = do
 executeCommands :: ([Opts.Flag], [String]) -> IO ()
 
 -- User requested help. Display it and that's it
-executeCommands ((Opts.Help:_), _) = putStrLn Opts.usageText
+executeCommands (flags, _)
+   | (Opts.Help `elem` flags) = putStrLn Opts.usageText
 
 -- User gave no files at all. Display help
 executeCommands (_, []) = putStrLn Opts.usageText
