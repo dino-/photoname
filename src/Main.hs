@@ -26,7 +26,7 @@ import Control.Monad ( filterM, unless, when )
 import qualified Graphics.Exif as Exif
 import Photoname.Date
 import qualified Photoname.Opts as Opts
-import Photoname.Serial
+import Photoname.Serial ( getSerial )
 import System.Environment ( getArgs )
 import System.FilePath
 import System.Posix
