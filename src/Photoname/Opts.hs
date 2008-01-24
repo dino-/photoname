@@ -19,10 +19,11 @@
    02110-1301  USA
 -}
 
-module Photoname.Opts (
-   Flag (..),
-   parseOpts, usageText
-)
+module Photoname.Opts
+   ( Flag (..)
+   , Opts
+   , parseOpts, usageText
+   )
    where
 
 import System.Console.GetOpt
@@ -34,6 +35,11 @@ data Flag
    | Move
    | Help
    deriving Eq
+
+
+-- A convenience type representing all flags and all non-flag strings
+-- that came in from outside
+type Opts = ([Flag], [String])
 
 
 options :: [OptDescr Flag]
@@ -49,7 +55,7 @@ options =
    ]
 
 
-parseOpts :: [String] -> IO ([Flag], [String])
+parseOpts :: [String] -> IO Opts
 parseOpts argv = 
    case getOpt Permute options argv of
       (o,n,[]  ) -> return (o,n)

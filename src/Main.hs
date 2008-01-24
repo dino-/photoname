@@ -151,7 +151,7 @@ buildNewPath newDir oldPath = do
 
 
 -- Figure out and execute what the user wants based on the supplied args.
-executeCommands :: ([Opts.Flag], [String]) -> IO ()
+executeCommands :: Opts.Opts -> IO ()
 
 -- User requested help. Display it and that's it
 executeCommands (flags, _)
