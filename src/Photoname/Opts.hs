@@ -38,8 +38,7 @@ data Flag
 
 options :: [OptDescr Flag]
 options =
-   [
-     Option ['n'] ["no-action"] (NoArg NoAction) 
+   [ Option ['n'] ["no-action"] (NoArg NoAction) 
          "Display what would be done, but do nothing"
    , Option ['q'] ["quiet"] (NoArg Quiet) 
          "Suppress normal output of what's being done"
