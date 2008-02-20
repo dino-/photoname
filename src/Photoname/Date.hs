@@ -63,8 +63,8 @@ formatYear Nothing  = "0000"
 formatYear (Just x) = formatTime defaultTimeLocale "%Y" x
 
 
--- Format a Maybe CalendarTime into a "yyyymmdd" string. Dates that are
--- Nothing in value format to "00000000"
+-- Format a Maybe CalendarTime into a "yyyy-mm-dd" string. Dates that are
+-- Nothing in value format to "0000-00-00"
 formatDay :: Maybe LocalTime -> String
 formatDay Nothing  = "0000-00-00"
 formatDay (Just x) = formatTime defaultTimeLocale "%Y-%m-%d" x
