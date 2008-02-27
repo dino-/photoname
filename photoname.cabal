@@ -1,19 +1,19 @@
-Name:                photoname
-Version:             004
+name:                photoname
+version:             004
 synopsis:            Name and store JPEG photo files based on shoot date
 description:         
    Command-line utility for renaming/moving photo image files based on 
    EXIF tags. Written in Haskell.
-License:             GPL
-License-file:        LICENSE
-Copyright:           2007, 2008 Dino Morelli 
-Author:              Dino Morelli 
-Maintainer:          <dino@ui3.info>
+license:             GPL
+license-file:        LICENSE
+copyright:           2007, 2008 Dino Morelli 
+author:              Dino Morelli 
+maintainer:          <dino@ui3.info>
 stability:           stable
 homepage:            http://ui3.info/d/proj/photoname.html
-Build-Depends:       base, exif, filepath, old-locale, parsec, time, unix
+build-depends:       base, exif, filepath, old-locale, parsec, time, unix
 
-Executable:          photoname
-Main-is:             Main.hs
+executable:          photoname
+main-is:             Main.hs
 ghc-options:         -O -Wall
 hs-source-dirs:      src
