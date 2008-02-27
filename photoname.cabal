@@ -1,5 +1,5 @@
 Name:                photoname
-Version:             003
+Version:             004
 synopsis:            Name and store JPEG photo files based on shoot date
 description:         
    Command-line utility for renaming/moving photo image files based on 
