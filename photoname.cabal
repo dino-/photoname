@@ -6,8 +6,11 @@ description:
    EXIF tags. Written in Haskell.
 License:             GPL
 License-file:        LICENSE
+Copyright:           2007, 2008 Dino Morelli 
 Author:              Dino Morelli 
 Maintainer:          <dino@ui3.info>
+stability:           stable
+homepage:            http://ui3.info/d/proj/photoname.html
 Build-Depends:       base, exif, filepath, old-locale, parsec, time, unix
 
 Executable:          photoname
