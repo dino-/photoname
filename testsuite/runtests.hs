@@ -1,5 +1,5 @@
 {-
-   Copyright 2007 Dino Morelli
+   Copyright 2007, 2008 Dino Morelli
 
    This file is part of photoname
 
