@@ -1,6 +1,9 @@
 Name:                photoname
 Version:             003
-Description:         Name and store JPEG photo files based on shoot date
+synopsis:            Name and store JPEG photo files based on shoot date
+description:         
+   Command-line utility for renaming/moving photo image files based on 
+   EXIF tags. Written in Haskell.
 License:             GPL
 License-file:        LICENSE
 Author:              Dino Morelli 
