@@ -6,5 +6,6 @@
 
 > main = defaultMainWithHooks (defaultUserHooks { runTests = testRunner } )
 >     where
->        testRunner _ _ _ _ =
+>        testRunner _ _ _ _ = do
 >           system $ "runhaskell -itestsuite testsuite/runtests.hs"
+>           return ()
