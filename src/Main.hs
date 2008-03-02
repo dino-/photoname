@@ -22,7 +22,6 @@
 module Main
    where
 
-import Control.Monad ( filterM, unless, when )
 import qualified Graphics.Exif as Exif
 import Photoname.Date
 import qualified Photoname.Opts as Opts
