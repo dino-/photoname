@@ -1,3 +1,16 @@
+-----
+rearchitecture of Main:
+
+flags used in: createNewLink, executeCommands, main
+
+- Parse arguments
+- Look at args, cases:
+   - --help
+   - no files
+   - no parent path
+   - normal processing (ReaderT)
+
+-----
 - To change the app version:
    - Edit photoname.cabal:  Version: XXX
    - Edit src/Photoname/Opts.hs, usageText near the bottom of footer
