@@ -22,6 +22,7 @@
 module Main
    where
 
+import Control.Monad.Reader
 import qualified Graphics.Exif as Exif
 import Photoname.Date
 import qualified Photoname.Opts as Opts
@@ -150,33 +151,41 @@ buildNewPath newDir oldPath = do
 
 
 -- Figure out and execute what the user wants based on the supplied args.
-executeCommands :: Opts.Opts -> IO ()
-
--- User requested help. Display it and that's it
-executeCommands (flags, _)
-   | (Opts.Help `elem` flags) = putStrLn Opts.usageText
+executeCommands :: [String] -> (ReaderT [Opts.Flag] IO) ()
 
 -- User gave no files at all. Display help
-executeCommands (_, []) = putStrLn Opts.usageText
+executeCommands [] = liftIO $ putStrLn Opts.usageText
 
 -- Normal program operation, process the files with the args.
-executeCommands (flags, (dir:filePaths)) = do
+executeCommands (dir:filePaths) = do
+   flags <- ask
+
    -- Get rid of anything not a regular file from the list of paths
-   actualPaths <- filterM
+   actualPaths <- liftIO $ filterM
       (\p -> getFileStatus p >>= return . isRegularFile) filePaths
 
    -- Notify user of the switches that will be in effect.
-   when (Opts.NoAction `elem` flags) $
+   liftIO $ when (Opts.NoAction `elem` flags) $
       putStrLn "No-action mode, nothing will be changed."
 
-   when (Opts.Move `elem` flags) $
+   liftIO $ when (Opts.Move `elem` flags) $
       putStrLn "Removing original links after new links are in place."
 
    -- Do the link manipulations.
-   mapM_ (createNewLink flags dir) actualPaths
+   liftIO $ mapM_ (createNewLink flags dir) actualPaths
+   -- FIXME createNewLink should be in ReaderT too!
 
 
 main :: IO ()
 main = do
    args <- getArgs
-   Opts.parseOpts args >>= executeCommands
+   (flags, paths) <- Opts.parseOpts args
+   runReaderT (executeCommands paths) flags
+{-
+   if (Opts.Help `elem` flags)
+      then displayUsage
+      else if (length paths < 2)
+            then displayUsage
+            else runReaderT (executeCommands paths) flags
+   where displayUsage = putStrLn Opts.usageText
+-}

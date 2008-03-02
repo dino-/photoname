@@ -11,7 +11,7 @@ author:              Dino Morelli
 maintainer:          <dino@ui3.info>
 stability:           stable
 homepage:            http://ui3.info/d/proj/photoname.html
-build-depends:       base, exif, filepath, old-locale, parsec, time, unix
+build-depends:       base, exif, filepath, mtl, old-locale, parsec, time, unix
 
 executable:          photoname
 main-is:             Main.hs
