@@ -23,6 +23,7 @@ module Main
    where
 
 import Control.Monad.Reader
+import Control.Monad.Writer
 import qualified Graphics.Exif as Exif
 import Photoname.Date
 import qualified Photoname.Opts as Opts
@@ -151,41 +152,46 @@ buildNewPath newDir oldPath = do
 
 
 -- Figure out and execute what the user wants based on the supplied args.
-executeCommands :: [String] -> (ReaderT [Opts.Flag] IO) ()
+executeCommands :: [String] -> Ph ()
 
 -- User gave no files at all. Display help
-executeCommands [] = liftIO $ putStrLn Opts.usageText
+--executeCommands [] = liftIO $ putStrLn Opts.usageText
+executeCommands [] = tell [Opts.usageText]
 
 -- Normal program operation, process the files with the args.
 executeCommands (dir:filePaths) = do
    flags <- ask
 
    -- Get rid of anything not a regular file from the list of paths
+   {-
    actualPaths <- liftIO $ filterM
       (\p -> getFileStatus p >>= return . isRegularFile) filePaths
+   -}
+   let actualPaths = filePaths  -- FIXME
 
    -- Notify user of the switches that will be in effect.
-   liftIO $ when (Opts.NoAction `elem` flags) $
-      putStrLn "No-action mode, nothing will be changed."
+   when (Opts.NoAction `elem` flags) $
+      tell ["No-action mode, nothing will be changed."]
 
-   liftIO $ when (Opts.Move `elem` flags) $
-      putStrLn "Removing original links after new links are in place."
+   when (Opts.Move `elem` flags) $
+      tell ["Removing original links after new links are in place."]
 
    -- Do the link manipulations.
    liftIO $ mapM_ (createNewLink flags dir) actualPaths
-   -- FIXME createNewLink should be in ReaderT too!
+   -- FIXME createNewLink should be in the transformer stack too!
 
+
+type Ph a = ReaderT [Opts.Flag] (WriterT [String] IO) a
+
+runMain :: [Opts.Flag] -> Ph a -> IO (a, [String])
+runMain env exec = runWriterT $ runReaderT exec env
 
 main :: IO ()
 main = do
-   args <- getArgs
-   (flags, paths) <- Opts.parseOpts args
-   runReaderT (executeCommands paths) flags
-{-
-   if (Opts.Help `elem` flags)
-      then displayUsage
-      else if (length paths < 2)
-            then displayUsage
-            else runReaderT (executeCommands paths) flags
-   where displayUsage = putStrLn Opts.usageText
--}
+   (flags, paths) <- getArgs >>= Opts.parseOpts
+
+   (rval, messages) <- runMain flags $ executeCommands paths
+
+   putStrLn $ unlines messages
+
+   return rval
