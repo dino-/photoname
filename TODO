@@ -1,3 +1,11 @@
+- Change to BSD3 licensing  VERY IMPORTANT
+
+- Add support for different camera filename formats, check with the Olympus.
+
+- Rewrite buildNewPath with MaybeT?
+   see: http://haskell.org/haskellwiki/New_monads/MaybeT
+
+
 features that would be nice:
 
 - First, I think I'd like to see the PARENTDIR argument become a named switch (-d --parent-dir), to better differentiate it from the list of files to be processed.
