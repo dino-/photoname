@@ -1,5 +1,3 @@
-- Change to BSD3 licensing  VERY IMPORTANT
-
 - Add support for different camera filename formats, check with the Olympus.
 
 - Rewrite buildNewPath with MaybeT?
