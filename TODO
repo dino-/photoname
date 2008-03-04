@@ -1,3 +1,5 @@
+- I wonder if changing to record style for the Opts.Flags would make any of the code simpler in Main
+
 - Add support for different camera filename formats, check with the Olympus.
 
 - Rewrite buildNewPath with MaybeT?
