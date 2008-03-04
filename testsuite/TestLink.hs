@@ -201,4 +201,5 @@ testDirForFile = TestCase $ do
    waitForProcess procH
 
    -- Test output to stdout
-   assertBool "dir as file to change: correct output" (null output)
+   assertBool "dir as file to change: correct output"
+      (output =~ "" :: Bool)
