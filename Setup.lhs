@@ -4,7 +4,7 @@
 > import System.Cmd
 
 
-> main = defaultMainWithHooks (defaultUserHooks { runTests = testRunner } )
+> main = defaultMainWithHooks (simpleUserHooks { runTests = testRunner } )
 >     where
 >        testRunner _ _ _ _ = do
 >           system $ "runhaskell -itestsuite testsuite/runtests.hs"
