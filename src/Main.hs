@@ -88,32 +88,33 @@ getDate exif =
 {- Take a file path to a JPEG file and use EXIF information available to 
    move the file to a new location below the given basedir.
 -}
-createNewLink :: [Opts.Flag] -> FilePath -> FilePath -> IO ()
-createNewLink flags newDir oldPath = do
-   e <- buildNewPath newDir oldPath
+createNewLink :: FilePath -> FilePath -> Ph ()
+createNewLink newDir oldPath = do
+   flags <- ask
+   e <- liftIO $ buildNewPath newDir oldPath
    case e of
-      Left err      -> putStrLn err
+      Left err      -> tell [err]
       Right newPath -> do
          -- Check for existance of the target file
-         exists <- fileExist newPath
+         exists <- liftIO $ fileExist newPath
          if exists
-            then putStrLn $
-               "** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"
+            then tell
+               ["** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"]
             else do
                -- Display what will be done
                unless (Opts.Quiet `elem` flags) $ 
-                  putStrLn (oldPath ++ " -> " ++ newPath)
+                  tell [(oldPath ++ " -> " ++ newPath)]
 
                unless (Opts.NoAction `elem` flags) $ do
                   -- Make the target dir
-                  makeDirectory $ takeDirectory newPath
+                  liftIO $ makeDirectory $ takeDirectory newPath
 
                   -- Make the new hard link
-                  createLink oldPath newPath
+                  liftIO $ createLink oldPath newPath
 
                   -- If user has specified, remove the original link
                   when (Opts.Move `elem` flags) $
-                     removeLink oldPath
+                     liftIO $ removeLink oldPath
 
 
 {- Ensuring that a directory with subs exists turned out to be a painful 
@@ -155,7 +156,6 @@ buildNewPath newDir oldPath = do
 executeCommands :: [String] -> Ph ()
 
 -- User gave no files at all. Display help
---executeCommands [] = liftIO $ putStrLn Opts.usageText
 executeCommands [] = tell [Opts.usageText]
 
 -- Normal program operation, process the files with the args.
@@ -163,11 +163,8 @@ executeCommands (dir:filePaths) = do
    flags <- ask
 
    -- Get rid of anything not a regular file from the list of paths
-   {-
    actualPaths <- liftIO $ filterM
       (\p -> getFileStatus p >>= return . isRegularFile) filePaths
-   -}
-   let actualPaths = filePaths  -- FIXME
 
    -- Notify user of the switches that will be in effect.
    when (Opts.NoAction `elem` flags) $
@@ -177,8 +174,7 @@ executeCommands (dir:filePaths) = do
       tell ["Removing original links after new links are in place."]
 
    -- Do the link manipulations.
-   liftIO $ mapM_ (createNewLink flags dir) actualPaths
-   -- FIXME createNewLink should be in the transformer stack too!
+   mapM_ (createNewLink dir) actualPaths
 
 
 type Ph a = ReaderT [Opts.Flag] (WriterT [String] IO) a
@@ -188,10 +184,13 @@ runMain env exec = runWriterT $ runReaderT exec env
 
 main :: IO ()
 main = do
+   -- Parse the arguments
    (flags, paths) <- getArgs >>= Opts.parseOpts
 
+   -- Do the photo naming procedure
    (rval, messages) <- runMain flags $ executeCommands paths
 
+   -- Display collected output log
    putStrLn $ unlines messages
 
    return rval
