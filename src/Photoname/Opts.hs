@@ -73,5 +73,5 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , "the new paths and leave the original links as they were. You can use the"
          , "--move switch to blow away the original location, leaving only the new."
          , ""
-         , "Version 004  2008-Feb-26  Dino Morelli <dino@ui3.info>"
+         , "Version 2.0  2008-Mar-04  Dino Morelli <dino@ui3.info>"
          ]
