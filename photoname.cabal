@@ -5,7 +5,7 @@ license:             BSD3
 license-file:        LICENSE
 copyright:           2007, 2008 Dino Morelli 
 author:              Dino Morelli 
-maintainer:          <dino@ui3.info>
+maintainer:          Dino Morelli <dino@ui3.info>
 stability:           stable
 homepage:            http://ui3.info/d/proj/photoname.html
 synopsis:            Rename JPEG photo files based on shoot date
