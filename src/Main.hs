@@ -162,8 +162,8 @@ executeCommands (dir:filePaths) = do
 
 type Ph a = ReaderT [Opts.Flag] (WriterT [String] IO) a
 
-runMain :: [Opts.Flag] -> Ph a -> IO (a, [String])
-runMain env exec = runWriterT $ runReaderT exec env
+runRename :: [Opts.Flag] -> Ph a -> IO (a, [String])
+runRename env exec = runWriterT $ runReaderT exec env
 
 main :: IO ()
 main = do
@@ -171,7 +171,7 @@ main = do
    (flags, paths) <- getArgs >>= Opts.parseOpts
 
    -- Do the photo naming procedure
-   (rval, messages) <- runMain flags $ executeCommands paths
+   (rval, messages) <- runRename flags $ executeCommands paths
 
    -- Display collected output log
    putStrLn $ unlines messages
