@@ -5,6 +5,7 @@
 module Main
    where
 
+import Control.Monad.Error ()
 import Control.Monad.Reader
 import Control.Monad.Writer
 import qualified Graphics.Exif as Exif
@@ -62,10 +63,14 @@ firstSuccess = foldr f (return Nothing)
    potentially containing dates. Try them in a specific order until we
    find one that has data.
 -}
-getDate :: Exif.Exif -> IO (Maybe String)
-getDate exif =
-   firstSuccess $ map (Exif.getTag exif)
+getDate :: FilePath -> IO (Either String String)
+getDate path = do
+   exif <- Exif.fromFile path
+   maybeDate <- firstSuccess $ map (Exif.getTag exif)
       ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
+   case maybeDate of
+      Just d -> return $ Right d
+      Nothing  -> return $ Left $ "File " ++ path ++ " has no EXIF date"
 
 
 {- Take a file path to a JPEG file and use EXIF information available to 
@@ -114,25 +119,19 @@ makeDirectory d =
 
 {- Given a path to a file with EXIF data, construct a new path based on the
    date and some serial number info we can parse out of the filename.
-   This function got complicated, there are several ways this can fail.
 -}
 buildNewPath :: FilePath -> FilePath -> IO (Either String FilePath)
-buildNewPath newDir oldPath = do
-   exif <- Exif.fromFile oldPath
-   maybeDs <- getDate exif
-   case maybeDs of
-      Just ds  -> do
-         let date = readDate ds
-         let maybeSerial = getSerial oldPath
-         case maybeSerial of
-            Just serial -> do
-               let year = formatYear date
-               let day = formatDay date
-               let prefix = formatPrefix date
-               return $ Right $ newDir </> year </> day </> 
-                  (prefix ++ "_" ++ serial) <.> "jpg"
-            Nothing -> return $ Left $ "File " ++ oldPath ++ " has no serial."
-      Nothing  -> return $ Left $ "File " ++ oldPath ++ " has no EXIF date."
+buildNewPath newDir oldPath = do  -- IO
+   eitherDateString <- getDate oldPath
+   return $ do  -- Either String
+      dateString <- eitherDateString
+      serial <- getSerial oldPath
+      let date = readDate dateString
+      let year = formatYear date
+      let day = formatDay date
+      let prefix = formatPrefix date
+      return (newDir </> year </> day </>
+         (prefix ++ "_" ++ serial) <.> "jpg")
 
 
 -- Figure out and execute what the user wants based on the supplied args.

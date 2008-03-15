@@ -32,11 +32,9 @@ serialNum =
 
 -- Evaluates one or more parsers trying to find the serial number in the
 -- supplied path. Transforms the result from Either to Maybe
-getSerial :: FilePath -> Maybe String
-getSerial s =
-   case (parse parser "" s) of
-      Left _  -> Nothing
+getSerial :: FilePath -> Either String String
+getSerial path =
+   case (parse serialNum "" path) of
+      Left _  -> Left $ "File " ++ path ++ " has no serial"
       --Left err  -> trace (show err) Nothing
-      Right x -> Just x
-   where
-      parser = serialNum
+      Right serial -> Right serial

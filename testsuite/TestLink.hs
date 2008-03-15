@@ -159,7 +159,7 @@ testNoExif = TestCase $ do
 
    -- Test output to stdout
    assertBool "no EXIF: correct output"
-      (output =~ "File testsuite/resources/noExif.jpg has no EXIF date."
+      (output =~ "File testsuite/resources/noExif.jpg has no EXIF date"
          :: Bool)
 
 
@@ -172,7 +172,7 @@ testNoSerial = TestCase $ do
 
    -- Test output to stdout
    assertBool "no serial in filename: correct output"
-      (output =~ "File testsuite/resources/noSerial.jpg has no serial."
+      (output =~ "File testsuite/resources/noSerial.jpg has no serial"
          :: Bool)
 
 
