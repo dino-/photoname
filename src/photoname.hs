@@ -28,22 +28,6 @@ modeDir = ownerModes       `unionFileModes`
           groupExecuteMode
 
 
-{- Given a list of lists, make a new list where each sublist element 
-   consists of the accumulation of all parts that came before it. 
-   Like this:
-      before: [[1], [2], [3], [4], [5]]
-      after : [[1], [1,2], [1,2,3], [1,2,3,4], [1,2,3,4,5]]
-
-   Many thanks to Betty Diegel for help with this algorithm.
--}
-listAcc :: [[a]] -> [[a]]
-listAcc []     = [[]]
-listAcc (x:xs) = listAcc' x xs
-   where
-      listAcc' l (y:ys) = [l] ++ listAcc' (l ++ y) ys
-      listAcc' l []     = [l]
-
-
 {- Execute a sequence of m (Maybe a) actions until the first non-Nothing
    evaluation, eval to that.
 
@@ -114,6 +98,22 @@ createNewLink newDir oldPath = do
    case result of
       Left errMsg -> liftIO $ putStrLn errMsg
       Right _ -> return ()
+
+
+{- Given a list of lists, make a new list where each sublist element 
+   consists of the accumulation of all parts that came before it. 
+   Like this:
+      before: [[1], [2], [3], [4], [5]]
+      after : [[1], [1,2], [1,2,3], [1,2,3,4], [1,2,3,4,5]]
+
+   Many thanks to Betty Diegel for help with this algorithm.
+-}
+listAcc :: [[a]] -> [[a]]
+listAcc []     = [[]]
+listAcc (x:xs) = listAcc' x xs
+   where
+      listAcc' l (y:ys) = [l] ++ listAcc' (l ++ y) ys
+      listAcc' l []     = [l]
 
 
 {- Ensuring that a directory with subs exists turned out to be a painful 
