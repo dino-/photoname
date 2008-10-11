@@ -15,6 +15,10 @@ Status: stable, maintained
 
 photoname is a command-line utility for renaming/moving photo image files. The new folder location and naming are determined by the EXIF photo shoot date and the usually-camera-assigned serial number, often appearing in the filename.
 
+Between versions 2.0 and 2.1 the software is largely the same on the outside but has undergone extensive changes inside. Most of this involving redesign with monad transformers.
+
+photoname is on Hackage and can be acquired using darcs or other methods. See the project page below for more.
+
 
 Further reading
 
