@@ -1,9 +1,4 @@
-- I wonder if changing to record style for the Opts.Flags would make any of the code simpler in Main
-
 - Add support for different camera filename formats, check with the Olympus.
-
-- Rewrite buildNewPath with MaybeT?
-   see: http://haskell.org/haskellwiki/New_monads/MaybeT
 
 
 features that would be nice:
@@ -29,4 +24,4 @@ features that would be nice:
 
 - Deal gracefully with unknown dates. This means not just putting pictures into the 0000/0000-00-00 directory, but making sure that the _### serial number part is incremented from the highest one in there.
 
-- Allow additional switch for part of filenames for initials of photographer: _xyz
+- Allow additional switch for part of filenames for initials of photographer: _xyz  Call this the suffix? (-s --suffix)
