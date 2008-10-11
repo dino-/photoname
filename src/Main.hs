@@ -2,12 +2,13 @@
 -- License: BSD3 (see LICENSE)
 -- Author: Dino Morelli <dino@ui3.info>
 
+{-# LANGUAGE FlexibleContexts #-}
+
 module Main
    where
 
-import Control.Monad.Error ()
+import Control.Monad.Error
 import Control.Monad.Reader
-import Control.Monad.Writer
 import qualified Graphics.Exif as Exif
 import Photoname.Date
 import qualified Photoname.Opts as Opts
@@ -15,6 +16,13 @@ import Photoname.Serial ( getSerial )
 import System.Environment ( getArgs )
 import System.FilePath
 import System.Posix
+
+
+type Ph a = ReaderT [Opts.Flag] IO a
+
+
+runRename :: [Opts.Flag] -> Ph a -> IO a
+runRename env action = runReaderT action env
 
 
 modeDir :: FileMode
@@ -63,14 +71,16 @@ firstSuccess = foldr f (return Nothing)
    potentially containing dates. Try them in a specific order until we
    find one that has data.
 -}
-getDate :: FilePath -> IO (Either String String)
+getDate :: (MonadError String m, MonadIO m) => FilePath -> m String
 getDate path = do
-   exif <- Exif.fromFile path
-   maybeDate <- firstSuccess $ map (Exif.getTag exif)
+   exif <- liftIO $ Exif.fromFile path
+
+   maybeDate <- liftIO $ firstSuccess $ map (Exif.getTag exif)
       ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
+
    case maybeDate of
-      Just d -> return $ Right d
-      Nothing  -> return $ Left $ "File " ++ path ++ " has no EXIF date"
+      Just d -> return d
+      Nothing  -> throwError $ "File " ++ path ++ " has no EXIF date"
 
 
 {- Take a file path to a JPEG file and use EXIF information available to 
@@ -79,30 +89,34 @@ getDate path = do
 createNewLink :: FilePath -> FilePath -> Ph ()
 createNewLink newDir oldPath = do
    flags <- ask
-   e <- liftIO $ buildNewPath newDir oldPath
-   case e of
-      Left err      -> tell [err]
-      Right newPath -> do
-         -- Check for existance of the target file
-         exists <- liftIO $ fileExist newPath
-         if exists
-            then tell
-               ["** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"]
-            else do
-               -- Display what will be done
-               unless (Opts.Quiet `elem` flags) $ 
-                  tell [(oldPath ++ " -> " ++ newPath)]
+   result <- liftIO $ runErrorT $ do
+      newPath <- buildNewPath newDir oldPath
 
-               unless (Opts.NoAction `elem` flags) $ do
-                  -- Make the target dir
-                  liftIO $ makeDirectory $ takeDirectory newPath
+      -- Check for existance of the target file
+      exists <- liftIO $ fileExist newPath
+      when exists $ throwError $
+         "** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"
 
-                  -- Make the new hard link
-                  liftIO $ createLink oldPath newPath
+      -- Display what will be done
+      unless (Opts.Quiet `elem` flags) $ 
+         liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
 
-                  -- If user has specified, remove the original link
-                  when (Opts.Move `elem` flags) $
-                     liftIO $ removeLink oldPath
+      unless (Opts.NoAction `elem` flags) $ do
+         -- Make the target dir
+         liftIO $ makeDirectory $ takeDirectory newPath
+
+         -- Make the new hard link
+         liftIO $ createLink oldPath newPath
+
+         -- If user has specified, remove the original link
+         when (Opts.Move `elem` flags) $
+            liftIO $ removeLink oldPath
+
+      return ()
+
+   case result of
+      Left errMsg -> liftIO $ putStrLn errMsg
+      Right _ -> return ()
 
 
 {- Ensuring that a directory with subs exists turned out to be a painful 
@@ -120,25 +134,24 @@ makeDirectory d =
 {- Given a path to a file with EXIF data, construct a new path based on the
    date and some serial number info we can parse out of the filename.
 -}
-buildNewPath :: FilePath -> FilePath -> IO (Either String FilePath)
-buildNewPath newDir oldPath = do  -- IO
-   eitherDateString <- getDate oldPath
-   return $ do  -- Either String
-      dateString <- eitherDateString
-      serial <- getSerial oldPath
-      let date = readDate dateString
-      let year = formatYear date
-      let day = formatDay date
-      let prefix = formatPrefix date
-      return (newDir </> year </> day </>
-         (prefix ++ "_" ++ serial) <.> "jpg")
+buildNewPath :: (MonadError String m, MonadIO m) =>
+   FilePath -> FilePath -> m FilePath
+buildNewPath newDir oldPath = do
+   dateString <- getDate oldPath
+   serial <- getSerial oldPath
+   let date = readDate dateString
+   let year = formatYear date
+   let day = formatDay date
+   let prefix = formatPrefix date
+   return (newDir </> year </> day </>
+      (prefix ++ "_" ++ serial) <.> "jpg")
 
 
 -- Figure out and execute what the user wants based on the supplied args.
 executeCommands :: [String] -> Ph ()
 
 -- User gave no files at all. Display help
-executeCommands [] = tell [Opts.usageText]
+executeCommands [] = liftIO $ putStrLn Opts.usageText
 
 -- Normal program operation, process the files with the args.
 executeCommands (dir:filePaths) = do
@@ -150,19 +163,15 @@ executeCommands (dir:filePaths) = do
 
    -- Notify user of the switches that will be in effect.
    when (Opts.NoAction `elem` flags) $
-      tell ["No-action mode, nothing will be changed."]
+      liftIO $ putStrLn "No-action mode, nothing will be changed."
 
    when (Opts.Move `elem` flags) $
-      tell ["Removing original links after new links are in place."]
+      liftIO $ putStrLn 
+         "Removing original links after new links are in place."
 
    -- Do the link manipulations.
    mapM_ (createNewLink dir) actualPaths
 
-
-type Ph a = ReaderT [Opts.Flag] (WriterT [String] IO) a
-
-runRename :: [Opts.Flag] -> Ph a -> IO (a, [String])
-runRename env exec = runWriterT $ runReaderT exec env
 
 main :: IO ()
 main = do
@@ -170,9 +179,6 @@ main = do
    (flags, paths) <- getArgs >>= Opts.parseOpts
 
    -- Do the photo naming procedure
-   (rval, messages) <- runRename flags $ executeCommands paths
+   runRename flags $ executeCommands paths
 
-   -- Display collected output log
-   putStrLn $ unlines messages
-
-   return rval
+   -- Perhaps we should get an ExitCode back from all this above?

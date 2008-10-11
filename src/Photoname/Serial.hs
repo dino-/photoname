@@ -2,16 +2,19 @@
 -- License: BSD3 (see LICENSE)
 -- Author: Dino Morelli <dino@ui3.info>
 
-module Photoname.Serial (
-   getSerial
-)
+{-# LANGUAGE FlexibleContexts #-}
+
+module Photoname.Serial
+   ( getSerial
+   )
    where
 
---import Debug.Trace
+import Control.Monad.Error
 import Text.ParserCombinators.Parsec
 
 
--- Combinator similar to manyTill, but evaluates to end instead of p
+{- Combinator similar to manyTill, but evaluates to end instead of p
+-}
 skipTill :: GenParser tok st t1 -> GenParser tok st t -> GenParser tok st t
 skipTill p end = scan
    where
@@ -30,11 +33,11 @@ serialNum =
       return serial             -- Return those 3 digits
 
 
--- Evaluates one or more parsers trying to find the serial number in the
--- supplied path. Transforms the result from Either to Maybe
-getSerial :: FilePath -> Either String String
+{- Evaluates one or more parsers trying to find the serial number in the
+   supplied path. Transforms the result from Either to Maybe
+-}
+getSerial :: (MonadError String m) => String -> m String
 getSerial path =
    case (parse serialNum "" path) of
-      Left _  -> Left $ "File " ++ path ++ " has no serial"
-      --Left err  -> trace (show err) Nothing
-      Right serial -> Right serial
+      Left _  -> throwError $ "File " ++ path ++ " has no serial"
+      Right serial -> return serial
