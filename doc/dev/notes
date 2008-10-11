@@ -1,7 +1,5 @@
 -----
-rearchitecture of Main:
-
-flags used in: createNewLink, executeCommands, main
+Do something with this, better error checking?
 
 - Parse arguments
 - Look at args, cases:
