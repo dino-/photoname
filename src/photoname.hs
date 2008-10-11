@@ -28,26 +28,6 @@ modeDir = ownerModes       `unionFileModes`
           groupExecuteMode
 
 
-{- Execute a sequence of m (Maybe a) actions until the first non-Nothing
-   evaluation, eval to that.
-
-   Thanks to sjanssen et al on #haskell
-
-   XXX Can this be genericized to be :: (Monad m, Monad n) =>
-       [m (n a)] -> m (n a)
-   XXX Put this in a more common module.
--}
-firstSuccess :: Monad m => [m (Maybe a)] -> m (Maybe a)
-firstSuccess = foldr f (return Nothing)
-   where
-      f :: Monad t => t (Maybe m1) -> t (Maybe m1) -> t (Maybe m1)
-      f m ms = do  -- m in here, NOT Maybe
-         x <- m
-         case x of
-            Just _  -> return x
-            Nothing -> ms
-
-
 {- Get shoot date from the exif information. There are several tags 
    potentially containing dates. Try them in a specific order until we
    find one that has data.
@@ -56,7 +36,9 @@ getDate :: (MonadError String m, MonadIO m) => FilePath -> m String
 getDate path = do
    exif <- liftIO $ fromFile path
 
-   maybeDate <- liftIO $ firstSuccess $ map (getTag exif)
+   -- This foldl gets us the first IO (Maybe String) that's not Nothing
+   maybeDate <- liftIO $ foldl (liftM2 mplus) (return Nothing) $
+      map (getTag exif)
       ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
 
    case maybeDate of
