@@ -49,7 +49,7 @@ parseOpts :: [String] -> IO (Options, [String])
 parseOpts argv = 
    case getOpt Permute options argv of
       (o,n,[]  ) -> return (foldl (flip id) defaultOptions o, n)
-      (_,_,errs) -> ioError (userError (concat errs ++ usageText))
+      (_,_,errs) -> ioError $ userError (concat errs ++ usageText)
 
 
 usageText :: String
