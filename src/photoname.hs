@@ -7,12 +7,13 @@
 import Control.Monad.Error
 import Control.Monad.Reader
 import Graphics.Exif ( fromFile, getTag )
-import Photoname.Date
-import qualified Photoname.Opts as Opts
-import Photoname.Serial ( getSerial )
 import System.Environment ( getArgs )
 import System.FilePath
 import System.Posix
+
+import Photoname.Date
+import qualified Photoname.Opts as Opts
+import Photoname.Serial ( getSerial )
 
 
 type Ph a = ReaderT [Opts.Flag] IO a
