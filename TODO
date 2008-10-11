@@ -1,8 +1,5 @@
 - Add support for different camera filename formats, check with the Olympus.
 
-
-features that would be nice:
-
 - First, I think I'd like to see the PARENTDIR argument become a named switch (-d --parent-dir), to better differentiate it from the list of files to be processed.
 
 - Second, I'd like to start using a config file (~/.photoname) that will contain things like default parent dir:
