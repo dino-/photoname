@@ -12,8 +12,7 @@ the photo shoot date information contained within the file's EXIF tags
 and the usually-camera-assigned serial number, often appearing in the
 filename.
 
-This program is known to work with GHC 6.8.2 on systems where System.Posix
-(unix) packages are available.
+This program is known to work with GHC 6.8.3 (and probably still 6.8.2) on systems where System.Posix (unix) packages are available.
 
 
 *install*
@@ -24,5 +23,3 @@ Build and install in the typical way for Cabalized software:
    $ runhaskell Setup.lhs build
    $ runhaskell Setup.lhs test
    $ runhaskell Setup.lhs install
-
-A Debian .deb package is available for this project at its home page: http://ui3.info/d/proj/photoname.html
