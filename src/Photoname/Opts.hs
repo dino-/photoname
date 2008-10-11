@@ -3,8 +3,7 @@
 -- Author: Dino Morelli <dino@ui3.info>
 
 module Photoname.Opts
-   ( Flag (..)
-   , Opts
+   ( Options (..)
    , parseOpts, usageText
    )
    where
@@ -12,36 +11,44 @@ module Photoname.Opts
 import System.Console.GetOpt
 
 
-data Flag
-   = NoAction
-   | Quiet
-   | Move
-   | Help
-   deriving Eq
+data Options = Options
+   { optNoAction :: Bool
+   , optQuiet :: Bool
+   , optMove :: Bool
+   , optHelp :: Bool
+   }
 
 
--- A convenience type representing all flags and all non-flag strings
--- that came in from outside
-type Opts = ([Flag], [String])
+defaultOptions :: Options
+defaultOptions = Options
+   { optNoAction = False
+   , optQuiet = False
+   , optMove = False
+   , optHelp = False
+   }
 
 
-options :: [OptDescr Flag]
+options :: [OptDescr (Options -> Options)]
 options =
-   [ Option ['n'] ["no-action"] (NoArg NoAction) 
-         "Display what would be done, but do nothing"
-   , Option ['q'] ["quiet"] (NoArg Quiet) 
-         "Suppress normal output of what's being done"
-   , Option []    ["move"] (NoArg Move)
-         "Move the files, don't just hard-link to the new locations"
-   , Option ['h'] ["help"] (NoArg Help)
-         "This help text"
+   [ Option ['n'] ["no-action"]
+      (NoArg (\opts -> opts { optNoAction = True } )) 
+      "Display what would be done, but do nothing"
+   , Option ['q'] ["quiet"] 
+      (NoArg (\opts -> opts { optQuiet = True } )) 
+      "Suppress normal output of what's being done"
+   , Option []    ["move"] 
+      (NoArg (\opts -> opts { optMove = True } ))
+      "Move the files, don't just hard-link to the new locations"
+   , Option ['h'] ["help"] 
+      (NoArg (\opts -> opts { optHelp = True } ))
+      "This help text"
    ]
 
 
-parseOpts :: [String] -> IO Opts
+parseOpts :: [String] -> IO (Options, [String])
 parseOpts argv = 
    case getOpt Permute options argv of
-      (o,n,[]  ) -> return (o,n)
+      (o,n,[]  ) -> return (foldl (flip id) defaultOptions o, n)
       (_,_,errs) -> ioError (userError (concat errs ++ usageText))
 
 

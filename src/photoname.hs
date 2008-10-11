@@ -12,14 +12,14 @@ import System.FilePath
 import System.Posix
 
 import Photoname.Date
-import qualified Photoname.Opts as Opts
+import Photoname.Opts ( Options (..) , parseOpts, usageText )
 import Photoname.Serial ( getSerial )
 
 
-type Ph a = ReaderT [Opts.Flag] IO a
+type Ph a = ReaderT Options IO a
 
 
-runRename :: [Opts.Flag] -> Ph a -> IO a
+runRename :: Options -> Ph a -> IO a
 runRename env action = runReaderT action env
 
 
@@ -52,7 +52,7 @@ getDate path = do
 -}
 createNewLink :: FilePath -> FilePath -> Ph ()
 createNewLink newDir oldPath = do
-   flags <- ask
+   opts <- ask
    result <- liftIO $ runErrorT $ do
       newPath <- buildNewPath newDir oldPath
 
@@ -62,10 +62,10 @@ createNewLink newDir oldPath = do
          "** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"
 
       -- Display what will be done
-      unless (Opts.Quiet `elem` flags) $ 
+      unless (optQuiet opts) $ 
          liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
 
-      unless (Opts.NoAction `elem` flags) $ do
+      unless (optNoAction opts) $ do
          -- Make the target dir
          liftIO $ makeDirectory $ takeDirectory newPath
 
@@ -73,7 +73,7 @@ createNewLink newDir oldPath = do
          liftIO $ createLink oldPath newPath
 
          -- If user has specified, remove the original link
-         when (Opts.Move `elem` flags) $
+         when (optMove opts) $
             liftIO $ removeLink oldPath
 
       return ()
@@ -133,21 +133,21 @@ buildNewPath newDir oldPath = do
 executeCommands :: [String] -> Ph ()
 
 -- User gave no files at all. Display help
-executeCommands [] = liftIO $ putStrLn Opts.usageText
+executeCommands [] = liftIO $ putStrLn usageText
 
 -- Normal program operation, process the files with the args.
 executeCommands (dir:filePaths) = do
-   flags <- ask
+   opts <- ask
 
    -- Get rid of anything not a regular file from the list of paths
    actualPaths <- liftIO $ filterM
       (\p -> getFileStatus p >>= return . isRegularFile) filePaths
 
    -- Notify user of the switches that will be in effect.
-   when (Opts.NoAction `elem` flags) $
+   when (optNoAction opts) $
       liftIO $ putStrLn "No-action mode, nothing will be changed."
 
-   when (Opts.Move `elem` flags) $
+   when (optMove opts) $
       liftIO $ putStrLn 
          "Removing original links after new links are in place."
 
@@ -158,9 +158,9 @@ executeCommands (dir:filePaths) = do
 main :: IO ()
 main = do
    -- Parse the arguments
-   (flags, paths) <- getArgs >>= Opts.parseOpts
+   (opts, paths) <- getArgs >>= parseOpts
 
    -- Do the photo naming procedure
-   runRename flags $ executeCommands paths
+   runRename opts $ executeCommands paths
 
    -- Perhaps we should get an ExitCode back from all this above?
