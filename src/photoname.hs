@@ -6,7 +6,7 @@
 
 import Control.Monad.Error
 import Control.Monad.Reader
-import qualified Graphics.Exif as Exif
+import Graphics.Exif ( fromFile, getTag )
 import Photoname.Date
 import qualified Photoname.Opts as Opts
 import Photoname.Serial ( getSerial )
@@ -54,9 +54,9 @@ firstSuccess = foldr f (return Nothing)
 -}
 getDate :: (MonadError String m, MonadIO m) => FilePath -> m String
 getDate path = do
-   exif <- liftIO $ Exif.fromFile path
+   exif <- liftIO $ fromFile path
 
-   maybeDate <- liftIO $ firstSuccess $ map (Exif.getTag exif)
+   maybeDate <- liftIO $ firstSuccess $ map (getTag exif)
       ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
 
    case maybeDate of
