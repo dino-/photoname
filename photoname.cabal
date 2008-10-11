@@ -1,4 +1,5 @@
 name:                photoname
+cabal-version:       >= 1.2
 version:             2.0
 build-type:          Simple
 license:             BSD3
@@ -13,10 +14,11 @@ description:
    Command-line utility for renaming/moving photo image files based on 
    EXIF tags. Written in Haskell.
 category:            Unclassified
-tested-with:         GHC==6.8.2
+tested-with:         GHC>=6.8.2
 
-executable:          photoname
-build-depends:       base, exif, filepath, mtl, old-locale, parsec, time, unix
-main-is:             Main.hs
-ghc-options:         -Wall
-hs-source-dirs:      src
+executable           photoname
+   main-is:          photoname.hs
+   build-depends:    base, exif, filepath, mtl, old-locale, parsec, 
+                     time, unix
+   ghc-options:      -Wall
+   hs-source-dirs:   src

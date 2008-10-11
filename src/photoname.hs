@@ -4,9 +4,6 @@
 
 {-# LANGUAGE FlexibleContexts #-}
 
-module Main
-   where
-
 import Control.Monad.Error
 import Control.Monad.Reader
 import qualified Graphics.Exif as Exif
