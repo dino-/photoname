@@ -90,6 +90,8 @@ createNewLink newDir oldPath = do
       after : [[1], [1,2], [1,2,3], [1,2,3,4], [1,2,3,4,5]]
 
    Many thanks to Betty Diegel for help with this algorithm.
+
+   FIXME Try to rewrite this with a scan or something
 -}
 listAcc :: [[a]] -> [[a]]
 listAcc []     = [[]]
