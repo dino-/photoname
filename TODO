@@ -22,3 +22,6 @@
 - Deal gracefully with unknown dates. This means not just putting pictures into the 0000/0000-00-00 directory, but making sure that the _### serial number part is incremented from the highest one in there.
 
 - Allow additional switch for part of filenames for initials of photographer: _xyz  Call this the suffix? (-s --suffix)
+
+- Add the Homepage item to the debian/control that you see now in more recent packages. Use dh_make on something to see what it looks like, something like this:
+   Homepage: <url>
