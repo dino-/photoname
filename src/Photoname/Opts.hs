@@ -79,5 +79,5 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , ""
          , "Note that the default behavior of this software is to create hard links to the new paths and leave the original links as they were. You can use the --move switch to blow away the original location, leaving only the new."
          , ""
-         , "Version 2.1  2008-Oct-10  Dino Morelli <dino@ui3.info>"
+         , "Version 2.2  2009-Jun-07  Dino Morelli <dino@ui3.info>"
          ]
