@@ -12,12 +12,16 @@ the photo shoot date information contained within the file's EXIF tags
 and the usually-camera-assigned serial number, often appearing in the
 filename.
 
-This program is known to work with GHC 6.8.3 (and probably still 6.8.2) on systems where System.Posix (unix) packages are available.
+This program is known to work with GHC 6.10.3 on systems where System.Posix (unix) and exif packages are available.
 
 
 *install*
 
-Build and install in the typical way for Cabalized software:
+With cabal-install, get it directly from Hackage:
+
+   $ cabal install photoname
+
+Or manually after unpacking source:
 
    $ runhaskell Setup.lhs configure
    $ runhaskell Setup.lhs build
