@@ -39,5 +39,5 @@ serialNum =
 getSerial :: (MonadError String m) => String -> m String
 getSerial path =
    case (parse serialNum "" path) of
-      Left _  -> throwError $ "File " ++ path ++ " has no serial"
+      Left _  -> throwError "has no serial"
       Right serial -> return serial
