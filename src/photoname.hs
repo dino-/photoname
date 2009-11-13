@@ -61,7 +61,7 @@ createNewLink newDir oldPath = do
          "** " ++ oldPath ++ " -> " ++ newPath ++ " exists!"
 
       -- Display what will be done
-      unless (optQuiet opts) $ 
+      unless (optQuiet opts) $
          liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
 
       unless (optNoAction opts) $ do
