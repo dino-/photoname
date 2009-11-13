@@ -46,8 +46,7 @@ getDate path = do
       Just d -> return d
       Nothing  -> throwError $ "File " ++ path ++ " has no EXIF date"
 
-
-{- Take a file path to a JPEG file and use EXIF information available to 
+{- Take a file path to a JPEG file and use EXIF information available to
    move the file to a new location below the given basedir.
 -}
 createNewLink :: FilePath -> FilePath -> Ph ()
