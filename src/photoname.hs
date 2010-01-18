@@ -157,6 +157,9 @@ executeCommands :: [String] -> Ph ()
 -- User gave no files at all. Display help
 executeCommands [] = liftIO $ putStrLn usageText
 
+-- User gave just a dir and no files at all. Display help
+executeCommands [_] = liftIO $ putStrLn usageText
+
 -- Normal program operation, process the files with the args.
 executeCommands (dir:filePaths) = do
    opts <- ask
