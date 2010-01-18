@@ -29,6 +29,7 @@ modeDir = ownerModes       `unionFileModes`
           groupReadMode    `unionFileModes`
           groupExecuteMode
 
+
 {- load Exif information from a filename, returning Nothing if libexif
    encounters a NULL instead of raising an IO error.
 
@@ -41,8 +42,12 @@ modeDir = ownerModes       `unionFileModes`
 -}
 safeExif :: FilePath -> IO (Maybe Exif)
 safeExif = try . fromFile >=> either handleBadExif (return . Just)
-    where isBadExif e = ioeGetErrorString e == "mkExif: NULL" && isUserError e
-          handleBadExif e = if isBadExif e then return Nothing else ioError e
+    where
+      isBadExif e =
+         ioeGetErrorString e == "mkExif: NULL" && isUserError e
+      handleBadExif e =
+         if isBadExif e then return Nothing else ioError e
+
 
 {- Get shoot date from the exif information. There are several tags 
    potentially containing dates. Try them in a specific order until we
@@ -56,9 +61,12 @@ getDate = loadExif >=> getOneOf dateTagNames
 
       getOneOf [] _ = throwError "has no EXIF date"
       getOneOf (tagName:tagNames) exif =
-          maybe (getOneOf tagNames exif) return =<< liftIO (getTag exif tagName)
+         maybe (getOneOf tagNames exif) return =<<
+            liftIO (getTag exif tagName)
 
-      dateTagNames = ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
+      dateTagNames =
+         ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
+
 
 {- Take a file path to a JPEG file and use EXIF information available to
    move the file to a new location below the given basedir.
