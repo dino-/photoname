@@ -12,7 +12,7 @@ the photo shoot date information contained within the file's EXIF tags
 and the usually-camera-assigned serial number, often appearing in the
 filename.
 
-This program is known to work with GHC 6.10.3 on systems where System.Posix (unix) and exif packages are available.
+This program is known to build with GHC 6.12.1 and 6.10.4 on systems where System.Posix (unix) and exif packages are available.
 
 
 *install*
