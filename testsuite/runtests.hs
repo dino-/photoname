@@ -10,8 +10,10 @@ import TestHelp
 import TestLink
 
 
-main :: IO Counts
-main = runTestTT tests
+main :: IO ()
+main = do
+   runTestTT tests
+   return ()
 
 
 tests :: Test
