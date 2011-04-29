@@ -5,13 +5,18 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 
-module Photoname.Serial
-   ( getSerial
+module Photoname.SerialFormat
+   ( buildSerialPath
    )
    where
 
-import Control.Monad.Error
+import System.FilePath
 import Text.ParserCombinators.Parsec
+
+import Photoname.Common
+import Photoname.Date
+import Photoname.Exif
+import Photoname.Opts ( Options (..) )
 
 
 {- Combinator similar to manyTill, but evaluates to end instead of p
@@ -40,5 +45,26 @@ serialNum =
 getSerial :: (MonadError String m) => String -> m String
 getSerial path =
    case (parse serialNum "" path) of
-      Left _  -> throwError "has no serial"
+      Left _  -> throwError "Can't determine serial"
       Right serial -> return serial
+
+
+{- Given a path to a file with EXIF data, construct a new path based on the
+   date and some serial number info we can parse out of the filename.
+-}
+buildSerialPath :: FilePath -> Ph FilePath
+buildSerialPath oldPath = do
+   dateString <- getDate oldPath
+   serial <- getSerial oldPath
+   let date = readDate dateString
+
+   suffix <- asks optSuffix
+   let fileName = (formatPrefix date) ++ "_" ++ serial
+         ++ suffix <.> "jpg"
+
+   parentDir <- asks optParentDir
+   noDirs <- asks optNoDirs
+   return $ if (noDirs)
+      then parentDir </> fileName
+      else parentDir </> (formatYear date) </> (formatDay date)
+         </> fileName
