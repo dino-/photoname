@@ -17,9 +17,10 @@ import System.Locale ( defaultTimeLocale )
 import Text.ParserCombinators.Parsec
 
 
--- Parse a date string in the form "yyyy:mm:dd hh:mm:ss" into a 
--- CalendarTime datatype. Strings that fail to parse in this manner are
--- returned as Nothing
+{- Parse a date string in the form "yyyy:mm:dd hh:mm:ss" into a 
+   CalendarTime datatype. Strings that fail to parse in this manner are
+   returned as Nothing
+-}
 readDate :: String -> Maybe LocalTime
 readDate s =
    case (parse dateParser "" s) of
@@ -41,22 +42,25 @@ readDate s =
                   (fromIntegral ((read second) :: Integer)))
 
 
--- Format a Maybe CalendarTime into a "yyyy" string. Dates that are
--- Nothing in value format to "0000"
+{- Format a Maybe CalendarTime into a "yyyy" string. Dates that are
+   Nothing in value format to "0000"
+-}
 formatYear :: Maybe LocalTime -> String
 formatYear Nothing  = "0000"
 formatYear (Just x) = formatTime defaultTimeLocale "%Y" x
 
 
--- Format a Maybe CalendarTime into a "yyyy-mm-dd" string. Dates that are
--- Nothing in value format to "0000-00-00"
+{- Format a Maybe CalendarTime into a "yyyy-mm-dd" string. Dates that are
+   Nothing in value format to "0000-00-00"
+-}
 formatDay :: Maybe LocalTime -> String
 formatDay Nothing  = "0000-00-00"
 formatDay (Just x) = formatTime defaultTimeLocale "%Y-%m-%d" x
 
 
--- Format a Maybe CalendarTime into a "yyyymmdd" string. Dates that are
--- Nothing in value format to "00000000"
+{- Format a Maybe CalendarTime into a "yyyymmdd" string. Dates that are
+   Nothing in value format to "00000000"
+-}
 formatPrefix :: Maybe LocalTime -> String
 formatPrefix Nothing  = "00000000"
 formatPrefix (Just x) = formatTime defaultTimeLocale "%Y%m%d" x
