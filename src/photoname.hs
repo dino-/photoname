@@ -69,7 +69,7 @@ getDate = loadExif >=> getOneOf dateTagNames
 
 
 {- Take a file path to a JPEG file and use EXIF information available to
-   move the file to a new location below the given basedir.
+   link the file at its new location below the given basedir.
 -}
 createNewLink :: FilePath -> FilePath -> Ph ()
 createNewLink newDir oldPath = do
