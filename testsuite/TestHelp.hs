@@ -18,7 +18,7 @@ testHelpAll = TestList
    ]
 
 expectedFirstLine :: String
-expectedFirstLine = "Usage: photoname [OPTIONS] PARENTDIR FILES"
+expectedFirstLine = "Usage: photoname [OPTIONS] FILES"
 
 
 testHelpSwitch :: Test
