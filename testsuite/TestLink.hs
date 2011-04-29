@@ -43,7 +43,8 @@ newLinkPath = topDir </> "2003/2003-09-02/20030902_220.jpg"
 testLink :: Test
 testLink = TestCase $ do
    -- Run the program with known input data
-   (output, procH) <- Util.getBinaryOutput [ topDir, oldPath ]
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ topDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
@@ -73,7 +74,7 @@ testMove = TestCase $ do
 
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--move", topDir, newOldPath ]
+      [ "--move", "--parent-dir=" ++ topDir, newOldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
@@ -103,7 +104,8 @@ testLinkNoActionLong = testLinkNoAction' "no action long" "--no-action"
 testLinkNoAction' :: String -> String -> Test
 testLinkNoAction' label switch = TestCase $ do
    -- Run the program with known input data
-   (output, procH) <- Util.getBinaryOutput [ switch, topDir, oldPath ]
+   (output, procH) <- Util.getBinaryOutput
+      [ switch, "--parent-dir=" ++ topDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
@@ -131,7 +133,8 @@ testLinkQuietLong = testLinkQuiet' "make link quiet long" "--quiet"
 testLinkQuiet' :: String -> String -> Test
 testLinkQuiet' label switch = TestCase $ do
    -- Run the program with known input data
-   (output, procH) <- Util.getBinaryOutput [ switch, topDir, oldPath ]
+   (output, procH) <- Util.getBinaryOutput
+      [ switch, "--parent-dir=" ++ topDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
@@ -154,7 +157,7 @@ testNoExif :: Test
 testNoExif = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ topDir, Util.resourcesPath </> "noExif.jpg" ]
+      [ "--parent-dir=" ++ topDir, Util.resourcesPath </> "noExif.jpg" ]
    waitForProcess procH
 
    -- Test output to stdout
@@ -166,7 +169,8 @@ testNoSerial :: Test
 testNoSerial = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ topDir, Util.resourcesPath </> "noSerial.jpg" ]
+      [ "--parent-dir=" ++ topDir
+      , Util.resourcesPath </> "noSerial.jpg" ]
    waitForProcess procH
 
    -- Test output to stdout
@@ -178,7 +182,7 @@ testDirForFile :: Test
 testDirForFile = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ topDir, Util.resourcesPath ]
+      [ "--parent-dir=" ++ topDir, Util.resourcesPath ]
    waitForProcess procH
 
    -- Test output to stdout

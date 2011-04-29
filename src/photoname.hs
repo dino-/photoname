@@ -71,11 +71,11 @@ getDate = loadExif >=> getOneOf dateTagNames
 {- Take a file path to a JPEG file and use EXIF information available to
    link the file at its new location below the given basedir.
 -}
-createNewLink :: FilePath -> FilePath -> Ph ()
-createNewLink newDir oldPath = do
+createNewLink :: FilePath -> Ph ()
+createNewLink oldPath = do
    opts <- ask
    result <- liftIO $ runErrorT $ do
-      newPath <- buildNewPath newDir oldPath
+      newPath <- buildNewPath (optParentDir opts) oldPath
 
       -- Check for existance of the target file
       exists <- liftIO $ fileExist newPath
@@ -157,11 +157,8 @@ executeCommands :: [String] -> Ph ()
 -- User gave no files at all. Display help
 executeCommands [] = liftIO $ putStrLn usageText
 
--- User gave just a dir and no files at all. Display help
-executeCommands [_] = liftIO $ putStrLn usageText
-
 -- Normal program operation, process the files with the args.
-executeCommands (dir:filePaths) = do
+executeCommands filePaths = do
    opts <- ask
 
    -- Get rid of anything not a regular file from the list of paths
@@ -177,7 +174,7 @@ executeCommands (dir:filePaths) = do
          "Removing original links after new links are in place."
 
    -- Do the link manipulations.
-   mapM_ (createNewLink dir) actualPaths
+   mapM_ createNewLink actualPaths
 
 
 main :: IO ()
