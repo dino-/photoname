@@ -12,6 +12,7 @@ import Text.Printf
 
 import Photoname.Common
 import Photoname.Opts ( Options (..) , parseOpts, usageText )
+import Photoname.DateFormat ( buildDatePath )
 import Photoname.SerialFormat ( buildSerialPath )
 
 
@@ -27,7 +28,9 @@ modeDir = ownerModes       `unionFileModes`
 createNewLink :: FilePath -> Ph ()
 createNewLink oldPath = do
    opts <- ask
-   newPath <- buildSerialPath oldPath
+   newPath <- if (optOldStyle opts)
+      then buildSerialPath oldPath
+      else buildDatePath oldPath
 
    -- Check for existance of the target file
    exists <- liftIO $ fileExist newPath

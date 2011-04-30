@@ -4,10 +4,10 @@
 
 {-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 
-module Photoname.Date (
-   formatYear, formatDay, formatPrefix,
-   readDate
-)
+module Photoname.Date
+   ( formatYear, formatDateHyphens, formatDate, formatDateTime
+   , readDate
+   )
    where
 
 import Data.Time.Calendar
@@ -53,14 +53,22 @@ formatYear (Just x) = formatTime defaultTimeLocale "%Y" x
 {- Format a Maybe CalendarTime into a "yyyy-mm-dd" string. Dates that are
    Nothing in value format to "0000-00-00"
 -}
-formatDay :: Maybe LocalTime -> String
-formatDay Nothing  = "0000-00-00"
-formatDay (Just x) = formatTime defaultTimeLocale "%Y-%m-%d" x
+formatDateHyphens :: Maybe LocalTime -> String
+formatDateHyphens Nothing  = "0000-00-00"
+formatDateHyphens (Just x) = formatTime defaultTimeLocale "%Y-%m-%d" x
 
 
 {- Format a Maybe CalendarTime into a "yyyymmdd" string. Dates that are
    Nothing in value format to "00000000"
 -}
-formatPrefix :: Maybe LocalTime -> String
-formatPrefix Nothing  = "00000000"
-formatPrefix (Just x) = formatTime defaultTimeLocale "%Y%m%d" x
+formatDate :: Maybe LocalTime -> String
+formatDate Nothing  = "00000000"
+formatDate (Just x) = formatTime defaultTimeLocale "%Y%m%d" x
+
+
+{- Format a Maybe CalendarTime into a "yyyymmdd-HHMMSS" string. Dates 
+   that are Nothing in value format to "00000000-000000"
+-}
+formatDateTime :: Maybe LocalTime -> String
+formatDateTime Nothing  = "00000000-000000"
+formatDateTime (Just x) = formatTime defaultTimeLocale "%Y%m%d-%H%M%S" x

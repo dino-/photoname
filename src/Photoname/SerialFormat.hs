@@ -59,12 +59,12 @@ buildSerialPath oldPath = do
    let date = readDate dateString
 
    suffix <- asks optSuffix
-   let fileName = (formatPrefix date) ++ "_" ++ serial
+   let fileName = (formatDate date) ++ "_" ++ serial
          ++ suffix <.> "jpg"
 
    parentDir <- asks optParentDir
    noDirs <- asks optNoDirs
    return $ if (noDirs)
       then parentDir </> fileName
-      else parentDir </> (formatYear date) </> (formatDay date)
-         </> fileName
+      else parentDir </> (formatYear date) </>
+         (formatDateHyphens date) </> fileName
