@@ -30,6 +30,7 @@ testLinkAll = TestList
    , TestLabel "testLinkNoActionLong" testLinkNoActionLong
    , TestLabel "testLinkQuiet" testLinkQuiet
    , TestLabel "testLinkQuietLong" testLinkQuietLong
+   , TestLabel "testLinkSuffix" testLinkSuffix
    , TestLabel "testNoExif" testNoExif
    , TestLabel "testNoSerial" testNoSerial
    , TestLabel "testDirForFile" testDirForFile
@@ -175,6 +176,34 @@ testLinkQuiet' label switch = TestCase $ do
 
    -- Test output to stdout
    Util.assertFalse (label ++ ": no output")
+      (output =~ newLinkPathSerial :: Bool)
+
+
+testLinkSuffix :: Test
+testLinkSuffix = TestCase $ do
+   let suffix = "_dwm"
+
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ topDir, "--suffix=" ++ suffix, oldPath ]
+   waitForProcess procH
+
+   let newLinkPath = topDir </>
+         ("2003/2003-09-02/20030902-114303" ++ suffix) <.> "jpg"
+
+   -- Check that the correct output path exists
+   existsNew <- fileExist newLinkPath
+   assertBool "make link: existance of new link" existsNew
+
+   -- Check that old path still exists
+   existsOld <- fileExist oldPath
+   assertBool "make link: existance of old link" existsOld
+
+   -- Remove files and dirs that were created
+   removeDirectoryRecursive topDir
+
+   -- Test output to stdout
+   assertBool "make link: correct output"
       (output =~ newLinkPath :: Bool)
 
 
