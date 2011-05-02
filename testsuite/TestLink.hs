@@ -8,7 +8,7 @@ module TestLink (
    where
 
 import System.Directory ( copyFile, removeDirectoryRecursive )
-import System.FilePath.Posix ( (</>) )
+import System.FilePath.Posix ( (</>), (<.>) )
 import System.Posix.Files ( fileExist )
 import System.Process ( waitForProcess )
 import Test.HUnit ( Test (..), assertBool, assertString )
@@ -23,7 +23,8 @@ import qualified Util
 
 testLinkAll :: Test
 testLinkAll = TestList
-   [ TestLabel "testLink" testLink
+   [ TestLabel "testLinkDate" testLinkDate
+   , TestLabel "testLinkSerial" testLinkSerial
    , TestLabel "testMove" testMove
    , TestLabel "testLinkNoAction" testLinkNoAction
    , TestLabel "testLinkNoActionLong" testLinkNoActionLong
@@ -37,18 +38,19 @@ testLinkAll = TestList
 
 topDir = Util.resourcesPath </> "foo"
 oldPath = Util.resourcesPath </> "img_1220.jpg"
-newLinkPath = topDir </> "2003/2003-09-02/20030902_220.jpg"
+newLinkPathDate = topDir </> "2003/2003-09-02/20030902-114303.jpg"
+newLinkPathSerial = topDir </> "2003/2003-09-02/20030902_220.jpg"
 
 
-testLink :: Test
-testLink = TestCase $ do
+testLinkDate :: Test
+testLinkDate = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, "--old-style", oldPath ]
+      [ "--parent-dir=" ++ topDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
-   existsNew <- fileExist newLinkPath
+   existsNew <- fileExist newLinkPathDate
    assertBool "make link: existance of new link" existsNew
 
    -- Check that old path still exists
@@ -60,7 +62,30 @@ testLink = TestCase $ do
 
    -- Test output to stdout
    assertBool "make link: correct output"
-      (output =~ newLinkPath :: Bool)
+      (output =~ newLinkPathDate :: Bool)
+
+
+testLinkSerial :: Test
+testLinkSerial = TestCase $ do
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ topDir, "--old-style", oldPath ]
+   waitForProcess procH
+
+   -- Check that the correct output path exists
+   existsNew <- fileExist newLinkPathSerial
+   assertBool "make link: existance of new link" existsNew
+
+   -- Check that old path still exists
+   existsOld <- fileExist oldPath
+   assertBool "make link: existance of old link" existsOld
+
+   -- Remove files and dirs that were created
+   removeDirectoryRecursive topDir
+
+   -- Test output to stdout
+   assertBool "make link: correct output"
+      (output =~ newLinkPathSerial :: Bool)
 
 
 testMove :: Test
@@ -118,7 +143,7 @@ testLinkNoAction' label switch = TestCase $ do
 
    -- Test output to stdout
    assertBool (label ++ ": correct output")
-      (output =~ newLinkPath :: Bool)
+      (output =~ newLinkPathSerial :: Bool)
 
 
 testLinkQuiet :: Test
@@ -138,7 +163,7 @@ testLinkQuiet' label switch = TestCase $ do
    waitForProcess procH
 
    -- Check that the correct output path exists
-   existsNew <- fileExist newLinkPath
+   existsNew <- fileExist newLinkPathSerial
    assertBool (label ++ ": existance of new link") existsNew
 
    -- Check that old path still exists
