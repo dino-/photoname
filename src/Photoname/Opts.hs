@@ -181,5 +181,5 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , "photoname invoked with --suffix=_dwm :"
          , "   20020502-132307_dwm.jpg"
          , ""
-         , "Version 2.1.1.0  Dino Morelli <dino@ui3.info>"
+         , "Version 3.0.0  Dino Morelli <dino@ui3.info>"
          ]
