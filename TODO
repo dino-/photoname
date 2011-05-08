@@ -1,20 +1,7 @@
 - Update licensing to 2011
 
-- Add support for different camera filename formats, check with the Olympus.
-
-- I'm wondering if it would be possible to have a post-command switch that could specify something to be done after other processing is done. This came up when i was thinking about rolling jhead -autorot rotation behavior into this program. But I'm reluctant to make this program have direct knowledge of such tools and procedures.
-   An example:
-   --post-cmd='jhead -autorot %f'
-
-   What syntax to use for variables in such strings?
-
 - Allow user to specify permissions for newly-created dirs and files. Bonus points for parsing the octal codes everyone knows and loves.
 
 - Add a --force switch to disregard existing links.
 
 - Deal gracefully with unknown dates. This means not just putting pictures into the 0000/0000-00-00 directory, but making sure that the _### serial number part is incremented from the highest one in there.
-
-- Allow additional switch for part of filenames for initials of photographer: _xyz  Call this the suffix? (-s --suffix)
-
-- Add the Homepage item to the debian/control that you see now in more recent packages. Use dh_make on something to see what it looks like, something like this:
-   Homepage: <url>

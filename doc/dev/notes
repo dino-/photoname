@@ -1,14 +1,4 @@
 -----
-Do something with this, better error checking?
-
-- Parse arguments
-- Look at args, cases:
-   - --help
-   - no files
-   - no parent path
-   - normal processing (ReaderT)
-
------
 - To change the app version:
    - Edit photoname.cabal
    - Edit src/Photoname/Opts.hs, usageText near the bottom of footer
@@ -17,28 +7,18 @@ Do something with this, better error checking?
    After such a script has been made, may want to put developer notes on using it in doc/dev/<somefile>
 
 ----------
-File serial number formats:
-
-Panasonic:  P###0###.jpg
-   First part is dir, second is serial. We can use the second part.
-Canon:      img_####.jpg
-   Can use the last 3 digits of this
-Olympus:
-
-
-Photo naming scheme (this info needs to go into usage help at some point)
+File naming format:
 
 yyyymmdd_[oth_]nnn[-e[n]].jpg
+yyyymmdd-hhmmss[_oth][_ss].jpg
 
 date: year month day
-other author: 2 or 3 character initials
-photo serial: last 3 digits of camera-supplied number, if possible
-e or s: edited or sized, optional number for more than one
-   -sp -ep : sized/edited for printing
-   -sd -ed : sized/edited for desktop
-   -sw -ew : sized/edited for web
-
-Photo serial: Note that 3-digits is standard for Panasonic cameras. 4 digits is standard for Canon cameras. But we'll use 3 digits for Canon too, seems like unique within each day.
+time: hour minute second
+oth: could be photographer: 2 or 3 character initials
+ss: edited or sized, optional number for more than one
+   _sp _ep : sized/edited for printing
+   _sd1920x1080 _ed : sized/edited for desktop
+   _sw _ew : sized/edited for web
 
 
 These files are arranged into a dir structure
