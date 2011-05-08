@@ -1,5 +1,3 @@
-- Update licensing to 2011
-
 - Allow user to specify permissions for newly-created dirs and files. Bonus points for parsing the octal codes everyone knows and loves.
 
 - Add a --force switch to disregard existing links.
