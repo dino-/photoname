@@ -149,6 +149,8 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , "A photo shot on 2002-May-02 01:23:07 PM:"
          , "   img_1790.jpg -> <PARENTDIR>/2002/2002-05-02/20020502-132307.jpg"
          , ""
+         , "The EXIF date/time stamp used for naming is the first of these fields to be found: DateTimeDigitized, DateTimeOriginal, DateTime"
+         , ""
          , "The <PARENTDIR> is the one given by the --parent-dir switch and represents the top-level of where you're storing photos."
          , ""
          , "The --no-dirs switch will suppress the directory-hierarchy-creating part of this, instead placing the new links directly in <PARENTDIR>. So you get files like:"
