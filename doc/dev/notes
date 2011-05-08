@@ -10,11 +10,8 @@ Do something with this, better error checking?
 
 -----
 - To change the app version:
-   - Edit photoname.cabal:  version: xx.yy
+   - Edit photoname.cabal
    - Edit src/Photoname/Opts.hs, usageText near the bottom of footer
-   - darcs rec these changes as "Changed version to xx.yy"
-   - darcs tag "xx.yya"
-     Use a, b, c as attempts for version xx.yy
 
    I'd like to make a script in util/ to automate this.
    After such a script has been made, may want to put developer notes on using it in doc/dev/<somefile>
