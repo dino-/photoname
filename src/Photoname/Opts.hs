@@ -171,7 +171,7 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , ""
          , "The --old-style behavior in photoname remains for backwards compatibility. Many cameras today (and particularly camera phones) don't generate a name we can use in this way, and so something needed to change in this software."
          , ""
-         , "Another nagging problem is the old-style naming is non-deterministic. By which I mean: once you photoname --old-style once, you can't go perform that naming on the file again with the same result. The original serial is lost."
+         , "Another nagging problem is the old-style naming is non-deterministic. Using photoname --old-style on a file may not always give you the same name, say if the serial info in the name is ever lost. Naming based on the EXIF data alone is more reliable."
          , ""
          , ""
          , "SUFFIX"
