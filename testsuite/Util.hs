@@ -28,8 +28,8 @@ resourcesPath = "testsuite/resources"
    XXX Move this somewhere logical like Photoname.Util
 -}
 getProcessOutput :: FilePath -> [String] -> IO (String, ProcessHandle)
-getProcessOutput path args = do
-   (_, outH, _, procH) <- runInteractiveProcess path args Nothing Nothing
+getProcessOutput path' args = do
+   (_, outH, _, procH) <- runInteractiveProcess path' args Nothing Nothing
    output <- hGetContents outH
    return (output, procH)
 

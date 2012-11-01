@@ -8,7 +8,7 @@ module TestHelp (
    where
 
 import qualified Util
-import Test.HUnit ( Test (..), assertBool, assertEqual )
+import Test.HUnit ( Test (..), assertEqual )
 
 
 testHelpAll :: Test

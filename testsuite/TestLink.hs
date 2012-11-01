@@ -2,6 +2,8 @@
 -- License: BSD3 (see LICENSE)
 -- Author: Dino Morelli <dino@ui3.info>
 
+{-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
+
 module TestLink (
    testLinkAll
 )
@@ -11,7 +13,7 @@ import System.Directory ( copyFile, removeDirectoryRecursive )
 import System.FilePath.Posix ( (</>), (<.>) )
 import System.Posix.Files ( fileExist )
 import System.Process ( waitForProcess )
-import Test.HUnit ( Test (..), assertBool, assertString )
+import Test.HUnit ( Test (..), assertBool )
 import Text.Regex.Posix ( (=~) )
 import qualified Util
 
@@ -36,6 +38,8 @@ testLinkAll = TestList
    , TestLabel "testDirForFile" testDirForFile
    ]
 
+
+topDir, oldPath, newLinkPathDate, newLinkPathSerial :: FilePath
 
 topDir = Util.resourcesPath </> "foo"
 oldPath = Util.resourcesPath </> "img_1220.jpg"
