@@ -8,6 +8,8 @@ module Photoname.Opts
    where
 
 import Control.Applicative
+import Data.Version ( showVersion )
+import Paths_photoname ( version )
 import System.Console.GetOpt
 import System.Directory
 
@@ -182,5 +184,5 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , "photoname invoked with --suffix=_dwm :"
          , "   20020502-132307_dwm.jpg"
          , ""
-         , "Version 3.0.1  Dino Morelli <dino@ui3.info>"
+         , "Version " ++ (showVersion version) ++ "  Dino Morelli <dino@ui3.info>"
          ]
