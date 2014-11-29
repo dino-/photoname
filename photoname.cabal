@@ -18,6 +18,10 @@ tested-with:         GHC >= 7.6.1
 
 extra-source-files:  testsuite/resources/*.jpg
 
+source-repository    head
+   type:             darcs
+   location:         http://hub.darcs.net/dino/photoname
+
 executable           photoname
    main-is:          photoname.hs
    build-depends:    base >= 3 && < 5, directory, exif, filepath, mtl, 
