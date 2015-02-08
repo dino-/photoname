@@ -23,10 +23,10 @@ photo shoot date information contained within the file's EXIF tags.
 
 And once you have it, building the usual way:
 
->     $ cabal configure --enable-tests
->     $ cabal build
->     $ cabal test
->     $ cabal install
+    $ cabal configure --enable-tests
+    $ cabal build
+    $ cabal test
+    $ cabal install
 
 
 ## Installing
