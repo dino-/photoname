@@ -8,7 +8,7 @@ copyright:           2007-2014 Dino Morelli
 author:              Dino Morelli 
 maintainer:          Dino Morelli <dino@ui3.info>
 stability:           stable
-homepage:            http://ui3.info/d/proj/photoname.html
+homepage:            http://hub.darcs.net/dino/photoname
 synopsis:            Rename photo image files based on EXIF shoot date
 description:         
    Command-line utility for renaming/moving photo image files based on 
