@@ -1,3 +1,13 @@
+3.1 (2015-06-28)
+
+   * Removed ambiguous import of `System.Locale.defaultTimeLocale`
+   * Updated to use `Data.Version` to fish the version out of cabal info
+   * Replaced deprecated ErrorT with ExceptT
+   * Added pragma for Control.Applicative import
+   * Updated README and cabal file with current info
+   * Moved copyright year up to 2015
+
+
 3.0.1 (2012-11-01)
 
    * Updated test suite to build cleanly (without warnings) and
