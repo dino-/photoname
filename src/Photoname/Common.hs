@@ -12,14 +12,14 @@ module Photoname.Common
    )
    where
 
-import Control.Monad.Error
+import Control.Monad.Except
 import Control.Monad.Reader
 
 import Photoname.Opts ( Options (..) )
 
 
-type Ph a = ReaderT Options (ErrorT String IO) a
+type Ph a = ReaderT Options (ExceptT String IO) a
 
 
 runRename :: Options -> Ph a -> IO (Either String a)
-runRename env action = runErrorT $ runReaderT action env
+runRename env action = runExceptT $ runReaderT action env

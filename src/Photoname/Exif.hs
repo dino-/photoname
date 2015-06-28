@@ -7,7 +7,7 @@ module Photoname.Exif
    where
 
 import Control.Exception
-import Control.Monad.Error
+import Control.Monad.Except
 import Graphics.Exif ( fromFile, getTag, Exif )
 import System.IO.Error
 
