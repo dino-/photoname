@@ -24,7 +24,7 @@ source-repository    head
 
 executable           photoname
    main-is:          photoname.hs
-   build-depends:      base >= 3 && < 5
+   build-depends:      base
                      , directory
                      , exif
                      , filepath
