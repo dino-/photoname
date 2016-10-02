@@ -2,19 +2,20 @@
 -- Author: Dino Morelli <dino@ui3.info>
 
 module Util (
-   binPath, resourcesPath,
+   resourcesPath,
    getProcessOutput, getBinaryOutput,
    assertFalse
 )
    where
 
-import System.IO
-import System.Process
-import Test.HUnit
+import Data.List ( intercalate )
+import System.IO ( hGetContents )
+import System.Process ( ProcessHandle, runInteractiveCommand )
+import Test.HUnit ( Assertion, assertBool )
 
 
-binPath :: FilePath
-binPath = "dist/build/photoname/photoname"
+command :: String
+command = "stack exec photoname"
 
 
 resourcesPath :: FilePath
@@ -24,17 +25,17 @@ resourcesPath = "testsuite/resources"
 {- Quick and dirty function to run a process and grab its output.
    This evil thing doesn't watch STDERR at all or otherwise do anything
    even remotely safe.
-   XXX Move this somewhere logical like Photoname.Util
 -}
 getProcessOutput :: FilePath -> [String] -> IO (String, ProcessHandle)
 getProcessOutput path' args = do
-   (_, outH, _, procH) <- runInteractiveProcess path' args Nothing Nothing
+   (_, outH, _, procH) <- runInteractiveCommand
+      $ path' ++ " -- " ++ (intercalate " " args)
    output <- hGetContents outH
    return (output, procH)
 
 
 getBinaryOutput :: [String] -> IO (String, ProcessHandle)
-getBinaryOutput = getProcessOutput binPath
+getBinaryOutput = getProcessOutput command
 
 
 assertFalse :: String -> Bool -> Assertion
