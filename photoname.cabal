@@ -24,7 +24,7 @@ source-repository    head
 
 executable           photoname
    main-is:          photoname.hs
-   build-depends:      base
+   build-depends:      base >=4.5 && < 5.0
                      , directory
                      , exif
                      , filepath
@@ -45,7 +45,7 @@ executable           photoname
 test-suite           photoname-tests
    type:             exitcode-stdio-1.0
    main-is:          runtests.hs
-   build-depends:      base
+   build-depends:      base >=4.5 && < 5.0
                      , directory
                      , exif
                      , filepath
