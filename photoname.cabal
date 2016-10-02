@@ -24,8 +24,15 @@ source-repository    head
 
 executable           photoname
    main-is:          photoname.hs
-   build-depends:    base >= 3 && < 5, directory, exif, filepath, mtl, 
-                     old-locale, parsec, time, unix
+   build-depends:      base >= 3 && < 5
+                     , directory
+                     , exif
+                     , filepath
+                     , mtl
+                     , old-locale
+                     , parsec
+                     , time
+                     , unix
    other-modules:    Photoname.Common
                      Photoname.DateFormat
                      Photoname.Date
@@ -38,9 +45,18 @@ executable           photoname
 test-suite           photoname-tests
    type:             exitcode-stdio-1.0
    main-is:          runtests.hs
-   build-depends:    base, directory, exif, filepath, HUnit, mtl,
-                     old-locale, parsec, process, regex-posix, time,
-                     unix
+   build-depends:      base
+                     , directory
+                     , exif
+                     , filepath
+                     , HUnit
+                     , mtl
+                     , old-locale
+                     , parsec
+                     , process
+                     , regex-posix
+                     , time
+                     , unix
    other-modules:    TestHelp
                      TestLink
                      Util
