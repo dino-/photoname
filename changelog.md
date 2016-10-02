@@ -1,3 +1,11 @@
+3.2 (2016-10-02)
+
+   * Switched the build from cabal to stack
+   * Added hsinstall installation script
+   * Update copyright year
+   * Various updates to the cabal file
+
+
 3.1 (2015-06-28)
 
    * Removed ambiguous import of `System.Locale.defaultTimeLocale`
