@@ -16,7 +16,14 @@ description:
 category:            Application, Console
 tested-with:         GHC >= 8.0.1
 
-extra-source-files:  testsuite/resources/*.jpg
+extra-source-files:  changelog.md
+                     doc/dev/notes
+                     doc/hcar-photoname.tex
+                     README.md
+                     testsuite/resources/*.jpg
+                     TODO.md
+                     util/install.hs
+                     util/resources/test.conf
 
 source-repository    head
    type:             darcs
