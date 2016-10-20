@@ -3,14 +3,16 @@
 
 {-# LANGUAGE FlexibleContexts #-}
 
-import Control.Monad
+import Control.Monad ( filterM, forM_, unless, when )
 import System.Directory ( createDirectoryIfMissing )
 import System.Environment ( getArgs )
-import System.FilePath
-import System.Posix
-import Text.Printf
+import System.FilePath ( takeDirectory )
+import System.Posix ( FileMode, createLink, fileExist, getFileStatus,
+   groupExecuteMode, groupReadMode, isRegularFile, ownerModes,
+   removeLink, unionFileModes )
+import Text.Printf ( printf )
 
-import Photoname.Common
+import Photoname.Common ( Ph, ask, liftIO, runRename, throwError )
 import Photoname.Opts ( Options (..) , parseOpts, usageText )
 import Photoname.DateFormat ( buildDatePath )
 import Photoname.SerialFormat ( buildSerialPath )
