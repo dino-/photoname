@@ -4,6 +4,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 import Control.Monad
+import System.Directory ( createDirectoryIfMissing )
 import System.Environment ( getArgs )
 import System.FilePath
 import System.Posix
@@ -41,7 +42,7 @@ createNewLink oldPath = do
 
    unless (optNoAction opts) $ do
       -- Make the target dir
-      liftIO $ makeDirectory $ takeDirectory newPath
+      liftIO $ createDirectoryIfMissing True $ takeDirectory newPath
 
       -- Make the new hard link
       liftIO $ createLink oldPath newPath
@@ -51,36 +52,6 @@ createNewLink oldPath = do
          liftIO $ removeLink oldPath
 
       return ()
-
-
-{- Given a list of lists, make a new list where each sublist element 
-   consists of the accumulation of all parts that came before it. 
-   Like this:
-      before: [[1], [2], [3], [4], [5]]
-      after : [[1], [1,2], [1,2,3], [1,2,3,4], [1,2,3,4,5]]
-
-   Many thanks to Betty Diegel for help with this algorithm.
-
-   FIXME Try to rewrite this with a scan or something
--}
-listAcc :: [[a]] -> [[a]]
-listAcc []     = [[]]
-listAcc (x:xs) = listAcc' x xs
-   where
-      listAcc' l (y:ys) = [l] ++ listAcc' (l ++ y) ys
-      listAcc' l []     = [l]
-
-
-{- Ensuring that a directory with subs exists turned out to be a painful 
-   process involving making each parent dir piece by piece but not trying
-   to make anything that's already there.
--}
-makeDirectory :: FilePath -> IO ()
-makeDirectory d =
-   let makeOneDir dir = do
-         exists <- fileExist dir
-         unless exists $ createDirectory dir modeDir
-   in  mapM_ makeOneDir $ listAcc $ splitPath d
 
 
 -- Figure out and execute what the user wants based on the supplied args.
