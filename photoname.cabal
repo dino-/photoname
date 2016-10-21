@@ -2,7 +2,7 @@ name:                photoname
 cabal-version:       >= 1.8
 version:             3.3
 build-type:          Simple
-license:             BSD3
+license:             ISC
 license-file:        LICENSE
 copyright:           2007-2016 Dino Morelli
 author:              Dino Morelli 
