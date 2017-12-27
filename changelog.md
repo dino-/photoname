@@ -1,3 +1,8 @@
+3.3 (2017-12-27)
+
+   * A variety of build-related fixes were made
+
+
 3.2 (2016-10-02)
 
    * Switched the build from cabal to stack
