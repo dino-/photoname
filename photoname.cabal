@@ -19,12 +19,12 @@ tested-with:         GHC >= 8.0.1
 extra-source-files:  changelog.md
                      doc/dev/notes
                      doc/hcar-photoname.tex
+                     .gitignore
                      README.md
                      stack.yaml
                      testsuite/resources/*.jpg
                      TODO.md
                      util/install.hs
-                     util/prefs/boring
                      util/resources/test.conf
 
 source-repository    head
