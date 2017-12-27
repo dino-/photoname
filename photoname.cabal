@@ -42,7 +42,8 @@ executable           photoname
                      , parsec
                      , time
                      , unix
-   other-modules:    Photoname.Common
+   other-modules:    Paths_photoname
+                     Photoname.Common
                      Photoname.DateFormat
                      Photoname.Date
                      Photoname.Exif

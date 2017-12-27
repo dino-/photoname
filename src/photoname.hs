@@ -7,21 +7,14 @@ import Control.Monad ( filterM, forM_, unless, when )
 import System.Directory ( createDirectoryIfMissing )
 import System.Environment ( getArgs )
 import System.FilePath ( takeDirectory )
-import System.Posix ( FileMode, createLink, fileExist, getFileStatus,
-   groupExecuteMode, groupReadMode, isRegularFile, ownerModes,
-   removeLink, unionFileModes )
+import System.Posix ( createLink, fileExist, getFileStatus,
+   isRegularFile, removeLink )
 import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, ask, liftIO, runRename, throwError )
 import Photoname.Opts ( Options (..) , parseOpts, usageText )
 import Photoname.DateFormat ( buildDatePath )
 import Photoname.SerialFormat ( buildSerialPath )
-
-
-modeDir :: FileMode
-modeDir = ownerModes       `unionFileModes`
-          groupReadMode    `unionFileModes`
-          groupExecuteMode
 
 
 {- Take a file path to a JPEG file and use EXIF information available to
