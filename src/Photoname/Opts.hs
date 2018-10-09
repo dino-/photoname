@@ -58,31 +58,31 @@ options =
       (ReqArg (\c opts -> opts { optConfig = c }) "FILE")
       ("Defaults to " ++ defaultConfig ++ ". See CONFIG")
    , Option ['C'] ["no-config"]
-      (NoArg (\opts -> opts { optNoConfig = True } )) 
+      (NoArg (\opts -> opts { optNoConfig = True } ))
       "Do not load config file"
    , Option ['D'] ["no-dirs"]
-      (NoArg (\opts -> opts { optNoDirs = True } )) 
+      (NoArg (\opts -> opts { optNoDirs = True } ))
       "No subdirectory hierarchy. Just do DIR/NEWFILE"
-   , Option ['h'] ["help"] 
+   , Option ['h'] ["help"]
       (NoArg (\opts -> opts { optHelp = True } ))
       "This help text"
-   , Option []    ["move"] 
+   , Option []    ["move"]
       (NoArg (\opts -> opts { optMove = True } ))
       "Move the files, don't just hard-link to the new locations"
    , Option ['n'] ["no-action"]
-      (NoArg (\opts -> opts { optNoAction = True } )) 
+      (NoArg (\opts -> opts { optNoAction = True } ))
       "Display what would be done, but do nothing"
    , Option ['o'] ["old-style"]
-      (NoArg (\opts -> opts { optOldStyle = True } )) 
+      (NoArg (\opts -> opts { optOldStyle = True } ))
       "Use older name format with serial. See FILENAME FORMAT"
    , Option ['p'] ["parent-dir"]
-      (ReqArg (\d opts -> opts { optParentDir = d } ) "DIR") 
+      (ReqArg (\d opts -> opts { optParentDir = d } ) "DIR")
       "Top-level directory where new links are created. Default: ."
-   , Option ['q'] ["quiet"] 
-      (NoArg (\opts -> opts { optQuiet = True } )) 
+   , Option ['q'] ["quiet"]
+      (NoArg (\opts -> opts { optQuiet = True } ))
       "Suppress normal output of what's being done"
    , Option ['s'] ["suffix"]
-      (ReqArg (\s opts -> opts { optSuffix = s } ) "SUF") 
+      (ReqArg (\s opts -> opts { optSuffix = s } ) "SUF")
       "Add optional suffix to each name. See SUFFIX"
    , Option []    ["version"]
       (NoArg (\opts -> opts { optVersion = True } ))
@@ -90,7 +90,7 @@ options =
    ]
 
 
-{- Try to load a config file, converting its lines into a [String] 
+{- Try to load a config file, converting its lines into a [String]
    of long options to be parsed
 -}
 loadConfig :: FilePath -> IO [String]
@@ -111,7 +111,7 @@ parseOpts' args =
       (_,_,errs) -> ioError $ userError (concat errs ++ usageText)
 
 
-{- The set of steps to parse args from both the command-line and a 
+{- The set of steps to parse args from both the command-line and a
    config file
 -}
 parseOpts :: [String] -> IO (Options, [String])
