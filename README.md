@@ -16,7 +16,7 @@ photo shoot date information contained within the file's EXIF tags.
 ## Getting source
 
 - Download the cabalized source package [from Hackage](http://hackage.haskell.org/package/photoname)
-- epub-tools is available for Arch Linux [from the AUR](https://aur.archlinux.org/packages/photoname/)
+- photoname is available for Linux in AppImage form [from github](https://github.com/dino-/photoname/releases)
 - Get the source with git: `$ git clone https://github.com/dino-/photoname.git`
 - If you're just looking, [browse the source](https://github.com/dino-/photoname)
 
