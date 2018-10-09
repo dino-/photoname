@@ -26,7 +26,7 @@ defaultOptions = Options
    { optClean = False
    , optDelete = False
    , optHelp = False
-   , optPrefix = "/opt"
+   , optPrefix = "AppDir/usr"
    , optRsrcCpVerbose = True
    , optInstType = FHS
    , optVersion = True
@@ -172,8 +172,7 @@ options =
       "This help information."
    , Option ['p'] ["prefix"]
       (ReqArg (\s opts -> opts { optPrefix = s } ) "PREFIX" )
-      (printf "Install prefix directory. Defaults to %s so what you'll end up with is %s/PROJECT-VERSION"
-         (optPrefix defaultOptions) (optPrefix defaultOptions))
+      (printf "Install prefix directory. Default: %s" (optPrefix defaultOptions))
    , Option ['r'] ["resource-copy-verbose"]
       (NoArg (\opts -> opts { optRsrcCpVerbose = True } ))
       ("Be chatty when copying the resources directory."

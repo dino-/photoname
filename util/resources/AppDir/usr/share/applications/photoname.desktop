@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=photoname
+Exec=photoname
+Icon=unix-terminal
+Type=Application
+Categories=Graphics;Utility;Photography;FileTools;ConsoleOnly;
+Terminal=true
