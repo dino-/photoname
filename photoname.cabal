@@ -1,6 +1,6 @@
 name:                photoname
 cabal-version:       >= 1.8
-version:             3.3
+version:             3.4
 build-type:          Simple
 license:             ISC
 license-file:        LICENSE
