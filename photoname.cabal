@@ -14,7 +14,7 @@ description:
    Command-line utility for renaming/moving photo image files based on 
    EXIF tags.
 category:            Application, Console
-tested-with:         GHC >= 8.0.1
+tested-with:         GHC >= 8.2.2
 
 extra-source-files:  changelog.md
                      doc/dev/notes
