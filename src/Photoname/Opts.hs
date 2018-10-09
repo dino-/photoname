@@ -8,6 +8,7 @@
 module Photoname.Opts
    ( Options (..)
    , parseOpts, usageText
+   , formattedVersion
    )
    where
 
@@ -29,6 +30,7 @@ data Options = Options
    , optParentDir :: String
    , optQuiet :: Bool
    , optSuffix :: String
+   , optVersion :: Bool
    }
 
 defaultConfig :: String
@@ -46,6 +48,7 @@ defaultOptions = Options
    , optParentDir = "."
    , optQuiet = False
    , optSuffix = ""
+   , optVersion = False
    }
 
 
@@ -81,6 +84,9 @@ options =
    , Option ['s'] ["suffix"]
       (ReqArg (\s opts -> opts { optSuffix = s } ) "SUF") 
       "Add optional suffix to each name. See SUFFIX"
+   , Option []    ["version"]
+      (NoArg (\opts -> opts { optVersion = True } ))
+      "Show version information"
    ]
 
 
@@ -190,3 +196,7 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , ""
          , "Version " ++ (showVersion version) ++ "  Dino Morelli <dino@ui3.info>"
          ]
+
+
+formattedVersion :: IO String
+formattedVersion = return $ "photoname " ++ (showVersion version)

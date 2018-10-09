@@ -12,7 +12,7 @@ import System.Posix ( createLink, fileExist, getFileStatus,
 import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, ask, liftIO, runRename, throwError )
-import Photoname.Opts ( Options (..) , parseOpts, usageText )
+import Photoname.Opts ( Options (..) , formattedVersion, parseOpts, usageText )
 import Photoname.DateFormat ( buildDatePath )
 import Photoname.SerialFormat ( buildSerialPath )
 
@@ -80,7 +80,10 @@ main = do
    -- Parse the arguments
    (opts, paths) <- getArgs >>= parseOpts
 
-   -- Do the photo naming procedure
-   executeCommands opts paths
+   if (optVersion opts)
+      then formattedVersion >>= putStrLn
+      else
+         -- Do the photo naming procedure
+         executeCommands opts paths
 
    -- Perhaps we should get an ExitCode back from all this above?
