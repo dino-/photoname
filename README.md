@@ -13,18 +13,24 @@ files. The new folder location and naming are determined by the
 photo shoot date information contained within the file's EXIF tags.
 
 
+## Getting binaries
+
+photoname is available for Linux in AppImage form [from github](https://github.com/dino-/photoname/releases)
+
+
 ## Getting source
 
-- Download the cabalized source package [from Hackage](http://hackage.haskell.org/package/photoname)
-- photoname is available for Linux in AppImage form [from github](https://github.com/dino-/photoname/releases)
 - Get the source with git: `$ git clone https://github.com/dino-/photoname.git`
-- If you're just looking, [browse the source](https://github.com/dino-/photoname)
+- Download the cabalized source package [from Hackage](http://hackage.haskell.org/package/photoname)
 
 And once you have it, building the usual way:
 
     $ stack build
+    $ stack exec photoname
     $ stack test
     $ stack clean
+
+If you're just looking, [browse the source](https://github.com/dino-/photoname)
 
 
 ## Building for release
@@ -33,8 +39,8 @@ The preferred method of building photoname for release is as an
 [AppImage](https://appimage.org/)
 
 You will need the AppDir tool [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy)
-and the AppImage plugin [linuxdeploy-plugin-appimage](https://github.com/linuxdeploy/linuxdeploy-plugin-appimage)
-to be on your PATH.
+and the AppImage plugin [linuxdeploy-plugin-appimage](https://github.com/linuxdeploy/linuxdeploy-plugin-appimage).
+These need to be set executable and can be on your PATH if you wish.
 
 First, prep the AppDir with one provided for this project like this:
 
@@ -51,8 +57,8 @@ Finally, run `linuxdeploy` to complete the process of creating the AppImage
 
 You should now have a binary named `photoname-x86_64.AppImage`.
 
-If desired, this could be renamed to something like `photoname-3.4.AppImage` if
-it's desireable to carry the version number.
+This binary could be renamed to something like `photoname-3.4.AppImage` if you
+wish the version number to be explicit in the filename.
 
 These steps will likely be automated in the future.
 
