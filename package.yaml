@@ -35,36 +35,32 @@ ghc-options:
 
 dependencies:
 - base >= 4.5 && < 5.0
+- directory
+- filepath
+- unix
+
+library:
+  source-dirs: src/lib
+  dependencies:
+  - exif
+  - mtl
+  - old-locale
+  - parsec
+  - time
 
 executables:
   photoname:
-    source-dirs: src
+    source-dirs: src/app
     main: photoname.hs
     dependencies:
-    - directory
-    - exif
-    - filepath
-    - mtl
-    - old-locale
-    - parsec
-    - time
-    - unix
+    - photoname
 
 tests:
   photoname-tests:
-    source-dirs:
-    - src
-    - testsuite
+    source-dirs: testsuite
     main: runtests.hs
     dependencies:
-    - directory
-    - exif
-    - filepath
     - HUnit
-    - mtl
-    - old-locale
-    - parsec
+    - photoname
     - process
     - regex-posix
-    - time
-    - unix
