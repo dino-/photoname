@@ -19,7 +19,7 @@ command = "stack exec photoname"
 
 
 resourcesPath :: FilePath
-resourcesPath = "testsuite/resources"
+resourcesPath = "util/resources/test"
 
 
 {- Quick and dirty function to run a process and grab its output.

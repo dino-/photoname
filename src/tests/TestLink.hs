@@ -219,7 +219,7 @@ testNoExif = TestCase $ do
 
    -- Test output to stdout
    assertBool "no EXIF: correct output"
-      (output =~ "\\*\\* Processing testsuite/resources/noExif.jpg: Failed EXIF loading" :: Bool)
+      (output =~ "\\*\\* Processing util/resources/test/noExif.jpg: Failed EXIF loading" :: Bool)
 
 
 testNoSerial :: Test
@@ -232,7 +232,7 @@ testNoSerial = TestCase $ do
 
    -- Test output to stdout
    assertBool "no serial in filename: correct output"
-      (output =~ "\\*\\* Processing testsuite/resources/noSerial.jpg: Can't determine serial" :: Bool)
+      (output =~ "\\*\\* Processing util/resources/test/noSerial.jpg: Can't determine serial" :: Bool)
 
 
 testDirForFile :: Test

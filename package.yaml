@@ -19,9 +19,8 @@ extra-source-files:
 - package.yaml
 - README.md
 - stack.yaml
-- testsuite/resources/*.jpg
 - util/resources/appimage/*
-- util/resources/test.conf
+- util/resources/test/*
 
 github: dino-/photoname
 
@@ -57,7 +56,7 @@ executables:
 
 tests:
   photoname-tests:
-    source-dirs: testsuite
+    source-dirs: src/tests
     main: runtests.hs
     dependencies:
     - HUnit
