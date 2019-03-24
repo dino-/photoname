@@ -1,0 +1,72 @@
+name: photoname
+version: '3.5'
+license: ISC
+copyright: 2007-2018 Dino Morelli
+author: Dino Morelli
+maintainer: Dino Morelli <dino@ui3.info>
+stability: stable
+homepage: http://hub.darcs.net/dino/photoname
+synopsis: Rename photo image files based on EXIF shoot date
+description: Command-line utility for renaming/moving photo image files based on EXIF tags.
+category: Application, Console
+tested-with: GHC >= 8.2.2
+
+extra-source-files:
+- changelog.md
+- doc/dev/notes
+- doc/hcar-photoname.tex
+- .gitignore
+- package.yaml
+- README.md
+- stack.yaml
+- testsuite/resources/*.jpg
+- TODO.md
+- util/install.hs
+- util/resources/appimage/*
+- util/resources/test.conf
+
+github: dino-/photoname
+
+ghc-options:
+- -fwarn-tabs
+- -Wall
+- -Wcompat
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wredundant-constraints
+
+dependencies:
+- base >= 4.5 && < 5.0
+
+executables:
+  photoname:
+    source-dirs: src
+    main: photoname.hs
+    dependencies:
+    - directory
+    - exif
+    - filepath
+    - mtl
+    - old-locale
+    - parsec
+    - time
+    - unix
+
+tests:
+  photoname-tests:
+    source-dirs:
+    - src
+    - testsuite
+    main: runtests.hs
+    dependencies:
+    - directory
+    - exif
+    - filepath
+    - HUnit
+    - mtl
+    - old-locale
+    - parsec
+    - process
+    - regex-posix
+    - time
+    - unix
