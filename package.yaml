@@ -20,7 +20,6 @@ extra-source-files:
 - README.md
 - stack.yaml
 - testsuite/resources/*.jpg
-- TODO.md
 - util/install.hs
 - util/resources/appimage/*
 - util/resources/test.conf
