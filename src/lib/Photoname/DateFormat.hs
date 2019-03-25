@@ -3,12 +3,12 @@ module Photoname.DateFormat
    )
    where
 
-import System.FilePath
-import Text.Printf
+import System.FilePath ( (</>) )
+import Text.Printf ( printf )
 
-import Photoname.Common
-import Photoname.Date
-import Photoname.Exif
+import Photoname.Common ( Ph, asks )
+import Photoname.Date ( formatDateHyphens, formatDateTime, formatYear, readDate )
+import Photoname.Exif ( getDate )
 import Photoname.Opts ( Options (..) )
 
 

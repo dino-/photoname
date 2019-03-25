@@ -3,10 +3,10 @@
 module Photoname.Exif
    where
 
-import Control.Exception
-import Control.Monad.Except
+import Control.Exception ( try )
+import Control.Monad.Except ( MonadError, MonadIO, (>=>), liftIO, throwError )
 import Graphics.Exif ( fromFile, getTag, Exif )
-import System.IO.Error
+import System.IO.Error ( ioeGetErrorString, isUserError )
 
 
 {- load Exif information from a filename, returning Nothing if libexif

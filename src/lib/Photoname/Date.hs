@@ -6,10 +6,10 @@ module Photoname.Date
    )
    where
 
-import Data.Time.Calendar
-import Data.Time.Format
-import Data.Time.LocalTime
-import Text.ParserCombinators.Parsec
+import Data.Time.Calendar ( fromGregorian )
+import Data.Time.Format ( defaultTimeLocale, formatTime )
+import Data.Time.LocalTime ( LocalTime (..), TimeOfDay (..) )
+import Text.ParserCombinators.Parsec ( char, count, digit, parse, space )
 
 
 {- Parse a date string in the form "yyyy:mm:dd hh:mm:ss" into a 
