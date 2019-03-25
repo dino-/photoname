@@ -3,7 +3,6 @@
    * Added a new --version switch
    * Now supporting building to an AppImage
    * Moved copyright up to 2018
-   * Changed version to 3.4
 
 
 3.3 (2017-12-27)
