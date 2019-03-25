@@ -43,7 +43,6 @@ library:
   dependencies:
   - exif
   - mtl
-  - old-locale
   - parsec
   - time
 
