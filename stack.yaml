@@ -1,7 +1,10 @@
-resolver: lts-10.1
+resolver: lts-12.12
 
 packages:
 - .
 
-extra-deps:
-- exif-3000.0.0
+extra-deps: []
+
+flags:
+  hsexif:
+    iconf: false

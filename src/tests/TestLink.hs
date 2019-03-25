@@ -30,6 +30,7 @@ testLinkAll = TestList
    , TestLabel "testLinkQuietLong" testLinkQuietLong
    , TestLabel "testLinkSuffix" testLinkSuffix
    , TestLabel "testNoExif" testNoExif
+   , TestLabel "testNotAnImage" testNotAnImage
    , TestLabel "testNoSerial" testNoSerial
    , TestLabel "testDirForFile" testDirForFile
    ]
@@ -216,7 +217,19 @@ testNoExif = TestCase $ do
 
    -- Test output to stdout
    assertBool "no EXIF: correct output"
-      (output =~ "\\*\\* Processing util/resources/test/noExif.jpg: Failed EXIF loading" :: Bool)
+      (output =~ "\\*\\* Processing util/resources/test/noExif.jpg: No EXIF in JPEG" :: Bool)
+
+
+testNotAnImage :: Test
+testNotAnImage = TestCase $ do
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ topDir, Util.resourcesPath </> "notAnImage.txt" ]
+   waitForProcess procH
+
+   -- Test output to stdout
+   assertBool "no EXIF: correct output"
+      (output =~ "\\*\\* Processing util/resources/test/notAnImage.txt: Not a JPEG, TIFF, RAF, or TIFF-based raw file" :: Bool)
 
 
 testNoSerial :: Test

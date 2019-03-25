@@ -41,7 +41,8 @@ dependencies:
 library:
   source-dirs: src/lib
   dependencies:
-  - exif
+  - containers
+  - hsexif
   - mtl
   - parsec
   - time

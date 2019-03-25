@@ -3,45 +3,35 @@
 module Photoname.Exif
    where
 
-import Control.Exception ( try )
 import Control.Monad.Except ( MonadError, MonadIO, (>=>), liftIO, throwError )
-import Graphics.Exif ( fromFile, getTag, Exif )
-import System.IO.Error ( ioeGetErrorString, isUserError )
+import qualified Data.Map as M
+import Data.Monoid ( First (..), getFirst )
+import Graphics.HsExif ( ExifTag, ExifValue, dateTime, dateTimeDigitized,
+  dateTimeOriginal, parseFileExif )
 
 
-{- load Exif information from a filename, returning Nothing if libexif
-   encounters a NULL instead of raising an IO error.
-
-   This is somewhat bogus because of the error type that is used by
-   the EXIF library. We have to compare the error string to see if it
-   is the kind of user error that we expect. If we build against an
-   EXIF library that raises some other exception, then this build will
-   still succeed, and the exception will be propagated instead of
-   transformed into a handled photoname error.
+{-
+  Load Exif information from a filepath, or throw an error in MonadError
 -}
-safeExif :: FilePath -> IO (Maybe Exif)
-safeExif = try . fromFile >=> either handleBadExif (return . Just)
-    where
-      isBadExif e =
-         ioeGetErrorString e == "mkExif: NULL" && isUserError e
-      handleBadExif e =
-         if isBadExif e then return Nothing else ioError e
 
-
-{- Get shoot date from the exif information. There are several tags 
-   potentially containing dates. Try them in a specific order until we
-   find one that has data.
--}
 getDate :: (MonadError String m, MonadIO m) => FilePath -> m String
-getDate = loadExif >=> getOneOf dateTagNames
-    where
-      loadExif = (liftIO . safeExif) >=>
-                 maybe (throwError "Failed EXIF loading") return
+getDate = liftIO . parseFileExif >=> either throwError return . extractDate
 
-      getOneOf [] _ = throwError "has no EXIF date"
-      getOneOf (tagName:tagNames) exif =
-         maybe (getOneOf tagNames exif) return =<<
-            liftIO (getTag exif tagName)
 
-      dateTagNames =
-         ["DateTimeDigitized", "DateTimeOriginal", "DateTime"]
+{-
+  Extract the date from the passed in EXIF data, if we got any from the file.
+  Return a meaningful error message in Left if we can't locate a date at all.
+-}
+
+extractDate :: Either String (M.Map ExifTag ExifValue) -> Either String String
+extractDate eitherExifMap = do
+  -- Pull the EXIF Map out of the Either value passed in
+  exifMap <- eitherExifMap
+
+  -- Find the first date available in the Map
+  let mbDateValue = getFirst . mconcat . map First $ map (flip M.lookup exifMap)
+         [dateTimeDigitized, dateTimeOriginal, dateTime]
+
+  -- Return the Either value expected by the caller, marking up failure with a
+  -- meaningful error message
+  maybe (Left "No dates found in EXIF data") (Right . show) mbDateValue
