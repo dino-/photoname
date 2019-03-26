@@ -8,7 +8,12 @@ module Photoname.Opts
 import Data.Version ( showVersion )
 import Paths_photoname ( version )
 import System.Console.GetOpt
-import System.Directory
+  ( ArgDescr (NoArg, ReqArg)
+  , ArgOrder (Permute)
+  , OptDescr (Option)
+  , getOpt, usageInfo
+  )
+import System.Directory ( doesFileExist )
 
 
 data Options = Options

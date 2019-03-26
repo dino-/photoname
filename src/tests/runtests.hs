@@ -1,10 +1,10 @@
 module Main
    where
 
-import System.Exit
+import System.Exit ( ExitCode (ExitFailure, ExitSuccess), exitWith )
 import Test.HUnit ( Counts (..), Test (..), runTestTT )
-import TestHelp
-import TestLink
+import TestHelp ( testHelpAll )
+import TestLink ( testLinkAll )
 
 
 main :: IO ()
