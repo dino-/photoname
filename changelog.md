@@ -1,3 +1,18 @@
+4.0 (2019-03-26)
+
+  * All imports are now explicit
+  * Added tests for several missing cases
+  * Removed --old-style switch and behavior
+  * Removed unnecessary Control.Applicative imports
+  * Switched EXIF library from from exif to hsexif
+  * Removed unused old-locale dep
+  * Removed License and Author comments from source code
+  * Moved copyright up to 2019
+  * Redesign source code directory layout
+  * Removed outdated TODO.md and doc/dev/notes files
+  * Updated build to use hpack and hsinstall
+
+
 3.4 (2018-10-09)
 
    * Added a new --version switch
