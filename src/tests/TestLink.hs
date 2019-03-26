@@ -21,7 +21,10 @@ import qualified Util
 
 testLinkAll :: Test
 testLinkAll = TestList
-   [ TestLabel "testLink" testLink
+   [ TestLabel "testLinkDigitized" testLinkDigitized
+   , TestLabel "testLinkOriginal" testLinkOriginal
+   , TestLabel "testLinkDate" testLinkDate
+   , TestLabel "testNoDate" testNoDate
    , TestLabel "testMove" testMove
    , TestLabel "testLinkNoAction" testLinkNoAction
    , TestLabel "testLinkNoActionLong" testLinkNoActionLong
@@ -41,8 +44,8 @@ oldPath = Util.resourcesPath </> "dateTimeDigitized.jpg"
 newLinkPathDate = parentDir </> "2003/2003-09-02/20030902-114303.jpg"
 
 
-testLink :: Test
-testLink = TestCase $ do
+testLinkDigitized :: Test
+testLinkDigitized = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ "--parent-dir=" ++ parentDir, oldPath ]
@@ -50,18 +53,81 @@ testLink = TestCase $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPathDate
-   assertBool "make link: existance of new link" existsNew
+   assertBool "make link, date digitized: existance of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist oldPath
-   assertBool "make link: existance of old link" existsOld
+   assertBool "make link, date digitized: existance of old link" existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
 
    -- Test output to stdout
-   assertBool "make link: correct output"
+   assertBool "make link, date digitized: correct output"
       (output =~ newLinkPathDate :: Bool)
+
+
+testLinkOriginal :: Test
+testLinkOriginal = TestCase $ do
+   let digitizedOldPath = Util.resourcesPath </> "dateTimeOriginal.jpg"
+
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ parentDir, digitizedOldPath ]
+   waitForProcess procH
+
+   -- Check that the correct output path exists
+   existsNew <- fileExist newLinkPathDate
+   assertBool "make link, date original: existance of new link" existsNew
+
+   -- Check that old path still exists
+   existsOld <- fileExist digitizedOldPath
+   assertBool "make link, date original: existance of old link" existsOld
+
+   -- Remove files and dirs that were created
+   removeDirectoryRecursive parentDir
+
+   -- Test output to stdout
+   assertBool "make link, date original: correct output"
+      (output =~ newLinkPathDate :: Bool)
+
+
+testLinkDate :: Test
+testLinkDate = TestCase $ do
+   let dateOldPath = Util.resourcesPath </> "dateTime.jpg"
+   let customLinkPathDate = parentDir </> "2019/2019-03-26/20190326-075309.jpg"
+
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ parentDir, dateOldPath ]
+   waitForProcess procH
+
+   -- Check that the correct output path exists
+   existsNew <- fileExist customLinkPathDate
+   assertBool "make link, date: existance of new link" existsNew
+
+   -- Check that old path still exists
+   existsOld <- fileExist dateOldPath
+   assertBool "make link, date: existance of old link" existsOld
+
+   -- Remove files and dirs that were created
+   removeDirectoryRecursive parentDir
+
+   -- Test output to stdout
+   assertBool "make link, date: correct output"
+      (output =~ customLinkPathDate :: Bool)
+
+
+testNoDate :: Test
+testNoDate = TestCase $ do
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ parentDir, Util.resourcesPath </> "noDate.jpg" ]
+   waitForProcess procH
+
+   -- Test output to stdout
+   assertBool "no EXIF: correct output"
+      (output =~ "\\*\\* Processing util/resources/test/noDate.jpg: No dates found in EXIF data" :: Bool)
 
 
 testMove :: Test
