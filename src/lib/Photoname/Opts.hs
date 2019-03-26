@@ -1,7 +1,3 @@
--- This is for GHC 7.8/7.10 compatibility with the
--- Control.Applicative import below
-{-# OPTIONS_GHC -fno-warn-unused-imports #-}
-
 module Photoname.Opts
    ( Options (..)
    , parseOpts, usageText
@@ -9,7 +5,6 @@ module Photoname.Opts
    )
    where
 
-import Control.Applicative
 import Data.Version ( showVersion )
 import Paths_photoname ( version )
 import System.Console.GetOpt
