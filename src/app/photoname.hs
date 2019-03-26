@@ -11,7 +11,6 @@ import Text.Printf ( printf )
 import Photoname.Common ( Ph, ask, liftIO, runRename, throwError )
 import Photoname.Opts ( Options (..) , formattedVersion, parseOpts, usageText )
 import Photoname.DateFormat ( buildDatePath )
-import Photoname.SerialFormat ( buildSerialPath )
 
 
 {- Take a file path to a JPEG file and use EXIF information available to
@@ -20,9 +19,7 @@ import Photoname.SerialFormat ( buildSerialPath )
 createNewLink :: FilePath -> Ph ()
 createNewLink oldPath = do
    opts <- ask
-   newPath <- if (optOldStyle opts)
-      then buildSerialPath oldPath
-      else buildDatePath oldPath
+   newPath <- buildDatePath oldPath
 
    -- Check for existance of the target file
    exists <- liftIO $ fileExist newPath

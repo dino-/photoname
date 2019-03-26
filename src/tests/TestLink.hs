@@ -21,8 +21,7 @@ import qualified Util
 
 testLinkAll :: Test
 testLinkAll = TestList
-   [ TestLabel "testLinkDate" testLinkDate
-   , TestLabel "testLinkSerial" testLinkSerial
+   [ TestLabel "testLink" testLink
    , TestLabel "testMove" testMove
    , TestLabel "testLinkNoAction" testLinkNoAction
    , TestLabel "testLinkNoActionLong" testLinkNoActionLong
@@ -31,24 +30,22 @@ testLinkAll = TestList
    , TestLabel "testLinkSuffix" testLinkSuffix
    , TestLabel "testNoExif" testNoExif
    , TestLabel "testNotAnImage" testNotAnImage
-   , TestLabel "testNoSerial" testNoSerial
    , TestLabel "testDirForFile" testDirForFile
    ]
 
 
-topDir, oldPath, newLinkPathDate, newLinkPathSerial :: FilePath
+parentDir, oldPath, newLinkPathDate :: FilePath
 
-topDir = Util.resourcesPath </> "foo"
-oldPath = Util.resourcesPath </> "img_1220.jpg"
-newLinkPathDate = topDir </> "2003/2003-09-02/20030902-114303.jpg"
-newLinkPathSerial = topDir </> "2003/2003-09-02/20030902_220.jpg"
+parentDir = Util.resourcesPath </> "testParentDir"
+oldPath = Util.resourcesPath </> "dateTimeDigitized.jpg"
+newLinkPathDate = parentDir </> "2003/2003-09-02/20030902-114303.jpg"
 
 
-testLinkDate :: Test
-testLinkDate = TestCase $ do
+testLink :: Test
+testLink = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, oldPath ]
+      [ "--parent-dir=" ++ parentDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
@@ -60,52 +57,27 @@ testLinkDate = TestCase $ do
    assertBool "make link: existance of old link" existsOld
 
    -- Remove files and dirs that were created
-   removeDirectoryRecursive topDir
+   removeDirectoryRecursive parentDir
 
    -- Test output to stdout
    assertBool "make link: correct output"
       (output =~ newLinkPathDate :: Bool)
 
 
-testLinkSerial :: Test
-testLinkSerial = TestCase $ do
-   -- Run the program with known input data
-   (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, "--old-style", oldPath ]
-   waitForProcess procH
-
-   -- Check that the correct output path exists
-   existsNew <- fileExist newLinkPathSerial
-   assertBool "make link: existance of new link" existsNew
-
-   -- Check that old path still exists
-   existsOld <- fileExist oldPath
-   assertBool "make link: existance of old link" existsOld
-
-   -- Remove files and dirs that were created
-   removeDirectoryRecursive topDir
-
-   -- Test output to stdout
-   assertBool "make link: correct output"
-      (output =~ newLinkPathSerial :: Bool)
-
-
 testMove :: Test
 testMove = TestCase $ do
-   let newNewLinkPath = topDir </> "2003/2003-09-02/20030902_321.jpg"
-
    -- Make a dummy copy of the source file. This test will be getting rid
    -- of it, if successful.
-   let newOldPath = Util.resourcesPath </> "img_0321.jpg"
+   let newOldPath = Util.resourcesPath </> "moveTest.jpg"
    copyFile oldPath newOldPath
 
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--move", "--parent-dir=" ++ topDir, "--old-style", newOldPath ]
+      [ "--move", "--parent-dir=" ++ parentDir, newOldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
-   existsNew <- fileExist newNewLinkPath
+   existsNew <- fileExist newLinkPathDate
    assertBool "move file: existance of new link" existsNew
 
    -- Check that old path still exists
@@ -113,11 +85,11 @@ testMove = TestCase $ do
    Util.assertFalse "move file: existance of old link" existsOld
 
    -- Remove files and dirs that were created
-   removeDirectoryRecursive topDir
+   removeDirectoryRecursive parentDir
 
    -- Test output to stdout
    assertBool "move file: correct output"
-      (output =~ newNewLinkPath :: Bool)
+      (output =~ newLinkPathDate :: Bool)
 
 
 testLinkNoAction :: Test
@@ -132,11 +104,11 @@ testLinkNoAction' :: String -> String -> Test
 testLinkNoAction' label switch = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ switch, "--parent-dir=" ++ topDir, "--old-style", oldPath ]
+      [ switch, "--parent-dir=" ++ parentDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
-   existsNew <- fileExist topDir
+   existsNew <- fileExist parentDir
    Util.assertFalse (label ++ ": existance of new link") existsNew
 
    -- Check that old path still exists
@@ -145,7 +117,7 @@ testLinkNoAction' label switch = TestCase $ do
 
    -- Test output to stdout
    assertBool (label ++ ": correct output")
-      (output =~ newLinkPathSerial :: Bool)
+      (output =~ newLinkPathDate :: Bool)
 
 
 testLinkQuiet :: Test
@@ -161,11 +133,11 @@ testLinkQuiet' :: String -> String -> Test
 testLinkQuiet' label switch = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ switch, "--parent-dir=" ++ topDir, "--old-style", oldPath ]
+      [ switch, "--parent-dir=" ++ parentDir, oldPath ]
    waitForProcess procH
 
    -- Check that the correct output path exists
-   existsNew <- fileExist newLinkPathSerial
+   existsNew <- fileExist newLinkPathDate
    assertBool (label ++ ": existance of new link") existsNew
 
    -- Check that old path still exists
@@ -173,11 +145,11 @@ testLinkQuiet' label switch = TestCase $ do
    assertBool (label ++ ": existance of old link") existsOld
 
    -- Remove files and dirs that were created
-   removeDirectoryRecursive topDir
+   removeDirectoryRecursive parentDir
 
    -- Test output to stdout
    Util.assertFalse (label ++ ": no output")
-      (output =~ newLinkPathSerial :: Bool)
+      (output =~ newLinkPathDate :: Bool)
 
 
 testLinkSuffix :: Test
@@ -186,10 +158,10 @@ testLinkSuffix = TestCase $ do
 
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, "--suffix=" ++ suffix, oldPath ]
+      [ "--parent-dir=" ++ parentDir, "--suffix=" ++ suffix, oldPath ]
    waitForProcess procH
 
-   let newLinkPath = topDir </>
+   let newLinkPath = parentDir </>
          ("2003/2003-09-02/20030902-114303" ++ suffix) <.> "jpg"
 
    -- Check that the correct output path exists
@@ -201,7 +173,7 @@ testLinkSuffix = TestCase $ do
    assertBool "make link: existance of old link" existsOld
 
    -- Remove files and dirs that were created
-   removeDirectoryRecursive topDir
+   removeDirectoryRecursive parentDir
 
    -- Test output to stdout
    assertBool "make link: correct output"
@@ -212,7 +184,7 @@ testNoExif :: Test
 testNoExif = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, Util.resourcesPath </> "noExif.jpg" ]
+      [ "--parent-dir=" ++ parentDir, Util.resourcesPath </> "noExif.jpg" ]
    waitForProcess procH
 
    -- Test output to stdout
@@ -224,7 +196,7 @@ testNotAnImage :: Test
 testNotAnImage = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, Util.resourcesPath </> "notAnImage.txt" ]
+      [ "--parent-dir=" ++ parentDir, Util.resourcesPath </> "notAnImage.txt" ]
    waitForProcess procH
 
    -- Test output to stdout
@@ -232,24 +204,11 @@ testNotAnImage = TestCase $ do
       (output =~ "\\*\\* Processing util/resources/test/notAnImage.txt: Not a JPEG, TIFF, RAF, or TIFF-based raw file" :: Bool)
 
 
-testNoSerial :: Test
-testNoSerial = TestCase $ do
-   -- Run the program with known input data
-   (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir
-      , "--old-style", Util.resourcesPath </> "noSerial.jpg" ]
-   waitForProcess procH
-
-   -- Test output to stdout
-   assertBool "no serial in filename: correct output"
-      (output =~ "\\*\\* Processing util/resources/test/noSerial.jpg: Can't determine serial" :: Bool)
-
-
 testDirForFile :: Test
 testDirForFile = TestCase $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
-      [ "--parent-dir=" ++ topDir, Util.resourcesPath ]
+      [ "--parent-dir=" ++ parentDir, Util.resourcesPath ]
    waitForProcess procH
 
    -- Test output to stdout

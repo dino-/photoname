@@ -18,7 +18,6 @@ data Options = Options
    , optNoAction :: Bool
    , optNoConfig :: Bool
    , optNoDirs :: Bool
-   , optOldStyle :: Bool
    , optParentDir :: String
    , optQuiet :: Bool
    , optSuffix :: String
@@ -36,7 +35,6 @@ defaultOptions = Options
    , optNoAction = False
    , optNoConfig = False
    , optNoDirs = False
-   , optOldStyle = False
    , optParentDir = "."
    , optQuiet = False
    , optSuffix = ""
@@ -64,9 +62,6 @@ options =
    , Option ['n'] ["no-action"]
       (NoArg (\opts -> opts { optNoAction = True } ))
       "Display what would be done, but do nothing"
-   , Option ['o'] ["old-style"]
-      (NoArg (\opts -> opts { optOldStyle = True } ))
-      "Use older name format with serial. See FILENAME FORMAT"
    , Option ['p'] ["parent-dir"]
       (ReqArg (\d opts -> opts { optParentDir = d } ) "DIR")
       "Top-level directory where new links are created. Default: ."
@@ -140,10 +135,8 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , "Example config contents:"
          , ""
          , "   move"
-         , "   old-style"
          , "   parent-dir=~/mypics"
          , "   suffix=_dwm"
-         , ""
          , ""
          , "FILENAME FORMAT"
          , ""
@@ -161,23 +154,6 @@ usageText = (usageInfo header options) ++ "\n" ++ footer
          , "   <PARENTDIR>/20020502-132307.jpg"
          , ""
          , "Default behavior is to create hard links to the new paths and leave the original links as they were. You can use the --move switch to not leave the original links."
-         , ""
-         , "The --old-style switch specifies the prior behavior of photoname where the name is a date followed by the last three digits of the camera-assigned number from the original filename:"
-         , ""
-         , "   img_1790.jpg -> <PARENTDIR>/2002/2002-05-02/20020502_790.jpg"
-         , ""
-         , "The code is basically looking for three digits before the file extension to use as a 'serial' number for the day's photos. This is a seemingly common occurrance with cameras that we can pick numbers off the end of the filename. Examples of the two that I have:"
-         , ""
-         , "                    vvv (use these digits)"
-         , "   Panasonic:  P###0###.jpg"
-         , "   Canon:      img_####.jpg"
-         , "                    ^^^"
-         , "                    ^^^"
-         , ""
-         , "The --old-style behavior in photoname remains for backwards compatibility. Many cameras today (and particularly camera phones) don't generate a name we can use in this way, and so something needed to change in this software."
-         , ""
-         , "Another nagging problem is the old-style naming is non-deterministic. Using photoname --old-style on a file may not always give you the same name, say if the serial info in the name is ever lost. Naming based on the EXIF data alone is more reliable."
-         , ""
          , ""
          , "SUFFIX"
          , ""
