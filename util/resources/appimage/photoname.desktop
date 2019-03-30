@@ -3,5 +3,5 @@ Name=photoname
 Exec=photoname
 Icon=photoname
 Type=Application
-Categories=Graphics;Utility;Photography;FileTools;ConsoleOnly;
+Categories=Graphics;Photography;ConsoleOnly;
 Terminal=true
