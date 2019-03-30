@@ -1,3 +1,8 @@
+4.1 (2019-03-30)
+
+  * Removed some AppImage desktop file categories
+
+
 4.0 (2019-03-26)
 
   * All imports are now explicit
