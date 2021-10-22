@@ -1,4 +1,4 @@
-resolver: lts-12.12
+resolver: lts-14.27
 
 packages:
 - .
@@ -7,4 +7,4 @@ extra-deps: []
 
 flags:
   hsexif:
-    iconf: false
+    iconv: false
