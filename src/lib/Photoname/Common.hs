@@ -1,5 +1,7 @@
 module Photoname.Common
-   ( Ph, runRename
+   ( Ph
+   , Options (..)
+   , runRename
 
    -- Re-exporting:
    , MonadError
@@ -13,7 +15,19 @@ import Control.Monad.Except ( ExceptT, MonadError, runExceptT, throwError )
 import Control.Monad.Reader ( ReaderT, ask, asks, runReaderT )
 import Control.Monad.Trans ( liftIO )
 
-import Photoname.Opts ( Options (..) )
+
+data Options = Options
+   { optConfig :: String
+   , optHelp :: Bool
+   , optMove :: Bool
+   , optNoAction :: Bool
+   , optNoConfig :: Bool
+   , optNoDirs :: Bool
+   , optParentDir :: String
+   , optQuiet :: Bool
+   , optSuffix :: String
+   , optVersion :: Bool
+   }
 
 
 type Ph a = ReaderT Options (ExceptT String IO) a

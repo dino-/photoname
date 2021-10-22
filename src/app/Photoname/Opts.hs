@@ -1,9 +1,10 @@
 module Photoname.Opts
-   ( Options (..)
-   , parseOpts, usageText
+   ( parseOpts, usageText
    , formattedVersion
    )
    where
+
+import Photoname.Common ( Options (..) )
 
 import Data.Version ( showVersion )
 import Paths_photoname ( version )
@@ -15,19 +16,6 @@ import System.Console.GetOpt
   )
 import System.Directory ( doesFileExist )
 
-
-data Options = Options
-   { optConfig :: String
-   , optHelp :: Bool
-   , optMove :: Bool
-   , optNoAction :: Bool
-   , optNoConfig :: Bool
-   , optNoDirs :: Bool
-   , optParentDir :: String
-   , optQuiet :: Bool
-   , optSuffix :: String
-   , optVersion :: Bool
-   }
 
 defaultConfig :: String
 defaultConfig = "~/.config/photoname.conf"

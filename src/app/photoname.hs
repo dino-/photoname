@@ -8,8 +8,8 @@ import System.Posix ( createLink, fileExist, getFileStatus,
    isRegularFile, removeLink )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Ph, ask, liftIO, runRename, throwError )
-import Photoname.Opts ( Options (..) , formattedVersion, parseOpts, usageText )
+import Photoname.Common ( Ph, Options (..), ask, liftIO, runRename, throwError )
+import Photoname.Opts ( formattedVersion, parseOpts, usageText )
 import Photoname.DateFormat ( buildDatePath )
 
 

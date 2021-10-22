@@ -6,10 +6,9 @@ module Photoname.DateFormat
 import System.FilePath ( (</>) )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Ph, asks )
+import Photoname.Common ( Ph, Options (..), asks )
 import Photoname.Date ( formatDateHyphens, formatDateTime, formatYear, readDate )
 import Photoname.Exif ( getDate )
-import Photoname.Opts ( Options (..) )
 
 
 {- Given a path to a file with EXIF data, construct a new path based on the
