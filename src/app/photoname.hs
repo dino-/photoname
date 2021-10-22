@@ -72,7 +72,7 @@ executeCommands opts filePaths = do
 main :: IO ()
 main = do
    -- Parse the arguments
-   (opts, paths) <- getArgs >>= parseOpts
+   (opts, paths) <- parseOpts =<< getArgs
 
    if (optVersion opts)
       then formattedVersion >>= putStrLn
