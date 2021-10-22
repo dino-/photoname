@@ -3,7 +3,6 @@ module Main
 
 import System.Exit ( ExitCode (ExitFailure, ExitSuccess), exitWith )
 import Test.HUnit ( Counts (..), Test (..), runTestTT )
-import TestHelp ( testHelpAll )
 import TestLink ( testLinkAll )
 
 
@@ -24,6 +23,5 @@ testsPassed (Counts _ _ e f) = (e == 0) && (f == 0)
 
 tests :: Test
 tests = TestList
-   [ TestLabel "testHelpAll" testHelpAll
-   , TestLabel "testLinkAll" testLinkAll
+   [ TestLabel "testLinkAll" testLinkAll
    ]
