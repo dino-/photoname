@@ -51,6 +51,9 @@ executables:
     source-dirs: src/app
     main: photoname.hs
     dependencies:
+    - ansi-wl-pprint
+    - heredoc
+    - optparse-applicative
     - photoname
 
 tests:

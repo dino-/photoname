@@ -1,15 +1,12 @@
-{-# LANGUAGE FlexibleContexts #-}
-
 import Control.Monad ( filterM, forM_, unless, when )
 import System.Directory ( createDirectoryIfMissing )
-import System.Environment ( getArgs )
 import System.FilePath ( takeDirectory )
 import System.Posix ( createLink, fileExist, getFileStatus,
    isRegularFile, removeLink )
 import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, Options (..), ask, liftIO, runRename, throwError )
-import Photoname.Opts ( formattedVersion, parseOpts, usageText )
+import Photoname.Opts ( parseOpts )
 import Photoname.DateFormat ( buildDatePath )
 
 
@@ -44,16 +41,13 @@ createNewLink oldPath = do
 
 
 -- Figure out and execute what the user wants based on the supplied args.
-executeCommands :: Options -> [String] -> IO ()
+main :: IO ()
+main = do
+   opts <- parseOpts
 
--- User gave no files at all. Display help
-executeCommands _ [] = putStrLn usageText
-
--- Normal program operation, process the files with the args.
-executeCommands opts filePaths = do
    -- Get rid of anything not a regular file from the list of paths
    actualPaths <- filterM
-      (\p -> getFileStatus p >>= return . isRegularFile) filePaths
+      (\p -> getFileStatus p >>= return . isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
    when (optNoAction opts) $
@@ -67,17 +61,5 @@ executeCommands opts filePaths = do
       result <- runRename opts $ createNewLink path
       either (\em -> printf "** Processing %s: %s\n" path em)
          (const return ()) result
-
-
-main :: IO ()
-main = do
-   -- Parse the arguments
-   (opts, paths) <- parseOpts =<< getArgs
-
-   if (optVersion opts)
-      then formattedVersion >>= putStrLn
-      else
-         -- Do the photo naming procedure
-         executeCommands opts paths
 
    -- Perhaps we should get an ExitCode back from all this above?

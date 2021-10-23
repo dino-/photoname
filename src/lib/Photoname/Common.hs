@@ -1,6 +1,6 @@
 module Photoname.Common
-   ( Ph
-   , Options (..)
+   ( Options (..)
+   , Ph
    , runRename
 
    -- Re-exporting:
@@ -17,17 +17,15 @@ import Control.Monad.Trans ( liftIO )
 
 
 data Options = Options
-   { optConfig :: String
-   , optHelp :: Bool
-   , optMove :: Bool
-   , optNoAction :: Bool
-   , optNoConfig :: Bool
-   , optNoDirs :: Bool
-   , optParentDir :: String
-   , optQuiet :: Bool
-   , optSuffix :: String
-   , optVersion :: Bool
-   }
+  { optConfig :: Maybe FilePath
+  , optNoDirs :: Bool
+  , optMove :: Bool
+  , optNoAction :: Bool
+  , optParentDir :: FilePath
+  , optQuiet :: Bool
+  , optSuffix :: String
+  , optPaths :: [FilePath]
+  }
 
 
 type Ph a = ReaderT Options (ExceptT String IO) a
