@@ -30,7 +30,7 @@ extractDate eitherExifMap = do
 
   -- Find the first date available in the Map
   let mbDateValue = getFirst . mconcat . map First $ map (flip M.lookup exifMap)
-         [dateTimeDigitized, dateTimeOriginal, dateTime]
+         [dateTimeOriginal, dateTimeDigitized, dateTime]
 
   -- Return the Either value expected by the caller, marking up failure with a
   -- meaningful error message
