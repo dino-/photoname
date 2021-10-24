@@ -17,7 +17,8 @@ import Control.Monad.Trans ( liftIO )
 
 
 data Options = Options
-  { optConfig :: Maybe FilePath
+  { optArtist :: Maybe String
+  , optConfig :: Maybe FilePath
   , optNoDirs :: Bool
   , optMove :: Bool
   , optNoAction :: Bool

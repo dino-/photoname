@@ -22,6 +22,13 @@ import Photoname.Common ( Options (..) )
 parser :: Parser Options
 parser = Options
   <$> optional ( strOption
+        (  long "artist"
+        <> short 'a'
+        <> metavar "ARTIST"
+        <> help "Set artist info in the Exif.Image.Artist tag. See ARTIST"
+        )
+      )
+  <*> optional ( strOption
         (  long "config"
         <> short 'c'
         <> metavar "FILE"
@@ -137,6 +144,14 @@ The -D|--no-dirs switch will suppress the directory-hierarchy-creating part of t
   <PARENTDIR>/20020502-132307.jpg
 
 Default behavior is to create hard links to the new paths and leave the original links as they were. You can use the --move switch to not leave the original links.
+
+ARTIST
+
+Set artist info in the Exif.Image.Artist tag. This can be any string you like but a good conventional one would look like:
+
+  'Photographer, Roscoe Jones <rjones@foo.com>'
+
+Pass a quoted empty string to -a|--artist to delete an existing Artist tag.
 
 SUFFIX
 

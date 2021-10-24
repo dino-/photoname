@@ -6,6 +6,7 @@ import System.Posix ( createLink, fileExist, getFileStatus,
 import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, Options (..), ask, liftIO, runRename, throwError )
+import Photoname.Exiv2 ( setArtist )
 import Photoname.Opts ( parseOpts )
 import Photoname.DateFormat ( buildDatePath )
 
@@ -13,31 +14,41 @@ import Photoname.DateFormat ( buildDatePath )
 {- Take a file path to a JPEG file and use EXIF information available to
    link the file at its new location below the given basedir.
 -}
-createNewLink :: FilePath -> Ph ()
+processFile :: FilePath -> Ph ()
+processFile oldPath = do
+  newPath <- createNewLink oldPath
+  setArtist newPath
+
+
+{- Take a file path to a JPEG file and use EXIF information available to
+   link the file at its new location below the given basedir.
+-}
+createNewLink :: FilePath -> Ph FilePath
 createNewLink oldPath = do
-   opts <- ask
-   newPath <- buildDatePath oldPath
+  opts <- ask
+  newPath <- buildDatePath oldPath
 
-   -- Check for existance of the target file
-   exists <- liftIO $ fileExist newPath
-   when exists $ throwError $ "Destination " ++ newPath ++ " exists!"
+  -- Check for existance of the target file
+  exists <- liftIO $ fileExist newPath
+  when exists $ throwError $ "Destination " ++ newPath ++ " exists!"
 
-   -- Display what will be done
-   unless (optQuiet opts) $
-      liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
+  -- Display what will be done
+  unless (optQuiet opts) $
+    liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
 
-   unless (optNoAction opts) $ do
-      -- Make the target dir
-      liftIO $ createDirectoryIfMissing True $ takeDirectory newPath
+  unless (optNoAction opts) $ do
+    -- Make the target dir
+    liftIO $ createDirectoryIfMissing True $ takeDirectory newPath
 
-      -- Make the new hard link
-      liftIO $ createLink oldPath newPath
+    -- Make the new hard link
+    liftIO $ createLink oldPath newPath
 
-      -- If user has specified, remove the original link
-      when (optMove opts) $
-         liftIO $ removeLink oldPath
+    -- If user has specified, remove the original link
+    when (optMove opts) $
+       liftIO $ removeLink oldPath
 
-      return ()
+    -- return ()
+  return newPath
 
 
 -- Figure out and execute what the user wants based on the supplied args.
@@ -58,7 +69,7 @@ main = do
 
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \path -> do
-      result <- runRename opts $ createNewLink path
+      result <- runRename opts $ processFile path
       either (\em -> printf "** Processing %s: %s\n" path em)
          (const return ()) result
 
