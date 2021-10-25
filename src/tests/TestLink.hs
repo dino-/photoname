@@ -127,7 +127,7 @@ testNoDate = TestCase $ do
 
    -- Test output to stdout
    assertBool "no EXIF: correct output"
-      (output =~ "\\*\\* Processing util/resources/test/noDate.jpg: No dates found in EXIF data" :: Bool)
+      (output =~ "\\*\\* Processing util/resources/test/noDate.jpg: Could not extract any date information" :: Bool)
 
 
 testMove :: Test
@@ -255,7 +255,7 @@ testNoExif = TestCase $ do
 
    -- Test output to stdout
    assertBool "no EXIF: correct output"
-      (output =~ "\\*\\* Processing util/resources/test/noExif.jpg: No EXIF in JPEG" :: Bool)
+      (output =~ "\\*\\* Processing util/resources/test/noExif.jpg: Could not extract any date information" :: Bool)
 
 
 testNotAnImage :: Test
@@ -267,7 +267,7 @@ testNotAnImage = TestCase $ do
 
    -- Test output to stdout
    assertBool "no EXIF: correct output"
-      (output =~ "\\*\\* Processing util/resources/test/notAnImage.txt: Not a JPEG, TIFF, RAF, or TIFF-based raw file" :: Bool)
+      (output =~ "\\*\\* Processing util/resources/test/notAnImage.txt: Could not extract any date information" :: Bool)
 
 
 testDirForFile :: Test

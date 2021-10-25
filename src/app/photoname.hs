@@ -39,7 +39,7 @@ createNewLink imageDate oldPath = do
   newPath <- case imageDate of
     ExifDate lt -> buildDatePath lt
     FilenameDate lt -> buildDatePath lt
-    NoDateFound -> throwError $ printf "Could not extract any date information from %s" oldPath
+    NoDateFound -> throwError "Could not extract any date information"
 
   -- Check for existance of the target file
   exists <- liftIO $ fileExist newPath
