@@ -16,13 +16,14 @@ import Data.Time.Format ( defaultTimeLocale, formatTime )
 import Data.Time.LocalTime ( LocalTime (..), TimeOfDay (..) )
 import Text.Parsec ( ParsecT )
 import Text.ParserCombinators.Parsec ( anyChar, char, count, digit,
-  manyTill, parse, space, string )
+  manyTill, optional, parse, space, string, try )
 
 
 data PhDate
   = ExifDate LocalTime
   | FilenameDate LocalTime
   | NoDateFound
+  deriving (Eq, Show)
 
 instance Semigroup PhDate where
   (<>) e@(ExifDate _)     _              = e
@@ -49,8 +50,9 @@ digit4 = count 4 digit
    CalendarTime datatype. Strings that fail to parse in this manner are
    returned as Nothing
 -}
-parseExifDate :: String -> PhDate
-parseExifDate s =
+parseExifDate :: Maybe String -> PhDate
+parseExifDate Nothing = NoDateFound
+parseExifDate (Just s) =
    case (parse dateParser "" s) of
       Left _  -> NoDateFound
       Right x -> ExifDate x
@@ -67,9 +69,9 @@ parseExifDate s =
                   (fromIntegral ((read second) :: Integer)))
 
 
-{- Parse a string in the form "/some/path/signal-yyyy-mm-dd-hhmmss.jpg" into a 
-   CalendarTime datatype. Strings that fail to parse in this manner are
-   returned as Nothing
+{- Parse a string in one of the the forms below into a CalendarTime datatype.
+    /some/path/signal-yyyy-mm-dd-hhmmss.jpg
+    /some/path/signal-yyyy-mm-dd-hh-mm-ss-ttt.jpg
 -}
 parseSignalDate :: String -> PhDate
 parseSignalDate s =
@@ -78,10 +80,10 @@ parseSignalDate s =
     Right x -> FilenameDate x
   where
     dateParser = do
-      manyTill anyChar (string "signal-")
+      manyTill anyChar (try (string "signal-"))
       year <- digit4 ; hyphen ; month <- digit2 ; hyphen ; day <- digit2
       hyphen
-      hour <- digit2 ; minute <- digit2 ; second <- digit2
+      hour <- digit2 ; optional hyphen ; minute <- digit2 ; optional hyphen ; second <- digit2
       return $
          LocalTime
             (fromGregorian (read year) (read month) (read day))

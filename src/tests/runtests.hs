@@ -4,6 +4,7 @@ module Main
 import System.Exit ( ExitCode (ExitFailure, ExitSuccess), exitWith )
 import Test.HUnit ( Counts (..), Test (..), runTestTT )
 import TestLink ( testLinkAll )
+import qualified Test.Photoname.Date ( tests )
 
 
 main :: IO ()
@@ -23,5 +24,6 @@ testsPassed (Counts _ _ e f) = (e == 0) && (f == 0)
 
 tests :: Test
 tests = TestList
-   [ TestLabel "testLinkAll" testLinkAll
-   ]
+  [ TestLabel "testLinkAll" testLinkAll
+  , TestLabel "date tests" Test.Photoname.Date.tests
+  ]
