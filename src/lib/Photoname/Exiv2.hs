@@ -1,5 +1,6 @@
 module Photoname.Exiv2
   ( setArtist
+  , setExifDate
   )
   where
 
@@ -8,6 +9,20 @@ import System.Process ( callCommand )
 import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, Options (..), ask, liftIO )
+import Photoname.Date ( PhDate (FilenameDate), formatDateForExif )
+
+
+execCommands :: [String] -> Ph ()
+execCommands commands = do
+  opts <- ask
+
+  -- Display what will be done
+  unless (optQuiet opts) $ liftIO $ mapM_ putStrLn $ commands
+
+  -- Execute the commands
+  unless (optNoAction opts) $ liftIO $ mapM_ callCommand commands
+
+  return ()
 
 
 setArtist :: String -> Ph ()
@@ -16,22 +31,18 @@ setArtist newPath = do
 
   case optArtist opts of
     Nothing -> return ()
-    Just "" ->
-      setArtist' $ printf "exiv2 --Modify 'del Exif.Image.Artist' %s"
-        newPath
-    Just artistInfo ->
-      setArtist' $ printf "exiv2 --Modify 'set Exif.Image.Artist %s' %s"
-        artistInfo newPath
+    Just "" -> execCommands
+      [ printf "exiv2 --Modify 'del Exif.Image.Artist' %s" newPath ]
+    Just artistInfo -> execCommands
+      [ printf "exiv2 --Modify 'set Exif.Image.Artist %s' %s" artistInfo newPath ]
 
 
-setArtist' :: String -> Ph ()
-setArtist' commandLine = do
-  opts <- ask
+setExifDate :: PhDate -> FilePath -> Ph ()
 
-  -- Display what will be done
-  unless (optQuiet opts) $ liftIO $ putStrLn $ commandLine
+setExifDate (FilenameDate lt) newPath =
+  execCommands
+    [ printf "exiv2 --Modify 'set Exif.Image.DateTime Ascii %s' %s" (formatDateForExif lt) newPath
+    , printf "exiv2 --Modify 'set Exif.Photo.UserComment Comment DateTime is a guess' %s" newPath
+    ]
 
-  -- Execute the command
-  unless (optNoAction opts) $ liftIO $ callCommand commandLine
-
-  return ()
+setExifDate _ _ = return ()

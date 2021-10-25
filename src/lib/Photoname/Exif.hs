@@ -1,7 +1,9 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 module Photoname.Exif
-   where
+  ( getExifDate
+  )
+  where
 
 import Control.Monad.Except ( MonadError, MonadIO, (>=>), liftIO, throwError )
 import qualified Data.Map as M
@@ -14,8 +16,8 @@ import Graphics.HsExif ( ExifTag, ExifValue, dateTime, dateTimeDigitized,
   Load Exif information from a filepath, or throw an error in MonadError
 -}
 
-getDate :: (MonadError String m, MonadIO m) => FilePath -> m String
-getDate = liftIO . parseFileExif >=> either throwError return . extractDate
+getExifDate :: (MonadError String m, MonadIO m) => FilePath -> m String
+getExifDate = liftIO . parseFileExif >=> either throwError return . extractDate
 
 
 {-

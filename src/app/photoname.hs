@@ -6,27 +6,40 @@ import System.Posix ( createLink, fileExist, getFileStatus,
 import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, Options (..), ask, liftIO, runRename, throwError )
-import Photoname.Exiv2 ( setArtist )
+import Photoname.Date
+  ( PhDate (ExifDate, FilenameDate, NoDateFound)
+  , parseExifDate, parseSignalDate
+  )
+import Photoname.Exif ( getExifDate )
+import Photoname.Exiv2 ( setArtist, setExifDate )
 import Photoname.Opts ( parseOpts )
 import Photoname.DateFormat ( buildDatePath )
 
 
-{- Take a file path to a JPEG file and use EXIF information available to
-   link the file at its new location below the given basedir.
--}
+acquireDate :: FilePath -> Ph PhDate
+acquireDate oldPath = do
+  dateString <- getExifDate oldPath
+  return $ mconcat
+    [ parseExifDate dateString
+    , parseSignalDate oldPath
+    ]
+
+
 processFile :: FilePath -> Ph ()
 processFile oldPath = do
-  newPath <- createNewLink oldPath
+  imageDate <- acquireDate oldPath
+  newPath <- createNewLink imageDate oldPath
+  setExifDate imageDate newPath
   setArtist newPath
 
 
-{- Take a file path to a JPEG file and use EXIF information available to
-   link the file at its new location below the given basedir.
--}
-createNewLink :: FilePath -> Ph FilePath
-createNewLink oldPath = do
+createNewLink :: PhDate -> FilePath -> Ph FilePath
+createNewLink imageDate oldPath = do
   opts <- ask
-  newPath <- buildDatePath oldPath
+  newPath <- case imageDate of
+    ExifDate lt -> buildDatePath lt
+    FilenameDate lt -> buildDatePath lt
+    NoDateFound -> throwError $ printf "Could not extract any date information from %s" oldPath
 
   -- Check for existance of the target file
   exists <- liftIO $ fileExist newPath
@@ -47,7 +60,6 @@ createNewLink oldPath = do
     when (optMove opts) $
        liftIO $ removeLink oldPath
 
-    -- return ()
   return newPath
 
 

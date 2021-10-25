@@ -1,30 +1,60 @@
 {-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Photoname.Date
-   ( formatYear, formatDateHyphens, formatDate, formatDateTime
-   , readDate
-   )
-   where
+  ( PhDate (..)
+  , formatYear, formatDateHyphens, formatDate, formatDateTime
+  , formatDateForExif
+  , parseExifDate
+  , parseSignalDate
+  )
+  where
 
+import Data.Functor.Identity ( Identity )
 import Data.Time.Calendar ( fromGregorian )
 import Data.Time.Format ( defaultTimeLocale, formatTime )
 import Data.Time.LocalTime ( LocalTime (..), TimeOfDay (..) )
-import Text.ParserCombinators.Parsec ( char, count, digit, parse, space )
+import Text.Parsec ( ParsecT )
+import Text.ParserCombinators.Parsec ( anyChar, char, count, digit,
+  manyTill, parse, space, string )
 
 
-{- Parse a date string in the form "yyyy:mm:dd hh:mm:ss" into a 
+data PhDate
+  = ExifDate LocalTime
+  | FilenameDate LocalTime
+  | NoDateFound
+
+instance Semigroup PhDate where
+  (<>) e@(ExifDate _)     _              = e
+  (<>)   (FilenameDate _) e@(ExifDate _) = e
+  (<>) f@(FilenameDate _) _              = f
+  (<>)    NoDateFound     x              = x
+
+instance Monoid PhDate where
+  mempty = NoDateFound
+
+
+-- Parsec helper defs
+
+colon, hyphen :: ParsecT String u Identity Char
+colon = char ':'
+hyphen = char '-'
+
+digit2, digit4 :: ParsecT String u Identity [Char]
+digit2 = count 2 digit
+digit4 = count 4 digit
+
+
+{- Parse a string in the form "yyyy:mm:dd hh:mm:ss" into a 
    CalendarTime datatype. Strings that fail to parse in this manner are
    returned as Nothing
 -}
-readDate :: String -> Maybe LocalTime
-readDate s =
+parseExifDate :: String -> PhDate
+parseExifDate s =
    case (parse dateParser "" s) of
-      Left _  -> Nothing
-      Right x -> Just x
+      Left _  -> NoDateFound
+      Right x -> ExifDate x
    where
-      digit4 = count 4 digit
-      digit2 = count 2 digit
-      colon = char ':'
       dateParser = do
          year <- digit4 ; colon ; month <- digit2 ; colon ; day <- digit2
          space
@@ -37,33 +67,53 @@ readDate s =
                   (fromIntegral ((read second) :: Integer)))
 
 
-{- Format a Maybe CalendarTime into a "yyyy" string. Dates that are
-   Nothing in value format to "0000"
+{- Parse a string in the form "/some/path/signal-yyyy-mm-dd-hhmmss.jpg" into a 
+   CalendarTime datatype. Strings that fail to parse in this manner are
+   returned as Nothing
 -}
-formatYear :: Maybe LocalTime -> String
-formatYear Nothing  = "0000"
-formatYear (Just x) = formatTime defaultTimeLocale "%Y" x
+parseSignalDate :: String -> PhDate
+parseSignalDate s =
+  case (parse dateParser "" s) of
+    Left _  -> NoDateFound
+    Right x -> FilenameDate x
+  where
+    dateParser = do
+      manyTill anyChar (string "signal-")
+      year <- digit4 ; hyphen ; month <- digit2 ; hyphen ; day <- digit2
+      hyphen
+      hour <- digit2 ; minute <- digit2 ; second <- digit2
+      return $
+         LocalTime
+            (fromGregorian (read year) (read month) (read day))
+            (TimeOfDay (read hour) (read minute)
+               (fromIntegral ((read second) :: Integer)))
 
 
-{- Format a Maybe CalendarTime into a "yyyy-mm-dd" string. Dates that are
-   Nothing in value format to "0000-00-00"
+{- Format a Maybe CalendarTime into a "yyyy" string
 -}
-formatDateHyphens :: Maybe LocalTime -> String
-formatDateHyphens Nothing  = "0000-00-00"
-formatDateHyphens (Just x) = formatTime defaultTimeLocale "%Y-%m-%d" x
+formatYear :: LocalTime -> String
+formatYear = formatTime defaultTimeLocale "%Y"
 
 
-{- Format a Maybe CalendarTime into a "yyyymmdd" string. Dates that are
-   Nothing in value format to "00000000"
+{- Format a Maybe CalendarTime into a "yyyy-mm-dd" string
 -}
-formatDate :: Maybe LocalTime -> String
-formatDate Nothing  = "00000000"
-formatDate (Just x) = formatTime defaultTimeLocale "%Y%m%d" x
+formatDateHyphens :: LocalTime -> String
+formatDateHyphens = formatTime defaultTimeLocale "%Y-%m-%d"
 
 
-{- Format a Maybe CalendarTime into a "yyyymmdd-HHMMSS" string. Dates 
-   that are Nothing in value format to "00000000-000000"
+{- Format a Maybe CalendarTime into a "yyyymmdd" string
 -}
-formatDateTime :: Maybe LocalTime -> String
-formatDateTime Nothing  = "00000000-000000"
-formatDateTime (Just x) = formatTime defaultTimeLocale "%Y%m%d-%H%M%S" x
+formatDate :: LocalTime -> String
+formatDate = formatTime defaultTimeLocale "%Y%m%d"
+
+
+{- Format a Maybe CalendarTime into a "yyyymmdd-HHMMSS" string
+-}
+formatDateTime :: LocalTime -> String
+formatDateTime = formatTime defaultTimeLocale "%Y%m%d-%H%M%S"
+
+
+{- Format a Maybe CalendarTime into a "yyyy:mm:dd HH:MM:SS" string
+-}
+formatDateForExif :: LocalTime -> String
+formatDateForExif = formatTime defaultTimeLocale "%Y:%m:%d %H:%M:%S"
