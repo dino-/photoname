@@ -8,7 +8,7 @@ module Test.Photoname.Date
 
 import Data.Time.Calendar
 import Data.Time.LocalTime
-import Photoname.Date ( PhDate (..), parseExifDate, parseSignalDate )
+import Photoname.Date ( PhDate (..), parseExifDate, parseFilenameDate )
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
@@ -31,12 +31,18 @@ parsingTests = testGroup "parsing tests"
   [ testCase "parse a datetime in EXIF format" $
       ExifDate expectedLocalTime @=?
         (parseExifDate $ Just "2021:10:04 17:29:49")
-  , testCase "parse a date from a signal jpg filename" $
+  , testCase "parse a date from a file path with directories" $
       FilenameDate expectedLocalTime @=?
-        parseSignalDate "some/directory/signal-2021-10-04-172949.jpg"
-  , testCase "parse a date from a signal jpg filename with more hyphens" $
+        parseFilenameDate "some/directory/signal-2021-10-04-172949.jpg"
+  , testCase "parse a date from a file path with directories and more hyphens" $
       FilenameDate expectedLocalTime @=?
-        parseSignalDate "some/directory/signal-2021-10-04-17-29-49-942.jpg"
+        parseFilenameDate "some/directory/signal-2021-10-04-17-29-49-942.jpg"
+  , testCase "parse a date from a file path with no directories" $
+      FilenameDate expectedLocalTime @=?
+        parseFilenameDate "signal-2021-10-04-172949.jpg"
+  , testCase "parse a date from a file path with more hyphens but no directories" $
+      FilenameDate expectedLocalTime @=?
+        parseFilenameDate "signal-2021-10-04-17-29-49-942.jpg"
   ]
 
 

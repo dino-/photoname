@@ -6,7 +6,7 @@ module Photoname.Date
   , formatYear, formatDateHyphens, formatDate, formatDateTime
   , formatDateForExif
   , parseExifDate
-  , parseSignalDate
+  , parseFilenameDate
   )
   where
 
@@ -14,9 +14,10 @@ import Data.Functor.Identity ( Identity )
 import Data.Time.Calendar ( fromGregorian )
 import Data.Time.Format ( defaultTimeLocale, formatTime )
 import Data.Time.LocalTime ( LocalTime (..), TimeOfDay (..) )
+import System.FilePath ( takeFileName )
 import Text.Parsec ( ParsecT )
 import Text.ParserCombinators.Parsec ( anyChar, char, count, digit,
-  manyTill, optional, parse, space, string, try )
+  lookAhead, manyTill, optional, parse, space, try )
 
 
 data PhDate
@@ -70,17 +71,20 @@ parseExifDate (Just s) =
 
 
 {- Parse a string in one of the the forms below into a CalendarTime datatype.
-    /some/path/signal-yyyy-mm-dd-hhmmss.jpg
-    /some/path/signal-yyyy-mm-dd-hh-mm-ss-ttt.jpg
+
+    /some/path/ANYTHINGyyyy-mm-dd-hhmmss.jpg
+    /some/path/ANYTHINGyyyy-mm-dd-hh-mm-ss-ttt.jpg
+    ANYTHINGyyyy-mm-dd-hhmmss.jpg
+    ANYTHINGyyyy-mm-dd-hh-mm-ss-ttt.jpg
 -}
-parseSignalDate :: String -> PhDate
-parseSignalDate s =
-  case (parse dateParser "" s) of
+parseFilenameDate :: String -> PhDate
+parseFilenameDate s =
+  case (parse dateParser "" (takeFileName s)) of
     Left _  -> NoDateFound
     Right x -> FilenameDate x
   where
     dateParser = do
-      manyTill anyChar (try (string "signal-"))
+      manyTill anyChar (try $ lookAhead digit4)
       year <- digit4 ; hyphen ; month <- digit2 ; hyphen ; day <- digit2
       hyphen
       hour <- digit2 ; optional hyphen ; minute <- digit2 ; optional hyphen ; second <- digit2

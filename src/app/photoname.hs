@@ -8,7 +8,7 @@ import Text.Printf ( printf )
 import Photoname.Common ( Ph, Options (..), ask, liftIO, runRename, throwError )
 import Photoname.Date
   ( PhDate (ExifDate, FilenameDate, NoDateFound)
-  , parseExifDate, parseSignalDate
+  , parseExifDate, parseFilenameDate
   )
 import Photoname.Exif ( getExifDate )
 import Photoname.Exiv2 ( setArtist, setExifDate )
@@ -21,7 +21,7 @@ acquireDate oldPath = do
   dateString <- getExifDate oldPath
   return $ mconcat
     [ parseExifDate dateString
-    , parseSignalDate oldPath
+    , parseFilenameDate oldPath
     ]
 
 
