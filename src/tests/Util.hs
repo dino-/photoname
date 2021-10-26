@@ -1,14 +1,14 @@
-module Util (
-   resourcesPath,
-   getProcessOutput, getBinaryOutput,
-   assertFalse
-)
-   where
+module Util
+  ( resourcesPath
+  , getProcessOutput, getBinaryOutput
+  , assertFalse
+  )
+  where
 
 import Data.List ( intercalate )
 import System.IO ( hGetContents )
 import System.Process ( ProcessHandle, runInteractiveCommand )
-import Test.HUnit ( Assertion, assertBool )
+import Test.Tasty.HUnit ( Assertion, assertBool )
 
 
 command :: String
@@ -23,7 +23,7 @@ resourcesPath = "util/resources/test"
    This evil thing doesn't watch STDERR at all or otherwise do anything
    even remotely safe.
 -}
-getProcessOutput :: FilePath -> [String] -> IO (String, ProcessHandle)
+getProcessOutput :: String -> [String] -> IO (String, ProcessHandle)
 getProcessOutput path' args = do
    (_, outH, _, procH) <- runInteractiveCommand
       $ path' ++ " -- " ++ (intercalate " " args)

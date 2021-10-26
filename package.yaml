@@ -62,8 +62,9 @@ tests:
     source-dirs: src/tests
     main: runtests.hs
     dependencies:
-    - HUnit
     - photoname
     - process
     - regex-posix
     - time
+    - tasty
+    - tasty-hunit

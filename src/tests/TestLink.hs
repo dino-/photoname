@@ -1,40 +1,18 @@
 {-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 
-module TestLink (
-   testLinkAll
-)
-   where
+module TestLink
+  ( tests
+  )
+  where
 
 import System.Directory ( copyFile, removeDirectoryRecursive )
 import System.FilePath.Posix ( (</>), (<.>) )
 import System.Posix.Files ( fileExist )
 import System.Process ( waitForProcess )
-import Test.HUnit ( Test (..), assertBool )
 import Text.Regex.Posix ( (=~) )
+import Test.Tasty
+import Test.Tasty.HUnit
 import qualified Util
-
-
-{- Test the normal behavior of hard-linking the original file to a new
-   path.
--}
-
-
-testLinkAll :: Test
-testLinkAll = TestList
-   [ TestLabel "testLinkDigitized" testLinkDigitized
-   , TestLabel "testLinkOriginal" testLinkOriginal
-   , TestLabel "testLinkDate" testLinkDate
-   , TestLabel "testNoDate" testNoDate
-   , TestLabel "testMove" testMove
-   , TestLabel "testLinkNoAction" testLinkNoAction
-   , TestLabel "testLinkNoActionLong" testLinkNoActionLong
-   , TestLabel "testLinkQuiet" testLinkQuiet
-   , TestLabel "testLinkQuietLong" testLinkQuietLong
-   , TestLabel "testLinkSuffix" testLinkSuffix
-   , TestLabel "testNoExif" testNoExif
-   , TestLabel "testNotAnImage" testNotAnImage
-   , TestLabel "testDirForFile" testDirForFile
-   ]
 
 
 parentDir, oldPath, newLinkPathDate :: FilePath
@@ -44,8 +22,26 @@ oldPath = Util.resourcesPath </> "dateTimeDigitized.jpg"
 newLinkPathDate = parentDir </> "2003/2003-09-02/20030902-114303.jpg"
 
 
-testLinkDigitized :: Test
-testLinkDigitized = TestCase $ do
+tests :: TestTree
+tests = testGroup "test the normal behavior of hard-linking original files to new paths"
+  [ testLinkDigitized
+  , testLinkOriginal
+  , testLinkDate
+  , testNoDate
+  , testMove
+  , testLinkNoAction
+  , testLinkNoActionLong
+  , testLinkQuiet
+  , testLinkQuietLong
+  , testLinkSuffix
+  , testNoExif
+  , testNotAnImage
+  , testDirForFile
+  ]
+
+
+testLinkDigitized :: TestTree
+testLinkDigitized = testCase "tests for DateTimeDigitized" $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ "--parent-dir=" ++ parentDir, oldPath ]
@@ -67,8 +63,8 @@ testLinkDigitized = TestCase $ do
       (output =~ newLinkPathDate :: Bool)
 
 
-testLinkOriginal :: Test
-testLinkOriginal = TestCase $ do
+testLinkOriginal :: TestTree
+testLinkOriginal = testCase "tests for DateTimeOriginal" $ do
    let digitizedOldPath = Util.resourcesPath </> "dateTimeOriginal.jpg"
 
    -- Run the program with known input data
@@ -92,8 +88,8 @@ testLinkOriginal = TestCase $ do
       (output =~ newLinkPathDate :: Bool)
 
 
-testLinkDate :: Test
-testLinkDate = TestCase $ do
+testLinkDate :: TestTree
+testLinkDate = testCase "tests for DateTime" $ do
    let dateOldPath = Util.resourcesPath </> "dateTime.jpg"
    let customLinkPathDate = parentDir </> "2019/2019-03-26/20190326-075309.jpg"
 
@@ -118,8 +114,8 @@ testLinkDate = TestCase $ do
       (output =~ customLinkPathDate :: Bool)
 
 
-testNoDate :: Test
-testNoDate = TestCase $ do
+testNoDate :: TestTree
+testNoDate = testCase "test for no date in the file" $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ "--parent-dir=" ++ parentDir, Util.resourcesPath </> "noDate.jpg" ]
@@ -130,8 +126,8 @@ testNoDate = TestCase $ do
       (output =~ "\\*\\* Processing util/resources/test/noDate.jpg: Could not extract any date information" :: Bool)
 
 
-testMove :: Test
-testMove = TestCase $ do
+testMove :: TestTree
+testMove = testCase "tests to ensure the file is moved (original link removed)" $ do
    -- Make a dummy copy of the source file. This test will be getting rid
    -- of it, if successful.
    let newOldPath = Util.resourcesPath </> "moveTest.jpg"
@@ -158,16 +154,16 @@ testMove = TestCase $ do
       (output =~ newLinkPathDate :: Bool)
 
 
-testLinkNoAction :: Test
+testLinkNoAction :: TestTree
 testLinkNoAction = testLinkNoAction' "no action" "-n"
 
 
-testLinkNoActionLong :: Test
+testLinkNoActionLong :: TestTree
 testLinkNoActionLong = testLinkNoAction' "no action long" "--no-action"
 
 
-testLinkNoAction' :: String -> String -> Test
-testLinkNoAction' label switch = TestCase $ do
+testLinkNoAction' :: String -> String -> TestTree
+testLinkNoAction' label switch = testCase label $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ switch, "--parent-dir=" ++ parentDir, oldPath ]
@@ -186,17 +182,17 @@ testLinkNoAction' label switch = TestCase $ do
       (output =~ newLinkPathDate :: Bool)
 
 
-testLinkQuiet :: Test
+testLinkQuiet :: TestTree
 testLinkQuiet = testLinkQuiet' "make link quiet" "-q"
 
 
-testLinkQuietLong :: Test
+testLinkQuietLong :: TestTree
 testLinkQuietLong = testLinkQuiet' "make link quiet long" "--quiet"
 
 
 -- Reusable test code for above short/long versions of the quiet switch
-testLinkQuiet' :: String -> String -> Test
-testLinkQuiet' label switch = TestCase $ do
+testLinkQuiet' :: String -> String -> TestTree
+testLinkQuiet' label switch = testCase label $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ switch, "--parent-dir=" ++ parentDir, oldPath ]
@@ -218,8 +214,8 @@ testLinkQuiet' label switch = TestCase $ do
       (output =~ newLinkPathDate :: Bool)
 
 
-testLinkSuffix :: Test
-testLinkSuffix = TestCase $ do
+testLinkSuffix :: TestTree
+testLinkSuffix = testCase "test link with a suffix" $ do
    let suffix = "_dwm"
 
    -- Run the program with known input data
@@ -246,8 +242,8 @@ testLinkSuffix = TestCase $ do
       (output =~ newLinkPath :: Bool)
 
 
-testNoExif :: Test
-testNoExif = TestCase $ do
+testNoExif :: TestTree
+testNoExif = testCase "test for a file without any EXIF data" $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ "--parent-dir=" ++ parentDir, Util.resourcesPath </> "noExif.jpg" ]
@@ -258,8 +254,8 @@ testNoExif = TestCase $ do
       (output =~ "\\*\\* Processing util/resources/test/noExif.jpg: Could not extract any date information" :: Bool)
 
 
-testNotAnImage :: Test
-testNotAnImage = TestCase $ do
+testNotAnImage :: TestTree
+testNotAnImage = testCase "test for a file that isn't an image" $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ "--parent-dir=" ++ parentDir, Util.resourcesPath </> "notAnImage.txt" ]
@@ -270,8 +266,8 @@ testNotAnImage = TestCase $ do
       (output =~ "\\*\\* Processing util/resources/test/notAnImage.txt: Could not extract any date information" :: Bool)
 
 
-testDirForFile :: Test
-testDirForFile = TestCase $ do
+testDirForFile :: TestTree
+testDirForFile = testCase "test when a directory is passed instead of a file" $ do
    -- Run the program with known input data
    (output, procH) <- Util.getBinaryOutput
       [ "--parent-dir=" ++ parentDir, Util.resourcesPath ]
