@@ -68,3 +68,4 @@ tests:
     - time
     - tasty
     - tasty-hunit
+    - tasty-quickcheck
