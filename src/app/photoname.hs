@@ -1,19 +1,13 @@
-import Control.Monad ( filterM, forM_, unless, when )
-import System.Directory ( createDirectoryIfMissing )
-import System.FilePath ( takeDirectory )
-import System.Posix ( createLink, fileExist, getFileStatus,
-   isRegularFile, removeLink )
+import Control.Monad ( filterM, forM_, when )
+import System.Posix ( getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Ph, Options (..), ask, liftIO, runRename, throwError )
-import Photoname.Date
-  ( PhDate (ExifDate, FilenameDate, NoDateFound)
-  , parseExifDate, parseFilenameDate
-  )
+import Photoname.Common ( Ph, Options (..), runRename )
+import Photoname.CopyLink ( createNewLink )
+import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
 import Photoname.Exiv2 ( setArtist, setExifDate )
 import Photoname.Opts ( parseOpts )
-import Photoname.DateFormat ( buildDatePath )
 
 
 acquireDate :: FilePath -> Ph PhDate
@@ -31,36 +25,6 @@ processFile oldPath = do
   newPath <- createNewLink imageDate oldPath
   setExifDate imageDate newPath
   setArtist newPath
-
-
-createNewLink :: PhDate -> FilePath -> Ph FilePath
-createNewLink imageDate oldPath = do
-  opts <- ask
-  newPath <- case imageDate of
-    ExifDate lt -> buildDatePath lt
-    FilenameDate lt -> buildDatePath lt
-    NoDateFound -> throwError "Could not extract any date information"
-
-  -- Check for existance of the target file
-  exists <- liftIO $ fileExist newPath
-  when exists $ throwError $ "Destination " ++ newPath ++ " exists!"
-
-  -- Display what will be done
-  unless (optQuiet opts) $
-    liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
-
-  unless (optNoAction opts) $ do
-    -- Make the target dir
-    liftIO $ createDirectoryIfMissing True $ takeDirectory newPath
-
-    -- Make the new hard link
-    liftIO $ createLink oldPath newPath
-
-    -- If user has specified, remove the original link
-    when (optMove opts) $
-       liftIO $ removeLink oldPath
-
-  return newPath
 
 
 -- Figure out and execute what the user wants based on the supplied args.
