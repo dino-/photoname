@@ -5,7 +5,7 @@ module TestLink
   )
   where
 
-import System.Directory ( copyFile, removeDirectoryRecursive )
+import System.Directory ( copyFile, removeDirectoryRecursive, removeFile )
 import System.FilePath.Posix ( (</>), (<.>) )
 import System.Posix.Files ( fileExist )
 import System.Process ( waitForProcess )
@@ -37,6 +37,7 @@ tests = testGroup "test the normal behavior of hard-linking original files to ne
   , testNoExif
   , testNotAnImage
   , testDirForFile
+  , testLinkFilenameDate
   ]
 
 
@@ -276,3 +277,35 @@ testDirForFile = testCase "test when a directory is passed instead of a file" $ 
    -- Test output to stdout
    assertBool "dir as file to change: correct output"
       (output =~ "" :: Bool)
+
+
+testLinkFilenameDate :: TestTree
+testLinkFilenameDate = testCase "test to ensure the date can be acquired from the file name" $ do
+   -- Make a dummy copy of the source file. This test will be modifying
+   -- it, if successful.
+   let newOldPath = Util.resourcesPath </> "copy-of-foobar-2021-10-04-17-29-49-942.jpg"
+   copyFile (Util.resourcesPath </> "foobar-2021-10-04-17-29-49-942.jpg") newOldPath
+   let newLinkPathDate' = parentDir </> "2021/2021-10-04/20211004-172949.jpg"
+
+   -- Run the program with known input data
+   (output, procH) <- Util.getBinaryOutput
+      [ "--parent-dir=" ++ parentDir, newOldPath ]
+   waitForProcess procH
+
+   -- Check that the correct output path exists
+   existsNew <- fileExist newLinkPathDate'
+   assertBool "filename date: existance of new link" existsNew
+
+   -- Check that old path still exists
+   existsOld <- fileExist newOldPath
+   assertBool "filename date: existance of old link" existsOld
+
+   -- Remove files and dirs that were created
+   removeFile newOldPath
+   removeDirectoryRecursive parentDir
+
+   -- WARNING We are NOT checking for the new EXIF tags in the files!!
+
+   -- Test output to stdout
+   assertBool "filename date: correct output"
+      (output =~ newLinkPathDate' :: Bool)
