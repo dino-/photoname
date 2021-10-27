@@ -26,7 +26,7 @@ photoname is available for Linux in AppImage form [from github](https://github.c
 And once you have it, building the usual way:
 
     $ stack build
-    $ stack exec photoname
+    $ stack run
     $ stack test
     $ stack clean
 
