@@ -3,9 +3,11 @@ module Photoname.CopyLink
    )
    where
 
+import Control.Exception ( try )
 import Control.Monad ( unless, when )
 import Data.Time.LocalTime ( LocalTime )
-import System.Directory ( createDirectoryIfMissing )
+import GHC.IO.Exception ( IOException )
+import System.Directory ( copyFile, createDirectoryIfMissing )
 import System.FilePath ( (</>), takeDirectory )
 import System.Posix ( createLink, fileExist, removeLink )
 import Text.Printf ( printf )
@@ -38,13 +40,24 @@ createNewLink imageDate oldPath = do
     liftIO $ createDirectoryIfMissing True $ takeDirectory newPath
 
     -- Make the new hard link
-    liftIO $ createLink oldPath newPath
+    ei <- liftIO $ try $ createLink oldPath newPath
+    either (copyFileInstead oldPath newPath) return ei
 
     -- If user has specified, remove the original link
     when (optMove opts) $
        liftIO $ removeLink oldPath
 
   return newPath
+
+
+copyFileInstead :: FilePath -> FilePath -> IOException -> Ph ()
+copyFileInstead oldPath newPath _ = do
+  beQuiet <- asks optQuiet
+
+  unless beQuiet $
+    liftIO $ putStrLn "Hard link failed, attempting to copy instead"
+
+  liftIO $ copyFile oldPath newPath
 
 
 {- Given a path to a file with EXIF data, construct a new path based on the
