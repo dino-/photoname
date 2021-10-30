@@ -36,13 +36,17 @@ parser = Options
         )
       )
   <*> switch
+        (  long "copy"
+        <> help "Copy files instead of hard linking, even if on the same filesystem"
+        )
+  <*> switch
         (  long "no-dirs"
         <> short 'D'
         <> help "No subdirectory hierarchy. Just do DIR/NEWFILE"
         )
   <*> switch
         (  long "move"
-        <> help "Move the files, don't just hard-link to the new locations"
+        <> help "Move the files, don't just hard-link to the new locations. In other words, remove the source path."
         )
   <*> switch
         (  long "no-action"
@@ -126,7 +130,7 @@ footer' :: InfoMod a
 footer' = footerDoc . Just . string $ printf content (showVersion version)
   where content = [here|OVERVIEW
 
-This software is for renaming and storing your digital photos. It will attempt to construct a meaningful filename based on the EXIF shoot date in the file and optionally some other information.
+This software is for renaming and storing your digital photos. It will attempt to construct a meaningful filename based on the EXIF shoot date in the file or possibly date/time info in the old filename, and optionally some other information.
 
 FILENAME FORMAT
 
@@ -137,13 +141,20 @@ A photo shot on 2002-May-02 01:23:07 PM:
 
 The EXIF date/time stamp used for naming is the first of these fields to be found: Exif.Photo.DateTimeOriginal, Exif.Photo.DateTimeDigitized, Exif.Image.DateTime
 
+If none of the EXIF tags listed above is found, the program will try to gather date/time info from the filename itself. Filenames that are parsable look like:
+
+  some/directory/foo2021-10-04-172949.jpg
+  some/directory/foo2021-10-04-17-29-49-942.jpg
+
+In the event the date/time info is gathered from the filename, the program will go ahead and write this into the file's EXIF tags. BEWARE: Unless you're using the --copy switch, this WILL MODIFY THE ORIGINAL FILES!
+
 The <PARENTDIR> is the one given by the -p|--parent-dir switch and represents the top-level of where you're storing photos.
 
 The -D|--no-dirs switch will suppress the directory-hierarchy-creating part of this, instead placing the new links directly in <PARENTDIR>. So you get files like:
 
   <PARENTDIR>/20020502-132307.jpg
 
-Default behavior is to create hard links to the new paths and leave the original links as they were. You can use the --move switch to not leave the original links.
+Default behavior is to create hard links to the new paths and leave the original links as they were. You can use the --move switch to remove the original links. You can also use the --copy switch to make a copy instead of hard linking. Also, copying will be attempted if the hard linking fails, for instance if you're naming across different filesystems.
 
 ARTIST
 

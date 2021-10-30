@@ -40,6 +40,9 @@ main = do
    when (optNoAction opts) $
       putStrLn "No-action mode, nothing will be changed."
 
+   when (optCopy opts) $
+      putStrLn "Copy has been specified instead of the default of hard linking."
+
    when (optMove opts) $
       putStrLn "Removing original links after new links are in place."
 

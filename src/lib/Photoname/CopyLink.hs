@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Photoname.CopyLink
    ( createNewLink
    )
@@ -39,9 +41,10 @@ createNewLink imageDate oldPath = do
     -- Make the target dir
     liftIO $ createDirectoryIfMissing True $ takeDirectory newPath
 
-    -- Make the new hard link
-    ei <- liftIO $ try $ createLink oldPath newPath
-    either (copyFileInstead oldPath newPath) return ei
+    -- Make the new file
+    if (optCopy opts)
+      then liftIO $ copyFile oldPath newPath
+      else tryHardLink oldPath newPath
 
     -- If user has specified, remove the original link
     when (optMove opts) $
@@ -50,14 +53,17 @@ createNewLink imageDate oldPath = do
   return newPath
 
 
-copyFileInstead :: FilePath -> FilePath -> IOException -> Ph ()
-copyFileInstead oldPath newPath _ = do
-  beQuiet <- asks optQuiet
-
-  unless beQuiet $
-    liftIO $ putStrLn "Hard link failed, attempting to copy instead"
-
-  liftIO $ copyFile oldPath newPath
+tryHardLink :: FilePath -> FilePath -> Ph ()
+tryHardLink oldPath newPath = do
+  ei <- liftIO $ try $ createLink oldPath newPath
+  either failureHandler return ei
+  where
+    failureHandler :: IOException -> Ph ()
+    failureHandler _ = do
+      beQuiet <- asks optQuiet
+      unless beQuiet $
+        liftIO $ putStrLn "Hard link failed, attempting to copy instead"
+      liftIO $ copyFile oldPath newPath
 
 
 {- Given a path to a file with EXIF data, construct a new path based on the
