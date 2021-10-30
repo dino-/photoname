@@ -19,6 +19,7 @@ import Photoname.Date
   ( PhDate (ExifDate, FilenameDate, NoDateFound)
   , formatDateHyphens, formatDateTime, formatYear
   )
+import Photoname.Log ( logP )
 
 
 createNewLink :: PhDate -> FilePath -> Ph FilePath
@@ -34,8 +35,7 @@ createNewLink imageDate oldPath = do
   when exists $ throwError $ "Destination " ++ newPath ++ " exists!"
 
   -- Display what will be done
-  unless (optQuiet opts) $
-    liftIO $ putStrLn $ oldPath ++ " -> " ++ newPath
+  logP $ oldPath ++ " -> " ++ newPath
 
   unless (optNoAction opts) $ do
     -- Make the target dir
@@ -60,9 +60,7 @@ tryHardLink oldPath newPath = do
   where
     failureHandler :: IOException -> Ph ()
     failureHandler _ = do
-      beQuiet <- asks optQuiet
-      unless beQuiet $
-        liftIO $ putStrLn "Hard link failed, attempting to copy instead"
+      logP "Hard link failed, attempting to copy instead"
       liftIO $ copyFile oldPath newPath
 
 

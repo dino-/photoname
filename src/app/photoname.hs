@@ -7,6 +7,7 @@ import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
 import Photoname.Exiv2 ( setArtist, setExifDate )
+import Photoname.Log ( logIO )
 import Photoname.Opts ( parseOpts )
 
 
@@ -38,18 +39,18 @@ main = do
 
    -- Notify user of the switches that will be in effect.
    when (optNoAction opts) $
-      putStrLn "No-action mode, nothing will be changed."
+      logIO opts "No-action mode, nothing will be changed."
 
    when (optCopy opts) $
-      putStrLn "Copy has been specified instead of the default of hard linking."
+      logIO opts "Copy has been specified instead of the default of hard linking."
 
    when (optMove opts) $
-      putStrLn "Removing original links after new links are in place."
+      logIO opts "Removing original links after new links are in place."
 
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \path -> do
       result <- runRename opts $ processFile path
-      either (\em -> printf "** Processing %s: %s\n" path em)
+      either (\em -> logIO opts $ printf "** Processing %s: %s\n" path em)
          (const return ()) result
 
    -- Perhaps we should get an ExitCode back from all this above?
