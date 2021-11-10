@@ -158,11 +158,16 @@ Default behavior is to create hard links to the new paths and leave the original
 
 ARTIST
 
-Set artist info in the Exif.Image.Artist tag. This can be any string you like but a good conventional one would look like:
+Set artist info in the Exif.Image.Artist tag. This can be any string you like but good conventional ones would look like:
 
-  'Photographer, Roscoe Jones <rjones@foo.com>'
+  'Role1, Name1[; Role2, Name2;...]'
 
-Pass a quoted empty string to -a|--artist to delete an existing Artist tag.
+  'Photographer, Roscoe Jones'
+  'Camera owner, Ren Hoek; Photographer, Stimpson J Cat'
+
+Be careful with what you put in here, we've seen problems with email addresses rendering the entire field not visible in some applications. Keep it simple as above!
+
+Pass a quoted empty string to -a|--artist to delete an existing Artist tag, like this: -a '' or --artist=''
 
 SUFFIX
 
