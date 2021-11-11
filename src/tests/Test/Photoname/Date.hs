@@ -49,6 +49,12 @@ parsingTests = testGroup "parsing tests"
   , testCase "parse a date from a previously-named file path with suffix" $
       FilenameDate expectedLocalTime @=?
         parseFilenameDate "20211004-172949_xyz.jpg"
+  , testCase "parse a date from a Pixel phone path file path" $
+      FilenameDate expectedLocalTime @=?
+        parseFilenameDate "PXL_20211004_172949000.jpg"
+  , testCase "parse a date from a Pixel phone path file path with extra suffix" $
+      FilenameDate expectedLocalTime @=?
+        parseFilenameDate "PXL_20211004_172949000_foo.jpg"
   ]
 
 

@@ -17,7 +17,7 @@ import Data.Time.LocalTime ( LocalTime (..), TimeOfDay (..) )
 import System.FilePath ( takeFileName )
 import Text.Parsec ( ParsecT )
 import Text.ParserCombinators.Parsec ( anyChar, char, count, digit,
-  lookAhead, manyTill, optional, parse, space, try )
+  lookAhead, manyTill, parse, space, try )
 
 
 data PhDate
@@ -38,9 +38,8 @@ instance Monoid PhDate where
 
 -- Parsec helper defs
 
-colon, hyphen :: ParsecT String u Identity Char
+colon :: ParsecT String u Identity Char
 colon = char ':'
-hyphen = char '-'
 
 digit2, digit4 :: ParsecT String u Identity [Char]
 digit2 = count 2 digit
@@ -78,6 +77,8 @@ parseExifDate (Just s) =
     ANYTHINGyyyy-mm-dd-hh-mm-ss-ttt.jpg
     yyyymmdd-hhmmss.jpg
     yyyymmdd-hhmmss_xyz.jpg
+    PXL_yyyymmdd_hhmmssttt.jpg
+    PXL_yyyymmdd_hhmmssttt_xyz.jpg
 -}
 parseFilenameDate :: String -> PhDate
 parseFilenameDate s =
@@ -87,9 +88,17 @@ parseFilenameDate s =
   where
     dateParser = do
       manyTill anyChar (try $ lookAhead digit4)
-      year <- digit4 ; optional hyphen ; month <- digit2 ; optional hyphen ; day <- digit2
-      optional hyphen
-      hour <- digit2 ; optional hyphen ; minute <- digit2 ; optional hyphen ; second <- digit2
+      year <- digit4
+      manyTill anyChar (try $ lookAhead digit2)
+      month <- digit2
+      manyTill anyChar (try $ lookAhead digit2)
+      day <- digit2
+      manyTill anyChar (try $ lookAhead digit2)
+      hour <- digit2
+      manyTill anyChar (try $ lookAhead digit2)
+      minute <- digit2
+      manyTill anyChar (try $ lookAhead digit2)
+      second <- digit2
       return $
          LocalTime
             (fromGregorian (read year) (read month) (read day))
