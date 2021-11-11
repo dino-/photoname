@@ -42,8 +42,7 @@ setExifDate :: PhDate -> FilePath -> Ph ()
 
 setExifDate (FilenameDate lt) newPath =
   execCommands
-    [ printf "exiv2 --Modify 'set Exif.Image.DateTime Ascii %s' %s" (formatDateForExif lt) newPath
-    , printf "exiv2 --Modify 'set Exif.Photo.UserComment charset=Ascii DateTime is a guess' %s" newPath
+    [ printf "exiv2 --Modify 'set Exif.Image.DateTime Ascii %s' --Modify 'set Exif.Photo.UserComment charset=Ascii DateTime is a guess' %s" (formatDateForExif lt) newPath
     ]
 
 setExifDate _ _ = return ()
