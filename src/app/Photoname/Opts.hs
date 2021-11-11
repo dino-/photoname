@@ -25,7 +25,7 @@ parser = Options
         (  long "artist"
         <> short 'a'
         <> metavar "ARTIST"
-        <> help "Set artist info in the Exif.Image.Artist tag. See ARTIST"
+        <> help "Set artist info in the Exif.Image.Artist tag. Requires exiv2. See ARTIST"
         )
       )
   <*> optional ( strOption
@@ -147,6 +147,8 @@ If none of the EXIF tags listed above is found, the program will try to gather d
   some/directory/foo2021-10-04-17-29-49-942.jpg
 
 In the event the date/time info is gathered from the filename, the program will go ahead and write this into the file's EXIF tags. BEWARE: Unless you're using the --copy switch, this WILL MODIFY THE ORIGINAL FILES!
+
+The EXIF modifications rely on the system having the `exiv2` binary installed and on the path. Without this, some of photoname's functions will fail including: setting the date from the filename and setting the artist info.
 
 The <PARENTDIR> is the one given by the -p|--parent-dir switch and represents the top-level of where you're storing photos.
 
