@@ -43,6 +43,12 @@ parsingTests = testGroup "parsing tests"
   , testCase "parse a date from a file path with more hyphens but no directories" $
       FilenameDate expectedLocalTime @=?
         parseFilenameDate "signal-2021-10-04-17-29-49-942.jpg"
+  , testCase "parse a date from a previously-named file path" $
+      FilenameDate expectedLocalTime @=?
+        parseFilenameDate "20211004-172949.jpg"
+  , testCase "parse a date from a previously-named file path with suffix" $
+      FilenameDate expectedLocalTime @=?
+        parseFilenameDate "20211004-172949_xyz.jpg"
   ]
 
 

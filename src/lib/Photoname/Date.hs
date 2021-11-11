@@ -76,6 +76,8 @@ parseExifDate (Just s) =
     /some/path/ANYTHINGyyyy-mm-dd-hh-mm-ss-ttt.jpg
     ANYTHINGyyyy-mm-dd-hhmmss.jpg
     ANYTHINGyyyy-mm-dd-hh-mm-ss-ttt.jpg
+    yyyymmdd-hhmmss.jpg
+    yyyymmdd-hhmmss_xyz.jpg
 -}
 parseFilenameDate :: String -> PhDate
 parseFilenameDate s =
@@ -85,8 +87,8 @@ parseFilenameDate s =
   where
     dateParser = do
       manyTill anyChar (try $ lookAhead digit4)
-      year <- digit4 ; hyphen ; month <- digit2 ; hyphen ; day <- digit2
-      hyphen
+      year <- digit4 ; optional hyphen ; month <- digit2 ; optional hyphen ; day <- digit2
+      optional hyphen
       hour <- digit2 ; optional hyphen ; minute <- digit2 ; optional hyphen ; second <- digit2
       return $
          LocalTime
