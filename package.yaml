@@ -15,10 +15,11 @@ extra-source-files:
 - changelog.md
 - doc/hcar-photoname.tex
 - .gitignore
+- hsinstall/share/applications/photoname.desktop
+- hsinstall/share/icons/hicolor/scalable/apps/photoname.svg
 - package.yaml
 - README.md
 - stack.yaml
-- util/resources/appimage/*
 - util/resources/test/*
 
 github: dino-/photoname
