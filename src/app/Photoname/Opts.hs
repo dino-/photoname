@@ -61,6 +61,13 @@ parser = Options
         <> showDefault
         <> value "."
         )
+  <*> strOption
+        (  long "prefix"
+        <> short 'P'
+        <> metavar "PRE"
+        <> help "Add optional prefix to each name. See PREFIX"
+        <> value ""
+        )
   <*> switch
         (  long "quiet"
         <> short 'q'
@@ -170,6 +177,13 @@ Set artist info in the Exif.Image.Artist tag. This can be any string you like bu
 Be careful with what you put in here, we've seen problems with email addresses rendering the entire field not visible in some applications. Keep it simple as above!
 
 Pass a quoted empty string to -a|--artist to delete an existing Artist tag, like this: -a '' or --artist=''
+
+PREFIX
+
+The optional -P|--prefix switch can be used to provide a string placed at the beginning of the new filename, before the date. Use it for anything you like. An example is subject matter. Example:
+
+photoname invoked with --prefix=BirthdayParty_ :
+  BirthdayParty_20020502-132307.jpg
 
 SUFFIX
 

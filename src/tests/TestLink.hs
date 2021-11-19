@@ -34,6 +34,7 @@ tests = testGroup "test the normal behavior of hard-linking original files to ne
   , testLinkQuiet
   , testLinkQuietLong
   , testLinkSuffix
+  , testLinkPrefix
   , testNoExif
   , testNotAnImage
   , testDirForFile
@@ -241,6 +242,34 @@ testLinkSuffix = testCase "test link with a suffix" $ do
    -- Test output to stdout
    assertBool "make link: correct output"
       (output =~ newLinkPath :: Bool)
+
+
+testLinkPrefix :: TestTree
+testLinkPrefix = testCase "test link with a prefix" $ do
+  let prefix = "SomeSubject_"
+
+  -- Run the program with known input data
+  (output, procH) <- Util.getBinaryOutput
+    [ "--parent-dir=" ++ parentDir, "--prefix=" ++ prefix, oldPath ]
+  waitForProcess procH
+
+  let newLinkPath = parentDir </>
+        ("2003/2003-09-02/" <> prefix <> "20030902-114303") <.> "jpg"
+
+  -- Check that the correct output path exists
+  existsNew <- fileExist newLinkPath
+  assertBool "make link: existance of new link" existsNew
+
+  -- Check that old path still exists
+  existsOld <- fileExist oldPath
+  assertBool "make link: existance of old link" existsOld
+
+  -- Remove files and dirs that were created
+  removeDirectoryRecursive parentDir
+
+  -- Test output to stdout
+  assertBool "make link: correct output"
+    (output =~ newLinkPath :: Bool)
 
 
 testNoExif :: TestTree

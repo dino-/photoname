@@ -69,8 +69,9 @@ tryHardLink oldPath newPath = do
 -}
 buildDatePath :: LocalTime -> Ph FilePath
 buildDatePath date = do
+   prefix <- asks optPrefix
    suffix <- asks optSuffix
-   let fileName = printf "%s%s.jpg" (formatDateTime date) suffix
+   let fileName = printf "%s%s%s.jpg" prefix (formatDateTime date) suffix
 
    parentDir <- asks optParentDir
    noDirs <- asks optNoDirs

@@ -24,6 +24,7 @@ data Options = Options
   , optMove :: Bool
   , optNoAction :: Bool
   , optParentDir :: FilePath
+  , optPrefix :: String
   , optQuiet :: Bool
   , optSuffix :: String
   , optPaths :: [FilePath]
