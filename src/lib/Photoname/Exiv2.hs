@@ -13,15 +13,18 @@ import Photoname.Date ( PhDate (FilenameDate), formatDateForExif )
 import Photoname.Log ( lname, noticeM )
 
 
-execCommands :: [String] -> Ph ()
+newtype Command = Command { unCommand :: String }
+
+
+execCommands :: [Command] -> Ph ()
 execCommands commands = do
   opts <- ask
 
   -- Display what will be done
-  liftIO $ mapM_ (noticeM lname) commands
+  liftIO $ mapM_ (noticeM lname . unCommand) commands
 
   -- Execute the commands
-  unless (optNoAction opts) $ liftIO $ mapM_ callCommand commands
+  unless (optNoAction opts) $ liftIO $ mapM_ (callCommand . unCommand) commands
 
   pure ()
 
@@ -32,16 +35,16 @@ setArtist (DestPath destFp) = do
 
   case optArtist opts of
     Nothing -> pure ()
-    Just "" -> execCommands
+    Just "" -> execCommands . map Command $
       [ printf "exiv2 --Modify 'del Exif.Image.Artist' %s" destFp ]
-    Just artistInfo -> execCommands
+    Just artistInfo -> execCommands . map Command $
       [ printf "exiv2 --Modify 'set Exif.Image.Artist %s' %s" artistInfo destFp ]
 
 
 setExifDate :: PhDate -> DestPath -> Ph ()
 
 setExifDate (FilenameDate lt) (DestPath destFp) =
-  execCommands
+  execCommands . map Command $
     [ printf "exiv2 --Modify 'set Exif.Image.DateTime Ascii %s' --Modify 'set Exif.Photo.UserComment charset=Ascii DateTime is a guess' %s" (formatDateForExif lt) destFp
     ]
 
