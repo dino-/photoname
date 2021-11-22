@@ -1,5 +1,6 @@
 module Photoname.Common
-  ( Options (..)
+  ( DestPath (..)
+  , Options (..)
   , Ph
   , SrcPath (..)
   , Verbosity (..)
@@ -55,6 +56,8 @@ data Options = Options
 
 
 newtype SrcPath = SrcPath { unSrcPath :: FilePath }
+
+newtype DestPath = DestPath { unDestPath :: FilePath }
 
 
 type Ph a = ReaderT Options (ExceptT String IO) a

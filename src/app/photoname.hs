@@ -2,7 +2,7 @@ import Control.Monad ( filterM, forM_, when )
 import System.Posix ( getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Ph, Options (..), SrcPath (..), runRename )
+import Photoname.Common ( Options (..), Ph, SrcPath (..), runRename )
 import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
@@ -23,9 +23,9 @@ acquireDate srcPath = do
 processFile :: SrcPath -> Ph ()
 processFile srcPath = do
   imageDate <- acquireDate srcPath
-  newPath <- createNewLink imageDate srcPath
-  setExifDate imageDate newPath
-  setArtist newPath
+  destPath <- createNewLink imageDate srcPath
+  setExifDate imageDate destPath
+  setArtist destPath
 
 
 -- Figure out and execute what the user wants based on the supplied args.
