@@ -2,7 +2,7 @@ import Control.Monad ( filterM, forM_, when )
 import System.Posix ( getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Ph, Options (..), runRename )
+import Photoname.Common ( Ph, Options (..), SrcPath (..), runRename )
 import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
@@ -11,19 +11,19 @@ import Photoname.Log ( errorM, initLogging, infoM, lname )
 import Photoname.Opts ( parseOpts )
 
 
-acquireDate :: FilePath -> Ph PhDate
-acquireDate oldPath = do
-  dateString <- getExifDate oldPath
+acquireDate :: SrcPath -> Ph PhDate
+acquireDate srcPath = do
+  dateString <- getExifDate srcPath
   return $ mconcat
     [ parseExifDate dateString
-    , parseFilenameDate oldPath
+    , parseFilenameDate srcPath
     ]
 
 
-processFile :: FilePath -> Ph ()
-processFile oldPath = do
-  imageDate <- acquireDate oldPath
-  newPath <- createNewLink imageDate oldPath
+processFile :: SrcPath -> Ph ()
+processFile srcPath = do
+  imageDate <- acquireDate srcPath
+  newPath <- createNewLink imageDate srcPath
   setExifDate imageDate newPath
   setArtist newPath
 
@@ -36,7 +36,7 @@ main = do
    initLogging $ optVerbosity opts
 
    -- Get rid of anything not a regular file from the list of paths
-   actualPaths <- filterM
+   actualPaths <- map SrcPath <$> filterM
       (\p -> getFileStatus p >>= return . isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
@@ -50,9 +50,9 @@ main = do
       infoM lname "Removing original links after new links are in place."
 
    -- Do the link manipulations, and report any errors.
-   forM_ actualPaths $ \path -> do
-      result <- runRename opts $ processFile path
-      either (\em -> errorM lname $ printf "** Processing %s: %s\n" path em)
+   forM_ actualPaths $ \srcPath -> do
+      result <- runRename opts $ processFile srcPath
+      either (\em -> errorM lname $ printf "** Processing %s: %s\n" (unSrcPath srcPath) em)
          (const return ()) result
 
    -- Perhaps we should get an ExitCode back from all this above?

@@ -8,6 +8,7 @@ module Test.Photoname.Date
 
 import Data.Time.Calendar
 import Data.Time.LocalTime
+import Photoname.Common ( SrcPath (..) )
 import Photoname.Date ( PhDate (..), parseExifDate, parseFilenameDate )
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -33,28 +34,28 @@ parsingTests = testGroup "parsing tests"
         (parseExifDate $ Just "2021:10:04 17:29:49")
   , testCase "parse a date from a file path with directories" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "some/directory/signal-2021-10-04-172949.jpg"
+        parseFilenameDate (SrcPath "some/directory/signal-2021-10-04-172949.jpg")
   , testCase "parse a date from a file path with directories and more hyphens" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "some/directory/signal-2021-10-04-17-29-49-942.jpg"
+        parseFilenameDate (SrcPath "some/directory/signal-2021-10-04-17-29-49-942.jpg")
   , testCase "parse a date from a file path with no directories" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "signal-2021-10-04-172949.jpg"
+        parseFilenameDate (SrcPath "signal-2021-10-04-172949.jpg")
   , testCase "parse a date from a file path with more hyphens but no directories" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "signal-2021-10-04-17-29-49-942.jpg"
+        parseFilenameDate (SrcPath "signal-2021-10-04-17-29-49-942.jpg")
   , testCase "parse a date from a previously-named file path" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "20211004-172949.jpg"
+        parseFilenameDate (SrcPath "20211004-172949.jpg")
   , testCase "parse a date from a previously-named file path with suffix" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "20211004-172949_xyz.jpg"
+        parseFilenameDate (SrcPath "20211004-172949_xyz.jpg")
   , testCase "parse a date from a Pixel phone path file path" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "PXL_20211004_172949000.jpg"
+        parseFilenameDate (SrcPath "PXL_20211004_172949000.jpg")
   , testCase "parse a date from a Pixel phone path file path with extra suffix" $
       FilenameDate expectedLocalTime @=?
-        parseFilenameDate "PXL_20211004_172949000_foo.jpg"
+        parseFilenameDate (SrcPath "PXL_20211004_172949000_foo.jpg")
   ]
 
 

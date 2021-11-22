@@ -1,7 +1,8 @@
 module Photoname.Common
   ( Options (..)
-  , Verbosity (..)
   , Ph
+  , SrcPath (..)
+  , Verbosity (..)
   , readVerbosity
   , runRename
 
@@ -51,6 +52,9 @@ data Options = Options
   , optVerbosity :: Verbosity
   , optPaths :: [FilePath]
   }
+
+
+newtype SrcPath = SrcPath { unSrcPath :: FilePath }
 
 
 type Ph a = ReaderT Options (ExceptT String IO) a

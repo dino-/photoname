@@ -19,6 +19,8 @@ import Text.Parsec ( ParsecT )
 import Text.ParserCombinators.Parsec ( anyChar, char, count, digit,
   lookAhead, manyTill, parse, space, try )
 
+import Photoname.Common ( SrcPath (..) )
+
 
 data PhDate
   = ExifDate LocalTime
@@ -62,7 +64,7 @@ parseExifDate (Just s) =
          space
          hour <- digit2 ; colon ; minute <- digit2
          colon ; second <- digit2
-         return $
+         pure $
             LocalTime
                (fromGregorian (read year) (read month) (read day))
                (TimeOfDay (read hour) (read minute)
@@ -80,9 +82,9 @@ parseExifDate (Just s) =
     PXL_yyyymmdd_hhmmssttt.jpg
     PXL_yyyymmdd_hhmmssttt_xyz.jpg
 -}
-parseFilenameDate :: String -> PhDate
-parseFilenameDate s =
-  case (parse dateParser "" (takeFileName s)) of
+parseFilenameDate :: SrcPath -> PhDate
+parseFilenameDate srcPath =
+  case (parse dateParser "" (takeFileName . unSrcPath $ srcPath)) of
     Left _  -> NoDateFound
     Right x -> FilenameDate x
   where
@@ -99,7 +101,7 @@ parseFilenameDate s =
       minute <- digit2
       manyTill anyChar (try $ lookAhead digit2)
       second <- digit2
-      return $
+      pure $
          LocalTime
             (fromGregorian (read year) (read month) (read day))
             (TimeOfDay (read hour) (read minute)

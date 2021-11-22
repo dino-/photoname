@@ -11,13 +11,15 @@ import Data.Monoid ( First (..), getFirst )
 import Graphics.HsExif ( ExifTag, ExifValue, dateTime, dateTimeDigitized,
   dateTimeOriginal, parseFileExif )
 
+import Photoname.Common ( SrcPath (..) )
+
 
 {-
   Load EXIF information from filepath, or evaluate to Nothing
 -}
 
-getExifDate :: MonadIO m => FilePath -> m (Maybe String)
-getExifDate oldPath = liftIO $ extractDate <$> parseFileExif oldPath
+getExifDate :: MonadIO m => SrcPath -> m (Maybe String)
+getExifDate (SrcPath fp) = liftIO $ extractDate <$> parseFileExif fp
 
 
 {-

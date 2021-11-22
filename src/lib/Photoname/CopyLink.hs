@@ -14,7 +14,7 @@ import System.FilePath ( (</>), takeDirectory )
 import System.Posix ( createLink, fileExist, removeLink )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Ph, Options (..), ask, asks, liftIO, throwError )
+import Photoname.Common ( Ph, Options (..), SrcPath (..), ask, asks, liftIO, throwError )
 import Photoname.Date
   ( PhDate (ExifDate, FilenameDate, NoDateFound)
   , formatDateHyphens, formatDateTime, formatYear
@@ -22,8 +22,8 @@ import Photoname.Date
 import Photoname.Log ( lname, noticeM, warningM )
 
 
-createNewLink :: PhDate -> FilePath -> Ph FilePath
-createNewLink imageDate oldPath = do
+createNewLink :: PhDate -> SrcPath -> Ph FilePath
+createNewLink imageDate srcPath@(SrcPath srcFp) = do
   opts <- ask
   newPath <- case imageDate of
     ExifDate lt -> buildDatePath lt
@@ -35,7 +35,7 @@ createNewLink imageDate oldPath = do
   when exists $ throwError $ "Destination " ++ newPath ++ " exists!"
 
   -- Display what will be done
-  liftIO $ noticeM lname $ oldPath ++ " -> " ++ newPath
+  liftIO $ noticeM lname $ srcFp ++ " -> " ++ newPath
 
   unless (optNoAction opts) $ do
     -- Make the target dir
@@ -43,25 +43,25 @@ createNewLink imageDate oldPath = do
 
     -- Make the new file
     if (optCopy opts)
-      then liftIO $ copyFile oldPath newPath
-      else tryHardLink oldPath newPath
+      then liftIO $ copyFile srcFp newPath
+      else tryHardLink srcPath newPath
 
     -- If user has specified, remove the original link
     when (optMove opts) $
-       liftIO $ removeLink oldPath
+       liftIO $ removeLink srcFp
 
-  return newPath
+  pure newPath
 
 
-tryHardLink :: FilePath -> FilePath -> Ph ()
-tryHardLink oldPath newPath = do
-  ei <- liftIO $ try $ createLink oldPath newPath
+tryHardLink :: SrcPath -> FilePath -> Ph ()
+tryHardLink (SrcPath srcFp) newPath = do
+  ei <- liftIO $ try $ createLink srcFp newPath
   either failureHandler return ei
   where
     failureHandler :: IOException -> Ph ()
     failureHandler _ = do
       liftIO $ warningM lname "Hard link failed, attempting to copy instead"
-      liftIO $ copyFile oldPath newPath
+      liftIO $ copyFile srcFp newPath
 
 
 {- Given a path to a file with EXIF data, construct a new path based on the
