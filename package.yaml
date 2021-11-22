@@ -44,6 +44,7 @@ library:
   dependencies:
   - containers
   - hsexif
+  - hslogger
   - mtl
   - parsec
   - process
@@ -56,6 +57,7 @@ executables:
     dependencies:
     - ansi-wl-pprint
     - heredoc
+    - hslogger
     - optparse-applicative
     - photoname
 

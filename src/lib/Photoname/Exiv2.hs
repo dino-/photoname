@@ -10,7 +10,7 @@ import Text.Printf ( printf )
 
 import Photoname.Common ( Ph, Options (..), ask, liftIO )
 import Photoname.Date ( PhDate (FilenameDate), formatDateForExif )
-import Photoname.Log ( logP )
+import Photoname.Log ( lname, noticeM )
 
 
 execCommands :: [String] -> Ph ()
@@ -18,7 +18,7 @@ execCommands commands = do
   opts <- ask
 
   -- Display what will be done
-  mapM_ logP commands
+  liftIO $ mapM_ (noticeM lname) commands
 
   -- Execute the commands
   unless (optNoAction opts) $ liftIO $ mapM_ callCommand commands

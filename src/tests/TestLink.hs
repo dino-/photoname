@@ -185,11 +185,11 @@ testLinkNoAction' label switch = testCase label $ do
 
 
 testLinkQuiet :: TestTree
-testLinkQuiet = testLinkQuiet' "make link quiet" "-q"
+testLinkQuiet = testLinkQuiet' "make link quiet" "-v0"
 
 
 testLinkQuietLong :: TestTree
-testLinkQuietLong = testLinkQuiet' "make link quiet long" "--quiet"
+testLinkQuietLong = testLinkQuiet' "make link quiet long" "--verbose 0"
 
 
 -- Reusable test code for above short/long versions of the quiet switch

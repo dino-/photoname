@@ -7,7 +7,7 @@ import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
 import Photoname.Exiv2 ( setArtist, setExifDate )
-import Photoname.Log ( logIO )
+import Photoname.Log ( errorM, initLogging, infoM, lname )
 import Photoname.Opts ( parseOpts )
 
 
@@ -33,24 +33,26 @@ main :: IO ()
 main = do
    opts <- parseOpts
 
+   initLogging $ optVerbosity opts
+
    -- Get rid of anything not a regular file from the list of paths
    actualPaths <- filterM
       (\p -> getFileStatus p >>= return . isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
    when (optNoAction opts) $
-      logIO opts "No-action mode, nothing will be changed."
+      infoM lname "No-action mode, nothing will be changed."
 
    when (optCopy opts) $
-      logIO opts "Copy has been specified instead of the default of hard linking."
+      infoM lname "Copy has been specified instead of the default of hard linking."
 
    when (optMove opts) $
-      logIO opts "Removing original links after new links are in place."
+      infoM lname "Removing original links after new links are in place."
 
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \path -> do
       result <- runRename opts $ processFile path
-      either (\em -> logIO opts $ printf "** Processing %s: %s\n" path em)
+      either (\em -> errorM lname $ printf "** Processing %s: %s\n" path em)
          (const return ()) result
 
    -- Perhaps we should get an ExitCode back from all this above?

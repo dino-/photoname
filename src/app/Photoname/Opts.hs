@@ -12,11 +12,15 @@ import System.Directory ( doesFileExist )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 import System.IO ( hPutStrLn, stderr )
+import System.Log ( Priority (INFO) )
 import Text.Heredoc ( here )
 import Text.PrettyPrint.ANSI.Leijen ( string )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Options (..) )
+import Photoname.Common
+  ( Options (..)
+  , Verbosity (Verbose), readVerbosity
+  )
 
 
 parser :: Parser Options
@@ -68,17 +72,20 @@ parser = Options
         <> help "Add optional prefix to each name. See PREFIX"
         <> value ""
         )
-  <*> switch
-        (  long "quiet"
-        <> short 'q'
-        <> help "Suppress normal output of what's being done"
-        )
   <*> strOption
         (  long "suffix"
         <> short 's'
         <> metavar "SUF"
         <> help "Add optional suffix to each name. See SUFFIX"
         <> value ""
+        )
+  <*> option (eitherReader readVerbosity)
+        (  long "verbose"
+        <> short 'v'
+        <> metavar "NUM"
+        <> help "Verbosity level. 0=quiet, 1=normal messages, 2=more info, 3=debug"
+        <> showDefault
+        <> value (Verbose INFO)
         )
   <*> ( some $ strArgument
         $ metavar "FILES..."

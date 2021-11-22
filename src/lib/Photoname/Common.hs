@@ -1,6 +1,8 @@
 module Photoname.Common
    ( Options (..)
+   , Verbosity (..)
    , Ph
+   , readVerbosity
    , runRename
 
    -- Re-exporting:
@@ -14,6 +16,26 @@ module Photoname.Common
 import Control.Monad.Except ( ExceptT, MonadError, runExceptT, throwError )
 import Control.Monad.Reader ( ReaderT, ask, asks, runReaderT )
 import Control.Monad.Trans ( liftIO )
+import System.Log.Logger ( Priority (..) )
+
+
+data Verbosity
+  = Quiet
+  | Verbose Priority
+
+instance Show Verbosity where
+  show Quiet = "0"
+  show (Verbose NOTICE) = "1"
+  show (Verbose INFO) = "2"
+  show (Verbose DEBUG) = "3"
+  show _ = "Should never see this, invalid verbosity level being shown"
+
+readVerbosity :: String -> Either String Verbosity
+readVerbosity "0" = Right   Quiet
+readVerbosity "1" = Right $ Verbose NOTICE
+readVerbosity "2" = Right $ Verbose INFO
+readVerbosity "3" = Right $ Verbose DEBUG
+readVerbosity _   = Left    "Invalid verbosity level, expecting 0-3"
 
 
 data Options = Options
@@ -25,8 +47,8 @@ data Options = Options
   , optNoAction :: Bool
   , optParentDir :: FilePath
   , optPrefix :: String
-  , optQuiet :: Bool
   , optSuffix :: String
+  , optVerbosity :: Verbosity
   , optPaths :: [FilePath]
   }
 
