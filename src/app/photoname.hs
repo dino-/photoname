@@ -14,7 +14,7 @@ import Photoname.Opts ( parseOpts )
 acquireDate :: SrcPath -> Ph PhDate
 acquireDate srcPath = do
   dateString <- getExifDate srcPath
-  return $ mconcat
+  pure $ mconcat
     [ parseExifDate dateString
     , parseFilenameDate srcPath
     ]
@@ -37,7 +37,7 @@ main = do
 
    -- Get rid of anything not a regular file from the list of paths
    actualPaths <- map SrcPath <$> filterM
-      (\p -> getFileStatus p >>= return . isRegularFile) (optPaths opts)
+      (\p -> getFileStatus p >>= pure . isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
    when (optNoAction opts) $
@@ -53,6 +53,6 @@ main = do
    forM_ actualPaths $ \srcPath -> do
       result <- runRename opts $ processFile srcPath
       either (\em -> errorM lname $ printf "** Processing %s: %s\n" (unSrcPath srcPath) em)
-         (const return ()) result
+         (const pure ()) result
 
    -- Perhaps we should get an ExitCode back from all this above?
