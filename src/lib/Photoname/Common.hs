@@ -1,17 +1,17 @@
 module Photoname.Common
-   ( Options (..)
-   , Verbosity (..)
-   , Ph
-   , readVerbosity
-   , runRename
+  ( Options (..)
+  , Verbosity (..)
+  , Ph
+  , readVerbosity
+  , runRename
 
-   -- Re-exporting:
-   , MonadError
-   , ask, asks
-   , liftIO
-   , throwError
-   )
-   where
+  -- Re-exporting:
+  , MonadError
+  , ask, asks
+  , liftIO
+  , throwError
+  )
+  where
 
 import Control.Monad.Except ( ExceptT, MonadError, runExceptT, throwError )
 import Control.Monad.Reader ( ReaderT, ask, asks, runReaderT )
