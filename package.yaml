@@ -46,6 +46,7 @@ library:
   - hsexif
   - hslogger
   - mtl
+  - newtype-generics
   - parsec
   - process
   - time
@@ -58,6 +59,7 @@ executables:
     - ansi-wl-pprint
     - heredoc
     - hslogger
+    - newtype-generics
     - optparse-applicative
     - photoname
 

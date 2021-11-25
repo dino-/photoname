@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Photoname.Common
   ( DestPath (..)
   , Options (..)
@@ -18,6 +20,8 @@ module Photoname.Common
 import Control.Monad.Except ( ExceptT, MonadError, runExceptT, throwError )
 import Control.Monad.Reader ( ReaderT, ask, asks, runReaderT )
 import Control.Monad.Trans ( liftIO )
+import Control.Newtype.Generics
+import GHC.Generics
 import System.Log.Logger ( Priority (..) )
 
 
@@ -55,9 +59,15 @@ data Options = Options
   }
 
 
-newtype SrcPath = SrcPath { unSrcPath :: FilePath }
+newtype SrcPath = SrcPath FilePath
+  deriving Generic
 
-newtype DestPath = DestPath { unDestPath :: FilePath }
+instance Newtype SrcPath
+
+newtype DestPath = DestPath FilePath
+  deriving Generic
+
+instance Newtype DestPath
 
 
 type Ph a = ReaderT Options (ExceptT String IO) a

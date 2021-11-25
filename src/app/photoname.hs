@@ -1,4 +1,5 @@
 import Control.Monad ( filterM, forM_, when )
+import Control.Newtype.Generics ( op )
 import System.Posix ( getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
@@ -52,7 +53,7 @@ main = do
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \srcPath -> do
       result <- runRename opts $ processFile srcPath
-      either (\em -> errorM lname $ printf "** Processing %s: %s\n" (unSrcPath srcPath) em)
+      either (\em -> errorM lname $ printf "** Processing %s: %s\n" (op SrcPath srcPath) em)
          (const pure ()) result
 
    -- Perhaps we should get an ExitCode back from all this above?

@@ -10,6 +10,7 @@ module Photoname.Date
   )
   where
 
+import Control.Newtype.Generics ( op )
 import Data.Functor.Identity ( Identity )
 import Data.Time.Calendar ( fromGregorian )
 import Data.Time.Format ( defaultTimeLocale, formatTime )
@@ -84,7 +85,7 @@ parseExifDate (Just s) =
 -}
 parseFilenameDate :: SrcPath -> PhDate
 parseFilenameDate srcPath =
-  case (parse dateParser "" (takeFileName . unSrcPath $ srcPath)) of
+  case (parse dateParser "" (takeFileName . op SrcPath $ srcPath)) of
     Left _  -> NoDateFound
     Right x -> FilenameDate x
   where
