@@ -1,10 +1,19 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Photoname.Common
-  ( DestPath (..)
+  ( Artist (..)
+  , ConfigPath (..)
+  , CopySwitch (..)
+  , DestPath (..)
+  , MoveSwitch (..)
+  , NoActionSwitch (..)
+  , NoDirsSwitch (..)
+  , ParentDir (..)
   , Options (..)
   , Ph
+  , Prefix (..)
   , SrcPath (..)
+  , Suffix (..)
   , Verbosity (..)
   , readVerbosity
   , runRename
@@ -44,18 +53,57 @@ readVerbosity "3" = Right $ Verbose DEBUG
 readVerbosity _   = Left    "Invalid verbosity level, expecting 0-3"
 
 
+newtype Artist = Artist String
+
+newtype ConfigPath = ConfigPath FilePath
+
+newtype CopySwitch = CopySwitch Bool
+  deriving Generic
+
+instance Newtype CopySwitch
+
+newtype NoDirsSwitch = NoDirsSwitch Bool
+  deriving Generic
+
+instance Newtype NoDirsSwitch
+
+newtype MoveSwitch = MoveSwitch Bool
+  deriving Generic
+
+instance Newtype MoveSwitch
+
+newtype NoActionSwitch = NoActionSwitch Bool
+  deriving Generic
+
+instance Newtype NoActionSwitch
+
+newtype ParentDir = ParentDir FilePath
+  deriving Generic
+
+instance Newtype ParentDir
+
+newtype Prefix = Prefix String
+  deriving Generic
+
+instance Newtype Prefix
+
+newtype Suffix = Suffix String
+  deriving Generic
+
+instance Newtype Suffix
+
 data Options = Options
-  { optArtist :: Maybe String
-  , optConfig :: Maybe FilePath
-  , optCopy :: Bool
-  , optNoDirs :: Bool
-  , optMove :: Bool
-  , optNoAction :: Bool
-  , optParentDir :: FilePath
-  , optPrefix :: String
-  , optSuffix :: String
-  , optVerbosity :: Verbosity
-  , optPaths :: [FilePath]
+  { optArtist     :: Maybe Artist
+  , optConfig     :: Maybe ConfigPath
+  , optCopy       :: CopySwitch
+  , optNoDirs     :: NoDirsSwitch
+  , optMove       :: MoveSwitch
+  , optNoAction   :: NoActionSwitch
+  , optParentDir  :: ParentDir
+  , optPrefix     :: Prefix
+  , optSuffix     :: Suffix
+  , optVerbosity  :: Verbosity
+  , optPaths      :: [FilePath]
   }
 
 

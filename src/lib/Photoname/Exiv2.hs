@@ -5,10 +5,12 @@ module Photoname.Exiv2
   where
 
 import Control.Monad ( unless )
+import Control.Newtype.Generics ( op )
 import System.Process ( callCommand )
 import Text.Printf ( printf )
 
-import Photoname.Common ( DestPath (..), Options (..), Ph, ask, liftIO )
+import Photoname.Common ( Artist (..), DestPath (..), NoActionSwitch (..),
+  Options (..), Ph, ask, liftIO )
 import Photoname.Date ( PhDate (FilenameDate), formatDateForExif )
 import Photoname.Log ( lname, noticeM )
 
@@ -24,7 +26,8 @@ execCommands commands = do
   liftIO $ mapM_ (noticeM lname . unCommand) commands
 
   -- Execute the commands
-  unless (optNoAction opts) $ liftIO $ mapM_ (callCommand . unCommand) commands
+  unless (op NoActionSwitch . optNoAction $ opts) $
+    liftIO $ mapM_ (callCommand . unCommand) commands
 
   pure ()
 
@@ -35,9 +38,9 @@ setArtist (DestPath destFp) = do
 
   case optArtist opts of
     Nothing -> pure ()
-    Just "" -> execCommands . map Command $
+    Just (Artist "") -> execCommands . map Command $
       [ printf "exiv2 --Modify 'del Exif.Image.Artist' %s" destFp ]
-    Just artistInfo -> execCommands . map Command $
+    Just (Artist artistInfo) -> execCommands . map Command $
       [ printf "exiv2 --Modify 'set Exif.Image.Artist %s' %s" artistInfo destFp ]
 
 

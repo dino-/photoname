@@ -3,7 +3,8 @@ import Control.Newtype.Generics ( op )
 import System.Posix ( getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
-import Photoname.Common ( Options (..), Ph, SrcPath (..), runRename )
+import Photoname.Common ( CopySwitch (..), MoveSwitch (..),
+  NoActionSwitch (..), Options (..), Ph, SrcPath (..), runRename )
 import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
@@ -41,13 +42,13 @@ main = do
       (\p -> getFileStatus p >>= pure . isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
-   when (optNoAction opts) $
+   when (op NoActionSwitch . optNoAction $ opts) $
       infoM lname "No-action mode, nothing will be changed."
 
-   when (optCopy opts) $
+   when (op CopySwitch . optCopy $ opts) $
       infoM lname "Copy has been specified instead of the default of hard linking."
 
-   when (optMove opts) $
+   when (op MoveSwitch . optMove $ opts) $
       infoM lname "Removing original links after new links are in place."
 
    -- Do the link manipulations, and report any errors.

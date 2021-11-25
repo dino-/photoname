@@ -18,46 +18,60 @@ import Text.PrettyPrint.ANSI.Leijen ( string )
 import Text.Printf ( printf )
 
 import Photoname.Common
-  ( Options (..)
-  , Verbosity (Verbose), readVerbosity
+  ( Artist (..)
+  , ConfigPath (..)
+  , CopySwitch (..)
+  , MoveSwitch (..)
+  , NoActionSwitch (..)
+  , NoDirsSwitch (..)
+  , Options (..)
+  , ParentDir (..)
+  , Prefix (..)
+  , Suffix (..)
+  , Verbosity (Verbose)
+  , readVerbosity
   )
 
 
 parser :: Parser Options
 parser = Options
-  <$> optional ( strOption
+  <$> optional ( option (maybeReader $ Just . Artist)
         (  long "artist"
         <> short 'a'
         <> metavar "ARTIST"
         <> help "Set artist info in the Exif.Image.Artist tag. Requires exiv2. See ARTIST"
         )
       )
-  <*> optional ( strOption
+  <*> optional ( option (maybeReader $ Just . ConfigPath)
         (  long "config"
         <> short 'c'
         <> metavar "FILE"
         <> help "Path to a config file. See CONFIG"
         )
       )
-  <*> switch
+  <*> ( CopySwitch <$> switch
         (  long "copy"
         <> help "Copy files instead of hard linking, even if on the same filesystem"
         )
-  <*> switch
+      )
+  <*> ( NoDirsSwitch <$> switch
         (  long "no-dirs"
         <> short 'D'
         <> help "No subdirectory hierarchy. Just do DIR/NEWFILE"
         )
-  <*> switch
+      )
+  <*> ( MoveSwitch <$> switch
         (  long "move"
         <> help "Move the files, don't just hard-link to the new locations. In other words, remove the source path."
         )
-  <*> switch
+      )
+  <*> ( NoActionSwitch <$> switch
         (  long "no-action"
         <> short 'n'
         <> help "Display what would be done, but do nothing"
         )
-  <*> strOption
+      )
+  <*> ( ParentDir <$> strOption
         (  long "parent-dir"
         <> short 'p'
         <> metavar "DIR"
@@ -65,20 +79,23 @@ parser = Options
         <> showDefault
         <> value "."
         )
-  <*> strOption
+      )
+  <*> ( Prefix <$> strOption
         (  long "prefix"
         <> short 'P'
         <> metavar "PRE"
         <> help "Add optional prefix to each name. See PREFIX"
         <> value ""
         )
-  <*> strOption
+      )
+  <*> ( Suffix <$> strOption
         (  long "suffix"
         <> short 's'
         <> metavar "SUF"
         <> help "Add optional suffix to each name. See SUFFIX"
         <> value ""
         )
+      )
   <*> option (eitherReader readVerbosity)
         (  long "verbose"
         <> short 'v'
@@ -95,8 +112,8 @@ parser = Options
 {- Try to load a config file, converting its lines into a [String]
    of long options to be parsed
 -}
-loadConfig :: FilePath -> IO [String]
-loadConfig path = do
+loadConfig :: ConfigPath -> IO [String]
+loadConfig (ConfigPath path) = do
    confExists <- doesFileExist path
 
    if confExists
