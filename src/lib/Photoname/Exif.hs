@@ -6,8 +6,9 @@ module Photoname.Exif
   where
 
 import Control.Monad.Except ( MonadIO, liftIO )
+import Control.Newtype.Generics ( ala )
 import qualified Data.Map as M
-import Data.Monoid ( First (..), getFirst )
+import Data.Monoid ( First (..) )
 import Graphics.HsExif ( ExifTag, ExifValue, dateTime, dateTimeDigitized,
   dateTimeOriginal, parseFileExif )
 
@@ -31,5 +32,5 @@ extractDate :: Either String (M.Map ExifTag ExifValue) -> Maybe String
 extractDate (Left _) = Nothing
 extractDate (Right exifMap) =
   -- Find the first date available in the Map
-  show <$> ( getFirst . mconcat . map First $ map (flip M.lookup exifMap)
+  show <$> ( ala First foldMap $ map (flip M.lookup exifMap)
     [dateTimeOriginal, dateTimeDigitized, dateTime] )
