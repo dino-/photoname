@@ -62,9 +62,9 @@ parsingTests = testGroup "parsing tests"
 instance Arbitrary PhDate where
   arbitrary = do
     oneof
-      [ return $ ExifDate expectedLocalTime
-      , return $ FilenameDate expectedLocalTime
-      , return NoDateFound
+      [ pure $ ExifDate expectedLocalTime
+      , pure $ FilenameDate expectedLocalTime
+      , pure NoDateFound
       ]
 
 propsPhDate :: TestTree

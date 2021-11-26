@@ -141,7 +141,7 @@ parseOpts = do
     Just configPath -> do
       confArgs <- loadConfig configPath
       parseOpts' $ confArgs <> (optPaths cliOpts)
-    Nothing -> return cliOpts
+    Nothing -> pure cliOpts
 
 
 parseOpts' :: [String] -> IO Options

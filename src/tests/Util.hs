@@ -28,7 +28,7 @@ getProcessOutput path' args = do
    (_, outH, _, procH) <- runInteractiveCommand
       $ path' ++ " -- " ++ (intercalate " " args)
    output <- hGetContents outH
-   return (output, procH)
+   pure (output, procH)
 
 
 getBinaryOutput :: [String] -> IO (String, ProcessHandle)
