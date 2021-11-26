@@ -1,3 +1,24 @@
+5.0 (2020-11-26)
+
+  * Updated Stackage resolver
+  * Moved copyright date up to 2021
+  * Moved Photoname.Opts module into the app src tree
+  * Removed the useless tests for program help
+  * Switched to optparse-applicative for arg parsing
+  * cabalized projects no longer need a Setup.hs
+  * Added the -a|--artist option
+  * Changed lookup order of EXIF date tags
+  * Added ability to parse the filename for date and time
+  * Fixed broken smoke tests
+  * Switched test suite to use Tasty
+  * Attempt to copy if the hard link fails
+  * Added new --copy switch and behavior
+  * Moved AppImage desktop and icon into hsinstall tree
+  * Added new --prefix switch and behavior
+  * Output is now handled via hslogger
+  * Now using newtype wrappers nearly everywhere
+
+
 4.1 (2019-03-30)
 
   * Removed some AppImage desktop file categories
