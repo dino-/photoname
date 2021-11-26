@@ -68,8 +68,9 @@ tryHardLink (SrcPath srcFp) (DestPath destFp) = do
       liftIO $ copyFile srcFp destFp
 
 
-{- Given a path to a file with EXIF data, construct a new path based on the
-   date and some serial number info we can parse out of the filename.
+{- Construct the destination file path based on the information we have (parent
+   dir, subdirs wanted or not, prefix and suffix, and the date info that was
+   gathered).
 -}
 buildDatePath :: LocalTime -> Ph DestPath
 buildDatePath date = do
