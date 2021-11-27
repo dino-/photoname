@@ -29,8 +29,6 @@ execCommands commands = do
   unless (op NoActionSwitch . optNoAction $ opts) $
     liftIO $ mapM_ (callCommand . unCommand) commands
 
-  pure ()
-
 
 setArtist :: DestPath -> Ph ()
 setArtist (DestPath destFp) = do

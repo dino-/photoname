@@ -46,7 +46,7 @@ createNewLink imageDate srcPath@(SrcPath srcFp) = do
     liftIO $ createDirectoryIfMissing True $ takeDirectory destFp
 
     -- Make the new file
-    if (op CopySwitch . optCopy $ opts)
+    if op CopySwitch . optCopy $ opts
       then liftIO $ copyFile srcFp destFp
       else tryHardLink srcPath destPath
 
@@ -80,7 +80,7 @@ buildDatePath date = do
 
    parentFp <- asks (op ParentDir . optParentDir)
    noDirs <- asks (op NoDirsSwitch . optNoDirs)
-   pure . DestPath $ if (noDirs)
+   pure . DestPath $ if noDirs
       then parentFp </> fileName
-      else parentFp </> (formatYear date) </>
-         (formatDateHyphens date) </> fileName
+      else parentFp </> formatYear date </>
+         formatDateHyphens date </> fileName

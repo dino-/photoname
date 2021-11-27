@@ -32,5 +32,5 @@ extractDate :: Either String (M.Map ExifTag ExifValue) -> Maybe String
 extractDate (Left _) = Nothing
 extractDate (Right exifMap) =
   -- Find the first date available in the Map
-  show <$> ( ala First foldMap $ map (flip M.lookup exifMap)
-    [dateTimeOriginal, dateTimeDigitized, dateTime] )
+  show <$> ala First foldMap (map (flip M.lookup exifMap)
+    [dateTimeOriginal, dateTimeDigitized, dateTime])

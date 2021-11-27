@@ -5,7 +5,6 @@ module Util
   )
   where
 
-import Data.List ( intercalate )
 import System.IO ( hGetContents )
 import System.Process ( ProcessHandle, runInteractiveCommand )
 import Test.Tasty.HUnit ( Assertion, assertBool )
@@ -26,7 +25,7 @@ resourcesPath = "util/resources/test"
 getProcessOutput :: String -> [String] -> IO (String, ProcessHandle)
 getProcessOutput path' args = do
    (_, outH, _, procH) <- runInteractiveCommand
-      $ path' ++ " -- " ++ (intercalate " " args)
+      $ path' <> " -- " <> unwords args
    output <- hGetContents outH
    pure (output, procH)
 

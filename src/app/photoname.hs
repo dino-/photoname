@@ -1,5 +1,6 @@
 import Control.Monad ( filterM, forM_, when )
 import Control.Newtype.Generics ( op )
+import Data.Functor ( (<&>) )
 import System.Posix ( getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
@@ -39,7 +40,7 @@ main = do
 
    -- Get rid of anything not a regular file from the list of paths
    actualPaths <- map SrcPath <$> filterM
-      (\p -> getFileStatus p >>= pure . isRegularFile) (optPaths opts)
+      (\p -> getFileStatus p <&> isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
    when (op NoActionSwitch . optNoAction $ opts) $
@@ -54,7 +55,10 @@ main = do
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \srcPath -> do
       result <- runRename opts $ processFile srcPath
-      either (\em -> errorM lname $ printf "** Processing %s: %s\n" (op SrcPath srcPath) em)
-         (const pure ()) result
+      either
+        {- HLINT ignore "Avoid lambda" -}
+        -- Because the compiler can't figure out printf is expecting an argument at compile time
+        (\em -> errorM lname $ printf "** Processing %s: %s\n" (op SrcPath srcPath) em)
+        pure result
 
    -- Perhaps we should get an ExitCode back from all this above?

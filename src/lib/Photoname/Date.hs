@@ -56,7 +56,7 @@ digit4 = count 4 digit
 parseExifDate :: Maybe String -> PhDate
 parseExifDate Nothing = NoDateFound
 parseExifDate (Just s) =
-   case (parse dateParser "" s) of
+   case parse dateParser "" s of
       Left _  -> NoDateFound
       Right x -> ExifDate x
    where
@@ -69,7 +69,7 @@ parseExifDate (Just s) =
             LocalTime
                (fromGregorian (read year) (read month) (read day))
                (TimeOfDay (read hour) (read minute)
-                  (fromIntegral ((read second) :: Integer)))
+                  (fromIntegral (read second :: Integer)))
 
 
 {- Parse a string in one of the the forms below into a CalendarTime datatype.
@@ -85,7 +85,7 @@ parseExifDate (Just s) =
 -}
 parseFilenameDate :: SrcPath -> PhDate
 parseFilenameDate srcPath =
-  case (parse dateParser "" (takeFileName . op SrcPath $ srcPath)) of
+  case parse dateParser "" (takeFileName . op SrcPath $ srcPath) of
     Left _  -> NoDateFound
     Right x -> FilenameDate x
   where
@@ -106,7 +106,7 @@ parseFilenameDate srcPath =
          LocalTime
             (fromGregorian (read year) (read month) (read day))
             (TimeOfDay (read hour) (read minute)
-               (fromIntegral ((read second) :: Integer)))
+               (fromIntegral (read second :: Integer)))
 
 
 {- Format a Maybe CalendarTime into a "yyyy" string

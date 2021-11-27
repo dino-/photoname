@@ -31,7 +31,7 @@ parsingTests :: TestTree
 parsingTests = testGroup "parsing tests"
   [ testCase "parse a datetime in EXIF format" $
       ExifDate expectedLocalTime @=?
-        (parseExifDate $ Just "2021:10:04 17:29:49")
+        parseExifDate (Just "2021:10:04 17:29:49")
   , testCase "parse a date from a file path with directories" $
       FilenameDate expectedLocalTime @=?
         parseFilenameDate (SrcPath "some/directory/signal-2021-10-04-172949.jpg")
@@ -67,6 +67,9 @@ instance Arbitrary PhDate where
       , pure NoDateFound
       ]
 
+{- HLINT ignore "Monoid law, right identity" -}
+{- HLINT ignore "Monoid law, left identity" -}
+{- HLINT ignore "Use mconcat" -}
 propsPhDate :: TestTree
 propsPhDate = testGroup "testing the Semigroup and Monoid properties of PhDate"
   [ testProperty "Semigroup associativity  x <> (y <> z) == (x <> y) <> z" $

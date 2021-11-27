@@ -104,7 +104,7 @@ parser = Options
         <> showDefault
         <> value (Verbose INFO)
         )
-  <*> ( some $ strArgument
+  <*> some ( strArgument
         $ metavar "FILES..."
       )
 
@@ -117,7 +117,7 @@ loadConfig (ConfigPath path) = do
    confExists <- doesFileExist path
 
    if confExists
-      then (map ("--" ++) . lines) <$> readFile path
+      then map ("--" ++) . lines <$> readFile path
       else do
         hPutStrLn stderr $ "Config file " <> path <> " does not exist!"
         exitFailure
@@ -140,7 +140,7 @@ parseOpts = do
   case optConfig cliOpts of
     Just configPath -> do
       confArgs <- loadConfig configPath
-      parseOpts' $ confArgs <> (optPaths cliOpts)
+      parseOpts' $ confArgs <> optPaths cliOpts
     Nothing -> pure cliOpts
 
 
