@@ -21,6 +21,7 @@ import Photoname.Common
   ( Artist (..)
   , ConfigPath (..)
   , CopySwitch (..)
+  , Links (Exactly, NoLimit)
   , MoveSwitch (..)
   , NoActionSwitch (..)
   , NoDirsSwitch (..)
@@ -60,6 +61,13 @@ parser = Options
         <> help "No subdirectory hierarchy. Just do DIR/NEWFILE"
         )
       )
+  <*> option (Exactly <$> auto)
+        (  long "links"
+        <> short 'l'
+        <> metavar "NUM"
+        <> help "Reject files unless they have this many hard links. See LINKS. Default: accept all files"
+        <> value NoLimit
+        )
   <*> ( MoveSwitch <$> switch
         (  long "move"
         <> help "Move the files, don't just hard-link to the new locations. In other words, remove the source path."
@@ -201,6 +209,10 @@ Set artist info in the Exif.Image.Artist tag. This can be any string you like bu
 Be careful with what you put in here, we've seen problems with email addresses rendering the entire field not visible in some applications. Keep it simple as above!
 
 Pass a quoted empty string to -a|--artist to delete an existing Artist tag, like this: -a '' or --artist=''
+
+LINKS
+
+A common use of photoname is to process a directory of images, leaving you with 2 hard links to the original files. If at a later time you want to process any new images in the same directory, they could be identified by their different number of links. The -l|--links switch can perform this filtering in lieu of using another tool like `find`.
 
 PREFIX
 

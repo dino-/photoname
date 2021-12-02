@@ -5,6 +5,7 @@ module Photoname.Common
   , ConfigPath (..)
   , CopySwitch (..)
   , DestPath (..)
+  , Links(..)
   , MoveSwitch (..)
   , NoActionSwitch (..)
   , NoDirsSwitch (..)
@@ -15,6 +16,7 @@ module Photoname.Common
   , SrcPath (..)
   , Suffix (..)
   , Verbosity (..)
+  , linksTest
   , readVerbosity
   , runRename
 
@@ -32,6 +34,7 @@ import Control.Monad.Trans ( liftIO )
 import Control.Newtype.Generics
 import GHC.Generics
 import System.Log.Logger ( Priority (..) )
+import System.Posix ( FileStatus, CNlink, linkCount )
 
 
 data Verbosity
@@ -67,6 +70,12 @@ newtype NoDirsSwitch = NoDirsSwitch Bool
 
 instance Newtype NoDirsSwitch
 
+data Links = Exactly CNlink | NoLimit
+
+linksTest :: Links -> FileStatus -> Bool
+linksTest (Exactly linkCountWanted) fileStatus = linkCountWanted == linkCount fileStatus
+linksTest NoLimit                   _          = True
+
 newtype MoveSwitch = MoveSwitch Bool
   deriving Generic
 
@@ -97,6 +106,7 @@ data Options = Options
   , optConfig     :: Maybe ConfigPath
   , optCopy       :: CopySwitch
   , optNoDirs     :: NoDirsSwitch
+  , optLinks      :: Links
   , optMove       :: MoveSwitch
   , optNoAction   :: NoActionSwitch
   , optParentDir  :: ParentDir

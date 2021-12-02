@@ -1,11 +1,12 @@
 import Control.Monad ( filterM, forM_, when )
 import Control.Newtype.Generics ( op )
 import Data.Functor ( (<&>) )
-import System.Posix ( getFileStatus, isRegularFile )
+import System.Posix ( FileStatus, getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
-import Photoname.Common ( CopySwitch (..), MoveSwitch (..),
-  NoActionSwitch (..), Options (..), Ph, SrcPath (..), runRename )
+import Photoname.Common ( CopySwitch (..), Links (Exactly, NoLimit),
+  MoveSwitch (..), NoActionSwitch (..), Options (..), Ph, SrcPath (..),
+  linksTest, runRename )
 import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
@@ -31,16 +32,23 @@ processFile srcPath = do
   setArtist destPath
 
 
+-- Get rid of anything not a regular file or with a number of links that
+-- doesn't match our links amount which is either passed in by the user with
+-- the -l|--links switch or any number of links is fine.
+filterWantedFiles :: Links -> [FilePath] -> IO [SrcPath]
+filterWantedFiles links inputFiles = map SrcPath <$> filterM (\p ->
+    getFileStatus p <&> testFile) inputFiles
+  where
+    testFile :: FileStatus -> Bool
+    testFile fileStatus = isRegularFile fileStatus && linksTest links fileStatus
+
+
 -- Figure out and execute what the user wants based on the supplied args.
 main :: IO ()
 main = do
    opts <- parseOpts
 
    initLogging $ optVerbosity opts
-
-   -- Get rid of anything not a regular file from the list of paths
-   actualPaths <- map SrcPath <$> filterM
-      (\p -> getFileStatus p <&> isRegularFile) (optPaths opts)
 
    -- Notify user of the switches that will be in effect.
    when (op NoActionSwitch . optNoAction $ opts) $
@@ -51,6 +59,12 @@ main = do
 
    when (op MoveSwitch . optMove $ opts) $
       infoM lname "Removing original links after new links are in place."
+
+   case optLinks opts of
+      Exactly l -> infoM lname $ printf "Only processing files with %s hard links" (show l)
+      NoLimit   -> pure ()
+
+   actualPaths <- filterWantedFiles (optLinks opts) (optPaths opts)
 
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \srcPath -> do
