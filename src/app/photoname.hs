@@ -4,13 +4,15 @@ import Data.Functor ( (<&>) )
 import System.Posix ( FileStatus, getFileStatus, isRegularFile )
 import Text.Printf ( printf )
 
-import Photoname.Common ( CopySwitch (..), Links (Exactly, NoLimit),
-  MoveSwitch (..), NoActionSwitch (..), Options (..), Ph, SrcPath (..),
-  linksTest, runRename )
+import Photoname.Common
+  ( CopySwitch (..), Links, MoveSwitch (..), NoActionSwitch (..)
+  , Options (..), Ph, SrcPath (..), runRename
+  )
 import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
 import Photoname.Exif ( getExifDate )
 import Photoname.Exiv2 ( setArtist, setExifDate )
+import Photoname.Links ( describeHardLinkPolicy, linksTest )
 import Photoname.Log ( errorM, initLogging, infoM, lname )
 import Photoname.Opts ( parseOpts )
 
@@ -60,9 +62,7 @@ main = do
    when (op MoveSwitch . optMove $ opts) $
       infoM lname "Removing original links after new links are in place."
 
-   case optLinks opts of
-      Exactly l -> infoM lname $ printf "Only processing files with %s hard links" (show l)
-      NoLimit   -> pure ()
+   describeHardLinkPolicy $ optLinks opts
 
    actualPaths <- filterWantedFiles (optLinks opts) (optPaths opts)
 
