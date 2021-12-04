@@ -18,7 +18,7 @@ linksTest NoLimit                   _          = True
 
 describeHardLinkPolicy :: Links -> IO ()
 describeHardLinkPolicy l = case l of
-  Exactly 1 -> infoM lname $ printf "Only processing files with 1 hard link"
-  Exactly n -> infoM lname $ printf "Only processing files with %s hard links" (show n)
+  Exactly 1 -> infoM lname          "Only processing files with 1 hard link"
+  Exactly n -> infoM lname $ printf "Only processing files with %d hard links" (toInteger n)
   NoLimit   -> pure ()
 
