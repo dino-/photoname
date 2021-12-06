@@ -27,7 +27,7 @@ And once you have it, building the usual way:
 
     $ stack build
     $ stack run
-    $ stack test
+    $ stack test --ta all
     $ stack clean
 
 If you're just looking, [browse the source](https://github.com/dino-/photoname)
