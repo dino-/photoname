@@ -51,11 +51,11 @@ testLinkDigitized = testCase "tests for DateTimeDigitized" $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPathDate
-   assertBool "make link, date digitized: existance of new link" existsNew
+   assertBool "make link, date digitized: existence of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist oldPath
-   assertBool "make link, date digitized: existance of old link" existsOld
+   assertBool "make link, date digitized: existence of old link" existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
@@ -76,11 +76,11 @@ testLinkOriginal = testCase "tests for DateTimeOriginal" $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPathDate
-   assertBool "make link, date original: existance of new link" existsNew
+   assertBool "make link, date original: existence of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist digitizedOldPath
-   assertBool "make link, date original: existance of old link" existsOld
+   assertBool "make link, date original: existence of old link" existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
@@ -102,11 +102,11 @@ testLinkDate = testCase "tests for DateTime" $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist customLinkPathDate
-   assertBool "make link, date: existance of new link" existsNew
+   assertBool "make link, date: existence of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist dateOldPath
-   assertBool "make link, date: existance of old link" existsOld
+   assertBool "make link, date: existence of old link" existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
@@ -142,11 +142,11 @@ testMove = testCase "tests to ensure the file is moved (original link removed)" 
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPathDate
-   assertBool "move file: existance of new link" existsNew
+   assertBool "move file: existence of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist newOldPath
-   Util.assertFalse "move file: existance of old link" existsOld
+   Util.assertFalse "move file: existence of old link" existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
@@ -173,11 +173,11 @@ testLinkNoAction' label switch = testCase label $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist parentDir
-   Util.assertFalse (label ++ ": existance of new link") existsNew
+   Util.assertFalse (label ++ ": existence of new link") existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist oldPath
-   assertBool (label ++ ": existance of old link") existsOld
+   assertBool (label ++ ": existence of old link") existsOld
 
    -- Test output to stdout
    assertBool (label ++ ": correct output")
@@ -202,11 +202,11 @@ testLinkQuiet' label switch = testCase label $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPathDate
-   assertBool (label ++ ": existance of new link") existsNew
+   assertBool (label ++ ": existence of new link") existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist oldPath
-   assertBool (label ++ ": existance of old link") existsOld
+   assertBool (label ++ ": existence of old link") existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
@@ -230,11 +230,11 @@ testLinkSuffix = testCase "test link with a suffix" $ do
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPath
-   assertBool "make link: existance of new link" existsNew
+   assertBool "make link: existence of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist oldPath
-   assertBool "make link: existance of old link" existsOld
+   assertBool "make link: existence of old link" existsOld
 
    -- Remove files and dirs that were created
    removeDirectoryRecursive parentDir
@@ -258,11 +258,11 @@ testLinkPrefix = testCase "test link with a prefix" $ do
 
   -- Check that the correct output path exists
   existsNew <- fileExist newLinkPath
-  assertBool "make link: existance of new link" existsNew
+  assertBool "make link: existence of new link" existsNew
 
   -- Check that old path still exists
   existsOld <- fileExist oldPath
-  assertBool "make link: existance of old link" existsOld
+  assertBool "make link: existence of old link" existsOld
 
   -- Remove files and dirs that were created
   removeDirectoryRecursive parentDir
@@ -323,11 +323,11 @@ testLinkFilenameDate = testCase "test to ensure the date can be acquired from th
 
    -- Check that the correct output path exists
    existsNew <- fileExist newLinkPathDate'
-   assertBool "filename date: existance of new link" existsNew
+   assertBool "filename date: existence of new link" existsNew
 
    -- Check that old path still exists
    existsOld <- fileExist newOldPath
-   assertBool "filename date: existance of old link" existsOld
+   assertBool "filename date: existence of old link" existsOld
 
    -- Remove files and dirs that were created
    removeFile newOldPath

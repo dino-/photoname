@@ -34,7 +34,7 @@ createNewLink imageDate srcPath@(SrcPath srcFp) = do
     FilenameDate lt -> buildDatePath lt
     NoDateFound -> throwError "Could not extract any date information"
 
-  -- Check for existance of the target file
+  -- Check for existence of the target file
   exists <- liftIO $ fileExist destFp
   when exists $ throwError $ "Destination " ++ destFp ++ " exists!"
 
