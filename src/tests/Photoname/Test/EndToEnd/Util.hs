@@ -1,4 +1,4 @@
-module Util
+module Photoname.Test.EndToEnd.Util
   ( resourcesPath
   , getProcessOutput, getBinaryOutput
   , assertFalse

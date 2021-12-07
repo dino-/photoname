@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Test.Photoname.Date
+module Photoname.Test.Unit.Date
   ( tests
   )
   where

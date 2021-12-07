@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 
-module TestLink
+module Photoname.Test.EndToEnd.Link
   ( tests
   )
   where
@@ -12,7 +12,7 @@ import System.Process ( waitForProcess )
 import Text.Regex.Posix ( (=~) )
 import Test.Tasty
 import Test.Tasty.HUnit
-import qualified Util
+import qualified Photoname.Test.EndToEnd.Util as Util
 
 
 parentDir, oldPath, newLinkPathDate :: FilePath

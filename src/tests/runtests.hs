@@ -4,8 +4,8 @@ module Main
 import System.Environment ( getArgs, withArgs )
 import Test.Tasty
 
-import qualified TestLink ( tests )
-import qualified Test.Photoname.Date ( tests )
+import qualified Photoname.Test.EndToEnd.Link as Link
+import qualified Photoname.Test.Unit.Date as Date
 
 
 {- Defaults to only running the unit tests. To run everything:
@@ -17,8 +17,8 @@ import qualified Test.Photoname.Date ( tests )
 main :: IO ()
 main = do
   args <- getArgs
-  let baseTests = [ Test.Photoname.Date.tests ]
+  let baseTests = [ Date.tests ]
   let tests = if "all" `elem` args
-        then TestLink.tests : baseTests
+        then Link.tests : baseTests
         else baseTests
   withArgs [] $ defaultMain $ testGroup " tests" tests
