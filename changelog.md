@@ -1,3 +1,11 @@
+5.1 (2022-01-11)
+
+  * Added new number-of-links filtering feature
+  * End-to-end tests are now optional
+  * Fixed some spelling and wording issues
+  * Applied hlint suggestions
+
+
 5.0 (2020-11-26)
 
   * Updated Stackage resolver
