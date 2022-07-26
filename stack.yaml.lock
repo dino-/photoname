@@ -3,10 +3,17 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: exif-3000.0.0@sha256:d5ef8e196fcc6b06db5482ea0c9429076e9181c6a18d76a30fe534e09c32ff9c,544
+    pantry-tree:
+      size: 225
+      sha256: a25d14ad344dcc4b0fd3a12cc931944ae94cfa4ce77b7edff3f847c7b42da4ea
+  original:
+    hackage: exif-3000.0.0
 snapshots:
 - completed:
-    size: 596363
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2021/11/15.yaml
-    sha256: 4eb51ee07b71a0e11a4a9d32020ce6a5305e5a2f17da739afecdf7e876c78fec
-  original: nightly-2021-11-15
+    size: 590100
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/28.yaml
+    sha256: 428ec8d5ce932190d3cbe266b9eb3c175cd81e984babf876b64019e2cbe4ea68
+  original: lts-18.28

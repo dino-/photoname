@@ -43,7 +43,7 @@ library:
   source-dirs: src/lib
   dependencies:
   - containers
-  - hsexif
+  - exif
   - hslogger
   - mtl
   - newtype-generics

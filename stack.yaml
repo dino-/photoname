@@ -1,10 +1,7 @@
-resolver: nightly-2021-11-15
+resolver: lts-18.28
 
 packages:
 - .
 
-extra-deps: []
-
-flags:
-  hsexif:
-    iconv: false
+extra-deps:
+- exif-3000.0.0
