@@ -9,8 +9,14 @@ module Photoname.Log
   where
 
 import System.IO ( Handle, stdout )
+import System.Log.Formatter ( simpleLogFormatter )
+import System.Log.Handler ( setFormatter )
 import System.Log.Handler.Simple ( GenericHandler, streamHandler )
 import System.Log.Logger
+  ( Priority (DEBUG)
+  , alertM, criticalM, debugM, emergencyM, errorM, infoM, noticeM, warningM
+  , rootLoggerName, setHandlers, setLevel, updateGlobalLogger
+  )
 
 import Photoname.Common ( Verbosity (Quiet, Verbose) )
 
@@ -28,7 +34,15 @@ initLogging verbosity = do
 
 
 handlers :: Verbosity -> IO [GenericHandler Handle]
+
 handlers Quiet  = pure []
+
+-- Under the maximum verbosity (-v3), also display the logging Priority
+handlers (Verbose DEBUG) = do
+  h <- streamHandler stdout DEBUG >>=
+    (return . (flip setFormatter $ simpleLogFormatter "$prio: $msg"))
+  pure [h]
+
 handlers (Verbose _) = sequence [streamHandler stdout DEBUG]
 
 
