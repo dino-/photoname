@@ -9,21 +9,49 @@ import Photoname.Common
   , Options (..), Ph, SrcPath (..), runRename
   )
 import Photoname.CopyLink ( createNewLink )
-import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
+-- import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
+import Photoname.Date
 import Photoname.Exif ( getExifDate )
-import Photoname.Exiv2 ( setArtist, setExifDate )
+-- import Photoname.Exiv2 ( setArtist, setExifDate )
+import Photoname.Exiv2
 import Photoname.Links ( describeHardLinkPolicy, linksTest )
 import Photoname.Log ( errorM, initLogging, infoM, lname )
 import Photoname.Opts ( parseOpts )
 
+import Debug.Trace
+
+
+-- acquireDate :: SrcPath -> Ph PhDate
+-- acquireDate srcPath = do
+--   dateString <- getExifDate srcPath
+--   pure $ mconcat
+--     [ parseExifDate dateString
+--     , parseFilenameDate srcPath
+--     ]
+
 
 acquireDate :: SrcPath -> Ph PhDate
 acquireDate srcPath = do
-  dateString <- getExifDate srcPath
-  pure $ mconcat
-    [ parseExifDate dateString
-    , parseFilenameDate srcPath
+  mconcat <$> sequence
+    [ parseExifDate <$> getExifDate srcPath
+    , parseExifDate <$> getExifDateWithExiv2 srcPath
+    -- , parseExifDate . traceShowId <$> getExifDateWithExiv2 srcPath
+    -- , pure NoDateFound
+    , pure . parseFilenameDate $ srcPath
     ]
+
+
+-- acquireDate :: SrcPath -> Ph PhDate
+-- acquireDate srcPath = do
+--   dateFromExifLib <- parseExifDate <$> getExifDate srcPath
+--   -- dateFromExiv2 <- parseExifDate <$> getExifDateWithExiv2 srcPath
+--   dateFromExiv2 <- pure NoDateFound
+--   let dateFromFilename = parseFilenameDate srcPath
+--   pure $ mconcat
+--     [ dateFromExifLib
+--     , dateFromExiv2
+--     , dateFromFilename
+--     ]
 
 
 processFile :: SrcPath -> Ph ()
