@@ -12,11 +12,12 @@ import Control.Newtype.Generics ( op )
 import GHC.IO.Exception
 import System.Process hiding ( proc )
 import qualified System.Process as Proc
+import Text.Printf (printf)
 
 import Photoname.Common ( Artist (..), DestPath (..), NoActionSwitch (..),
   Options (..), Ph, SrcPath (..), asks, liftIO )
 import Photoname.Date ( PhDate (FilenameDate), formatDateForExif )
-import Photoname.Log ( debugM, lname, noticeM )
+import Photoname.Log ( debugM, errorM, lname, noticeM )
 
 
 data Reading
@@ -60,7 +61,8 @@ execReadingCommand command = logCommand command >> execCommand command
 execCommand :: Command rw -> Ph (Either String String)
 execCommand command = liftIO $ do
   eResult <- postProcess =<< try (readCreateProcessWithExitCode (proc command) "")
-  either (debugM lname) (debugM lname) eResult
+  either (\msg -> errorM lname $ "Command failed: " <> msg)
+    (\output -> debugM lname $ "Command succeeded, output: " <> output) eResult
   pure eResult
 
 
@@ -69,7 +71,7 @@ program = "exiv2"
 
 
 postProcess :: (Either IOException (ExitCode, String, String)) -> IO (Either String String)
-postProcess (Left   e                             ) = pure . Left $ ("exiv2: " <> ioe_description e)
+postProcess (Left   e                             ) = pure . Left $ (printf "%s: %s" program (ioe_description e))
 postProcess (Right (ExitSuccess  , stdOut, _     )) = pure . Right $ stdOut
 postProcess (Right (ExitFailure 1, _     , ""    )) = pure . Left $ "EXIF tag not found"
 postProcess (Right (ExitFailure _, _     , stdErr)) = pure . Left $ stdErr
