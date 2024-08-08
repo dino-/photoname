@@ -82,7 +82,7 @@ execWritingCommand command = do
     else execCommand command
 
 
--- For Reading (no "non-destructive") commands, we just log it and do it
+-- For Reading (or "non-destructive") commands, we just log it and do it
 execReadingCommand :: Command Reading -> Ph (Either String String)
 execReadingCommand command = logCommand command >> execCommand command
 
