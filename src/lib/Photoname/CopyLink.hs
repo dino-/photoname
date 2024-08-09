@@ -11,9 +11,8 @@ import Control.Newtype.Generics ( op )
 import Data.Time.LocalTime ( LocalTime )
 import GHC.IO.Exception ( IOException )
 import System.Directory ( copyFile, createDirectoryIfMissing )
-import System.FilePath ( (</>), takeDirectory )
+import System.FilePath ( (</>), (<.>), takeDirectory, takeExtension )
 import System.Posix ( createLink, fileExist, removeLink )
-import Text.Printf ( printf )
 
 import Photoname.Common ( CopySwitch (..), DestPath (..), MoveSwitch (..),
   NoActionSwitch (..), NoDirsSwitch (..), ParentDir (..), Options (..),
@@ -29,9 +28,10 @@ import Photoname.Log ( lname, noticeM, warningM )
 createNewLink :: PhDate -> SrcPath -> Ph DestPath
 createNewLink imageDate srcPath@(SrcPath srcFp) = do
   opts <- ask
+  let ext = takeExtension srcFp
   destPath@(DestPath destFp) <- case imageDate of
-    ExifDate lt -> buildDatePath lt
-    FilenameDate lt -> buildDatePath lt
+    ExifDate lt -> buildDatePath lt ext
+    FilenameDate lt -> buildDatePath lt ext
     NoDateFound -> throwError "Could not extract any date information"
 
   -- Check for existence of the target file
@@ -72,15 +72,15 @@ tryHardLink (SrcPath srcFp) (DestPath destFp) = do
    dir, subdirs wanted or not, prefix and suffix, and the date info that was
    gathered).
 -}
-buildDatePath :: LocalTime -> Ph DestPath
-buildDatePath date = do
+buildDatePath :: LocalTime -> FilePath -> Ph DestPath
+buildDatePath date ext = do
    prefixStr <- asks (op Prefix . optPrefix)
    suffixStr <- asks (op Suffix . optSuffix)
-   let fileName = printf "%s%s%s.jpg" prefixStr (formatDateTime date) suffixStr
+   let fileName = prefixStr <> formatDateTime date <> suffixStr
 
    parentFp <- asks (op ParentDir . optParentDir)
    noDirs <- asks (op NoDirsSwitch . optNoDirs)
    pure . DestPath $ if noDirs
-      then parentFp </> fileName
+      then parentFp </> fileName <.> ext
       else parentFp </> formatYear date </>
-         formatDateHyphens date </> fileName
+         formatDateHyphens date </> fileName <.> ext
