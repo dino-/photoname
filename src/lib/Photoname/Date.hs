@@ -50,7 +50,7 @@ digit4 = count 4 digit
 
 
 {- Parse a string in the form "yyyy:mm:dd hh:mm:ss" into a 
-   CalendarTime datatype. Strings that fail to parse in this manner are
+   LocalTime datatype. Strings that fail to parse in this manner are
    returned as Nothing
 -}
 parseExifDate :: Maybe String -> PhDate
@@ -72,7 +72,7 @@ parseExifDate (Just s) =
                   (fromIntegral (read second :: Integer)))
 
 
-{- Parse a string in one of the the forms below into a CalendarTime datatype.
+{- Parse a string in one of the the forms below into a LocalTime datatype.
 
     /some/path/ANYTHINGyyyy-mm-dd-hhmmss.jpg
     /some/path/ANYTHINGyyyy-mm-dd-hh-mm-ss-ttt.jpg
@@ -109,31 +109,31 @@ parseFilenameDate srcPath =
                (fromIntegral (read second :: Integer)))
 
 
-{- Format a Maybe CalendarTime into a "yyyy" string
+{- Format a Maybe LocalTime into a "yyyy" string
 -}
 formatYear :: LocalTime -> String
 formatYear = formatTime defaultTimeLocale "%Y"
 
 
-{- Format a Maybe CalendarTime into a "yyyy-mm-dd" string
+{- Format a Maybe LocalTime into a "yyyy-mm-dd" string
 -}
 formatDateHyphens :: LocalTime -> String
 formatDateHyphens = formatTime defaultTimeLocale "%Y-%m-%d"
 
 
-{- Format a Maybe CalendarTime into a "yyyymmdd" string
+{- Format a Maybe LocalTime into a "yyyymmdd" string
 -}
 formatDate :: LocalTime -> String
 formatDate = formatTime defaultTimeLocale "%Y%m%d"
 
 
-{- Format a Maybe CalendarTime into a "yyyymmdd-HHMMSS" string
+{- Format a Maybe LocalTime into a "yyyymmdd-HHMMSS" string
 -}
 formatDateTime :: LocalTime -> String
 formatDateTime = formatTime defaultTimeLocale "%Y%m%d-%H%M%S"
 
 
-{- Format a Maybe CalendarTime into a "yyyy:mm:dd HH:MM:SS" string
+{- Format a Maybe LocalTime into a "yyyy:mm:dd HH:MM:SS" string
 -}
 formatDateForExif :: LocalTime -> String
 formatDateForExif = formatTime defaultTimeLocale "%Y:%m:%d %H:%M:%S"
