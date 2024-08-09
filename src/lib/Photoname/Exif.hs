@@ -5,14 +5,14 @@ module Photoname.Exif
   )
   where
 
-import Control.Monad.Except ( MonadIO, liftIO )
-import Control.Newtype.Generics ( ala )
+import Control.Monad.Except (MonadIO, liftIO)
+import Control.Newtype.Generics (ala)
 import qualified Data.Map as M
-import Data.Monoid ( First (..) )
-import Graphics.HsExif ( ExifTag, ExifValue, dateTime, dateTimeDigitized,
-  dateTimeOriginal, parseFileExif )
+import Data.Monoid (First (..))
+import Graphics.HsExif (ExifTag, ExifValue, dateTime, dateTimeDigitized,
+  dateTimeOriginal, parseFileExif)
 
-import Photoname.Common ( SrcPath (..) )
+import Photoname.Common (SrcPath (..))
 
 
 {-

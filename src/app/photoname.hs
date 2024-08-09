@@ -1,20 +1,20 @@
-import Control.Monad ( filterM, forM_, when )
-import Control.Newtype.Generics ( op )
-import Data.Functor ( (<&>) )
-import System.Posix ( FileStatus, getFileStatus, isRegularFile )
-import Text.Printf ( printf )
+import Control.Monad (filterM, forM_, when)
+import Control.Newtype.Generics (op)
+import Data.Functor ((<&>))
+import System.Posix (FileStatus, getFileStatus, isRegularFile)
+import Text.Printf (printf)
 
 import Photoname.Common
   ( CopySwitch (..), Links, MoveSwitch (..), NoActionSwitch (..)
   , Options (..), Ph, SrcPath (..), liftIO, runRename
   )
-import Photoname.CopyLink ( createNewLink )
-import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
-import Photoname.Exif ( getExifDate )
-import Photoname.Exiv2 ( getExifDateWithExiv2, setArtist, setExifDate )
-import Photoname.Links ( describeHardLinkPolicy, linksTest )
-import Photoname.Log ( errorM, initLogging, infoM, lname )
-import Photoname.Opts ( parseOpts )
+import Photoname.CopyLink (createNewLink)
+import Photoname.Date (PhDate, parseExifDate, parseFilenameDate)
+import Photoname.Exif (getExifDate)
+import Photoname.Exiv2 (getExifDateWithExiv2, setArtist, setExifDate)
+import Photoname.Links (describeHardLinkPolicy, linksTest)
+import Photoname.Log (errorM, initLogging, infoM, lname)
+import Photoname.Opts (parseOpts)
 
 
 acquireDate :: SrcPath -> Ph PhDate

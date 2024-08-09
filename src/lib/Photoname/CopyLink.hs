@@ -5,14 +5,14 @@ module Photoname.CopyLink
    )
    where
 
-import Control.Exception ( try )
-import Control.Monad ( unless, when )
-import Control.Newtype.Generics ( op )
-import Data.Time.LocalTime ( LocalTime )
-import GHC.IO.Exception ( IOException )
-import System.Directory ( copyFile, createDirectoryIfMissing )
-import System.FilePath ( (</>), (<.>), takeDirectory, takeExtension )
-import System.Posix ( createLink, fileExist, removeLink )
+import Control.Exception (try)
+import Control.Monad (unless, when)
+import Control.Newtype.Generics (op)
+import Data.Time.LocalTime (LocalTime)
+import GHC.IO.Exception (IOException)
+import System.Directory (copyFile, createDirectoryIfMissing)
+import System.FilePath ((</>), (<.>), takeDirectory, takeExtension)
+import System.Posix (createLink, fileExist, removeLink)
 
 import Photoname.Common ( CopySwitch (..), DestPath (..), MoveSwitch (..),
   NoActionSwitch (..), NoDirsSwitch (..), ParentDir (..), Options (..),
@@ -22,7 +22,7 @@ import Photoname.Date
   ( PhDate (ExifDate, FilenameDate, NoDateFound)
   , formatDateHyphens, formatDateTime, formatYear
   )
-import Photoname.Log ( lname, noticeM, warningM )
+import Photoname.Log (lname, noticeM, warningM)
 
 
 createNewLink :: PhDate -> SrcPath -> Ph DestPath

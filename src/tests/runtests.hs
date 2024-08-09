@@ -1,7 +1,7 @@
 module Main
    where
 
-import System.Environment ( getArgs, withArgs )
+import System.Environment (getArgs, withArgs)
 import Test.Tasty
 
 import qualified Photoname.Test.EndToEnd.Link as Link

@@ -8,8 +8,8 @@ module Photoname.Test.Unit.Date
 
 import Data.Time.Calendar
 import Data.Time.LocalTime
-import Photoname.Common ( SrcPath (..) )
-import Photoname.Date ( PhDate (..), parseExifDate, parseFilenameDate )
+import Photoname.Common (SrcPath (..))
+import Photoname.Date (PhDate (..), parseExifDate, parseFilenameDate)
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck

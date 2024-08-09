@@ -10,17 +10,17 @@ module Photoname.Date
   )
   where
 
-import Control.Newtype.Generics ( op )
-import Data.Functor.Identity ( Identity )
-import Data.Time.Calendar ( fromGregorian )
-import Data.Time.Format ( defaultTimeLocale, formatTime )
-import Data.Time.LocalTime ( LocalTime (..), TimeOfDay (..) )
-import System.FilePath ( takeFileName )
-import Text.Parsec ( ParsecT )
-import Text.ParserCombinators.Parsec ( anyChar, char, count, digit,
-  lookAhead, manyTill, parse, space, try )
+import Control.Newtype.Generics (op)
+import Data.Functor.Identity (Identity)
+import Data.Time.Calendar (fromGregorian)
+import Data.Time.Format (defaultTimeLocale, formatTime)
+import Data.Time.LocalTime (LocalTime (..), TimeOfDay (..))
+import System.FilePath (takeFileName)
+import Text.Parsec (ParsecT)
+import Text.ParserCombinators.Parsec (anyChar, char, count, digit,
+  lookAhead, manyTill, parse, space, try)
 
-import Photoname.Common ( SrcPath (..) )
+import Photoname.Common (SrcPath (..))
 
 
 data PhDate
