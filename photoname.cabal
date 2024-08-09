@@ -11,7 +11,7 @@ homepage: https://github.com/dino-/photoname
 bug-reports: https://github.com/dino-/photoname/issues
 author: Dino Morelli
 maintainer: Dino Morelli <dino@ui3.info>
-copyright: 2007-2021 Dino Morelli
+copyright: 2007 Dino Morelli
 license: ISC
 license-file: LICENSE
 build-type: Simple
