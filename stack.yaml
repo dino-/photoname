@@ -1,9 +1,10 @@
-resolver: lts-19.16
+resolver: lts-21.25
 
 packages:
 - .
 
-extra-deps: []
+extra-deps:
+- hsexif-0.6.1.10
 
 flags:
   hsexif:
