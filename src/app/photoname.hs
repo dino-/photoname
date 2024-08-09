@@ -6,7 +6,7 @@ import Text.Printf ( printf )
 
 import Photoname.Common
   ( CopySwitch (..), Links, MoveSwitch (..), NoActionSwitch (..)
-  , Options (..), Ph, SrcPath (..), runRename
+  , Options (..), Ph, SrcPath (..), liftIO, runRename
   )
 import Photoname.CopyLink ( createNewLink )
 import Photoname.Date ( PhDate, parseExifDate, parseFilenameDate )
@@ -28,6 +28,7 @@ acquireDate srcPath = do
 
 processFile :: SrcPath -> Ph ()
 processFile srcPath = do
+  liftIO . infoM lname $ "----------"
   imageDate <- acquireDate srcPath
   destPath <- createNewLink imageDate srcPath
   setExifDate imageDate destPath
@@ -54,13 +55,13 @@ main = do
 
    -- Notify user of the switches that will be in effect.
    when (op NoActionSwitch . optNoAction $ opts) $
-      infoM lname "No-action mode, nothing will be changed."
+      infoM lname "No-action mode, nothing will be changed"
 
    when (op CopySwitch . optCopy $ opts) $
-      infoM lname "Copy has been specified instead of the default of hard linking."
+      infoM lname "Files will be copied instead of the default of hard linking"
 
    when (op MoveSwitch . optMove $ opts) $
-      infoM lname "Removing original links after new links are in place."
+      infoM lname "Removing original links after new links are in place"
 
    describeHardLinkPolicy $ optLinks opts
 
@@ -72,7 +73,7 @@ main = do
       either
         {- HLINT ignore "Avoid lambda" -}
         -- Because the compiler can't figure out printf is expecting an argument at compile time
-        (\em -> errorM lname $ printf "** Processing %s: %s\n" (op SrcPath srcPath) em)
+        (\em -> errorM lname $ printf "** Processing %s: %s" (op SrcPath srcPath) em)
         pure result
 
    -- Perhaps we should get an ExitCode back from all this above?

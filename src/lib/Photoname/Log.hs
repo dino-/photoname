@@ -1,5 +1,6 @@
 module Photoname.Log
-  ( initLogging
+  ( LogFunction
+  , initLogging
   , lname
   , logTest
 
@@ -19,6 +20,9 @@ import System.Log.Logger
   )
 
 import Photoname.Common ( Verbosity (Quiet, Verbose) )
+
+
+type LogFunction = String -> String -> IO ()
 
 
 lname :: String

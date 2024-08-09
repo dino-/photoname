@@ -9,6 +9,7 @@ import Control.Exception
 import Control.Monad ( void )
 import Control.Monad.IO.Class ( MonadIO )
 import Control.Newtype.Generics ( op )
+import Data.Char (isSpace)
 import GHC.IO.Exception
 import System.Process hiding ( proc )
 import qualified System.Process as Proc
@@ -17,7 +18,7 @@ import Text.Printf (printf)
 import Photoname.Common ( Artist (..), DestPath (..), NoActionSwitch (..),
   Options (..), Ph, SrcPath (..), asks, liftIO )
 import Photoname.Date ( PhDate (FilenameDate), formatDateForExif )
-import Photoname.Log ( debugM, errorM, lname, noticeM )
+import Photoname.Log ( LogFunction, debugM, infoM, lname, noticeM )
 
 
 data Reading
@@ -25,20 +26,21 @@ data Writing
 
 -- For logging purposes we keep the program name separate from its arguments
 -- until we need to build a CreateProcess data structure
-data Command rw = Command FilePath [String]
+data Command rw = Command LogFunction FilePath [String]
 
 -- Construct a human-readable command-line from a Command data structure. This
 -- is purely for logging.
 commandToString :: Command rw -> String
-commandToString (Command program' arguments) =
+commandToString (Command _ program' arguments) =
   unwords $ program' : arguments
 
 proc :: Command rw -> CreateProcess
-proc (Command program' arguments) = Proc.proc program' arguments
+proc (Command _ program' arguments) = Proc.proc program' arguments
 
 
 logCommand :: Control.Monad.IO.Class.MonadIO m => Command rw -> m ()
-logCommand command = liftIO . noticeM lname . commandToString $ command
+logCommand command@(Command logFunction _ _) =
+  liftIO . logFunction lname . commandToString $ command
 
 
 
@@ -58,11 +60,15 @@ execReadingCommand :: Command Reading -> Ph (Either String String)
 execReadingCommand command = logCommand command >> execCommand command
 
 
+stripTrailingWhitespace :: String -> String
+stripTrailingWhitespace = reverse . dropWhile isSpace . reverse
+
+
 execCommand :: Command rw -> Ph (Either String String)
 execCommand command = liftIO $ do
   eResult <- postProcess =<< try (readCreateProcessWithExitCode (proc command) "")
-  either (\msg -> errorM lname $ "Command failed: " <> msg)
-    (\output -> debugM lname $ "Command succeeded, output: " <> output) eResult
+  either (\msg -> debugM lname $ "** Command failed: " <> (stripTrailingWhitespace msg))
+    (\output -> debugM lname $ "Command succeeded, output: " <> (stripTrailingWhitespace output)) eResult
   pure eResult
 
 
@@ -83,21 +89,23 @@ setArtist (DestPath destFp) = do
 
   case artist of
     Nothing -> pure ()
-    Just (Artist "") -> void $ execWritingCommand $ Command program ["--Modify", "del Exif.Image.Artist", destFp]
-    Just (Artist artistInfo) -> void $ execWritingCommand $ Command program ["--Modify", "set Exif.Image.Artist " <> artistInfo, destFp]
+    Just (Artist "") -> void $ execWritingCommand $
+      Command noticeM program ["--Modify", "del Exif.Image.Artist", destFp]
+    Just (Artist artistInfo) -> void $ execWritingCommand $
+      Command noticeM program ["--Modify", "set Exif.Image.Artist " <> artistInfo, destFp]
 
 
 getExifDateWithExiv2 :: SrcPath -> Ph (Maybe String)
 getExifDateWithExiv2 (SrcPath srcFp) = do
   let tag = "Exif.Image.DateTime"
-  eResult <- execReadingCommand $ Command program ["--Print", "v", "--grep", tag, srcFp]
+  eResult <- execReadingCommand $ Command infoM program ["--Print", "v", "--grep", tag, srcFp]
   pure . either (const Nothing) Just $ eResult
 
 
 setExifDate :: PhDate -> DestPath -> Ph ()
 
 setExifDate (FilenameDate lt) (DestPath destFp) =
-  void $ execWritingCommand . Command program $
+  void $ execWritingCommand . Command noticeM program $
     [ "--Modify", "set Exif.Image.DateTime Ascii " <> (formatDateForExif lt)
     , "--Modify", "set Exif.Photo.UserComment charset=Ascii DateTime is a guess", destFp
     ]
