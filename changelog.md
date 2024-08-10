@@ -1,3 +1,23 @@
+5.2 (2024-08-10)
+
+  * Add an option to specify date format string
+  * Implemented various hlint suggestions
+  * Added switch to explicitly specify a file extension
+  * Switch from newtype-generics to OverloadedRecordDot
+  * Moved Stackage resolver up to lts-21.25
+  * Removed end-year in LICENSE and cabal files
+  * Fixed incorrect types in comments in Photoname.Date
+  * Removed whitespace around import parens
+  * Switched from hpack to Cabal library v2.2
+  * Now using original file extension when renaming
+  * Overhauled logging/output in various ways
+  * Logging shell command failure with ERROR priority
+  * New get date with exiv2 code now working
+  * Removed vim swap files from .gitignore
+  * Added tags file to .gitignore
+  * Logging now shows Priority at -v3 (DEBUG) level
+
+
 5.1 (2022-01-11)
 
   * Added new number-of-links filtering feature
