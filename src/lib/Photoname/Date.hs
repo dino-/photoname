@@ -10,7 +10,6 @@ module Photoname.Date
   )
   where
 
-import Control.Newtype.Generics (op)
 import Data.Functor.Identity (Identity)
 import Data.Time.Calendar (fromGregorian)
 import Data.Time.Format (defaultTimeLocale, formatTime)
@@ -20,7 +19,7 @@ import Text.Parsec (ParsecT)
 import Text.ParserCombinators.Parsec (anyChar, char, count, digit,
   lookAhead, manyTill, parse, space, try)
 
-import Photoname.Common (SrcPath (..))
+import Photoname.Common (SrcPath (SrcPath))
 
 
 data PhDate
@@ -84,8 +83,8 @@ parseExifDate (Just s) =
     PXL_yyyymmdd_hhmmssttt_xyz.jpg
 -}
 parseFilenameDate :: SrcPath -> PhDate
-parseFilenameDate srcPath =
-  case parse dateParser "" (takeFileName . op SrcPath $ srcPath) of
+parseFilenameDate (SrcPath srcPath) =
+  case parse dateParser "" (takeFileName srcPath) of
     Left _  -> NoDateFound
     Right x -> FilenameDate x
   where

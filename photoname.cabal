@@ -92,7 +92,6 @@ library
     , hsexif
     , hslogger
     , mtl
-    , newtype-generics
     , parsec
     , process
     , time
@@ -110,7 +109,6 @@ executable photoname
     , base >=4.5 && <5.0
     , heredoc
     , hslogger
-    , newtype-generics
     , optparse-applicative
     , photoname
 

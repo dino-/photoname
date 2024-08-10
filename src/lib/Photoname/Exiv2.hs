@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedRecordDot #-}
+
 module Photoname.Exiv2
   ( getExifDateWithExiv2
   , setArtist
@@ -8,15 +10,15 @@ module Photoname.Exiv2
 import Control.Exception
 import Control.Monad (void)
 import Control.Monad.IO.Class (MonadIO)
-import Control.Newtype.Generics (op)
 import Data.Char (isSpace)
 import GHC.IO.Exception
 import System.Process hiding (proc)
 import qualified System.Process as Proc
 import Text.Printf (printf)
 
-import Photoname.Common (Artist (..), DestPath (..), NoActionSwitch (..),
-  Options (..), Ph, SrcPath (..), asks, liftIO)
+import Photoname.Common (Artist (Artist), DestPath (DestPath),
+  NoActionSwitch (NoActionSwitch), Options (artist, noAction), Ph,
+  SrcPath (SrcPath), asks, liftIO)
 import Photoname.Date (PhDate (FilenameDate), formatDateForExif)
 import Photoname.Log (LogFunction, debugM, infoM, lname, noticeM)
 
@@ -49,8 +51,8 @@ logCommand command@(Command logFunction _ _) =
 execWritingCommand :: Command Writing -> Ph (Either String String)
 execWritingCommand command = do
   logCommand command
-  noAction <- asks $ op NoActionSwitch . optNoAction
-  if noAction
+  (NoActionSwitch noAction') <- asks noAction
+  if noAction'
     then pure $ Left ""
     else execCommand command
 
@@ -85,9 +87,9 @@ postProcess (Right (ExitFailure _, _     , stdErr)) = pure . Left $ stdErr
 
 setArtist :: DestPath -> Ph ()
 setArtist (DestPath destFp) = do
-  artist <- asks optArtist
+  artist' <- asks artist
 
-  case artist of
+  case artist' of
     Nothing -> pure ()
     Just (Artist "") -> void $ execWritingCommand $
       Command noticeM program ["--Modify", "del Exif.Image.Artist", destFp]

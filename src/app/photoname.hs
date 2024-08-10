@@ -1,13 +1,13 @@
+{-# LANGUAGE OverloadedRecordDot #-}
+
 import Control.Monad (filterM, forM_, when)
-import Control.Newtype.Generics (op)
 import Data.Functor ((<&>))
 import System.Posix (FileStatus, getFileStatus, isRegularFile)
 import Text.Printf (printf)
 
-import Photoname.Common
-  ( CopySwitch (..), Links, MoveSwitch (..), NoActionSwitch (..)
-  , Options (..), Ph, SrcPath (..), liftIO, runRename
-  )
+import Photoname.Common (CopySwitch (v), Links, MoveSwitch (v),
+  NoActionSwitch (v), Options (copy, links, move, noAction, paths, verbosity),
+  Ph, SrcPath (SrcPath, v), liftIO, runRename)
 import Photoname.CopyLink (createNewLink)
 import Photoname.Date (PhDate, parseExifDate, parseFilenameDate)
 import Photoname.Exif (getExifDate)
@@ -51,21 +51,21 @@ main :: IO ()
 main = do
    opts <- parseOpts
 
-   initLogging $ optVerbosity opts
+   initLogging $ verbosity opts
 
    -- Notify user of the switches that will be in effect.
-   when (op NoActionSwitch . optNoAction $ opts) $
+   when opts.noAction.v $
       infoM lname "No-action mode, nothing will be changed"
 
-   when (op CopySwitch . optCopy $ opts) $
+   when opts.copy.v $
       infoM lname "Files will be copied instead of the default of hard linking"
 
-   when (op MoveSwitch . optMove $ opts) $
+   when opts.move.v $
       infoM lname "Removing original links after new links are in place"
 
-   describeHardLinkPolicy $ optLinks opts
+   describeHardLinkPolicy $ links opts
 
-   actualPaths <- filterWantedFiles (optLinks opts) (optPaths opts)
+   actualPaths <- filterWantedFiles (links opts) (paths opts)
 
    -- Do the link manipulations, and report any errors.
    forM_ actualPaths $ \srcPath -> do
@@ -73,7 +73,7 @@ main = do
       either
         {- HLINT ignore "Avoid lambda" -}
         -- Because the compiler can't figure out printf is expecting an argument at compile time
-        (\em -> errorM lname $ printf "** Processing %s: %s" (op SrcPath srcPath) em)
+        (\em -> errorM lname $ printf "** Processing %s: %s" srcPath.v em)
         pure result
 
    -- Perhaps we should get an ExitCode back from all this above?

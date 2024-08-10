@@ -145,10 +145,10 @@ parseOpts = do
   -- Parse command-line args first to get -c
   cliOpts <- parseOpts' =<< getArgs
 
-  case optConfig cliOpts of
+  case config cliOpts of
     Just configPath -> do
       confArgs <- loadConfig configPath
-      parseOpts' $ confArgs <> optPaths cliOpts
+      parseOpts' $ confArgs <> paths cliOpts
     Nothing -> pure cliOpts
 
 

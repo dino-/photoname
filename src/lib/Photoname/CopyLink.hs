@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedRecordDot, ScopedTypeVariables #-}
 
 module Photoname.CopyLink
    ( createNewLink
@@ -7,21 +7,19 @@ module Photoname.CopyLink
 
 import Control.Exception (try)
 import Control.Monad (unless, when)
-import Control.Newtype.Generics (op)
 import Data.Time.LocalTime (LocalTime)
 import GHC.IO.Exception (IOException)
 import System.Directory (copyFile, createDirectoryIfMissing)
 import System.FilePath ((</>), (<.>), takeDirectory, takeExtension)
 import System.Posix (createLink, fileExist, removeLink)
 
-import Photoname.Common ( CopySwitch (..), DestPath (..), MoveSwitch (..),
-  NoActionSwitch (..), NoDirsSwitch (..), ParentDir (..), Options (..),
-  Ph, Prefix (..), SrcPath (..), Suffix (..),
-  ask, asks, liftIO, throwError )
-import Photoname.Date
-  ( PhDate (ExifDate, FilenameDate, NoDateFound)
-  , formatDateHyphens, formatDateTime, formatYear
-  )
+import Photoname.Common (CopySwitch (v), DestPath (..), MoveSwitch (v),
+  NoActionSwitch (v), NoDirsSwitch (NoDirsSwitch), ParentDir (ParentDir),
+  Options (copy, move, noAction, noDirs, parentDir, prefix, suffix), Ph,
+  Prefix (Prefix), SrcPath (SrcPath), Suffix (Suffix), ask, asks, liftIO,
+  throwError)
+import Photoname.Date (PhDate (ExifDate, FilenameDate, NoDateFound),
+  formatDateHyphens, formatDateTime, formatYear)
 import Photoname.Log (lname, noticeM, warningM)
 
 
@@ -41,17 +39,17 @@ createNewLink imageDate srcPath@(SrcPath srcFp) = do
   -- Display what will be done
   liftIO $ noticeM lname $ srcFp ++ " -> " ++ destFp
 
-  unless (op NoActionSwitch . optNoAction $ opts) $ do
+  unless opts.noAction.v $ do
     -- Make the target dir
     liftIO $ createDirectoryIfMissing True $ takeDirectory destFp
 
     -- Make the new file
-    if op CopySwitch . optCopy $ opts
+    if opts.copy.v
       then liftIO $ copyFile srcFp destFp
       else tryHardLink srcPath destPath
 
     -- If user has specified, remove the original link
-    when (op MoveSwitch . optMove $ opts) $
+    when opts.move.v $
        liftIO $ removeLink srcFp
 
   pure destPath
@@ -74,13 +72,13 @@ tryHardLink (SrcPath srcFp) (DestPath destFp) = do
 -}
 buildDatePath :: LocalTime -> FilePath -> Ph DestPath
 buildDatePath date ext = do
-   prefixStr <- asks (op Prefix . optPrefix)
-   suffixStr <- asks (op Suffix . optSuffix)
+   (Prefix prefixStr) <- asks prefix
+   (Suffix suffixStr) <- asks suffix
    let fileName = prefixStr <> formatDateTime date <> suffixStr
 
-   parentFp <- asks (op ParentDir . optParentDir)
-   noDirs <- asks (op NoDirsSwitch . optNoDirs)
-   pure . DestPath $ if noDirs
-      then parentFp </> fileName <.> ext
-      else parentFp </> formatYear date </>
+   (ParentDir parentDir') <- asks parentDir
+   (NoDirsSwitch noDirs') <- asks noDirs
+   pure . DestPath $ if noDirs'
+      then parentDir' </> fileName <.> ext
+      else parentDir' </> formatYear date </>
          formatDateHyphens date </> fileName <.> ext
