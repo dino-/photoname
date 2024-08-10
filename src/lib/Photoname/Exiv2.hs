@@ -48,7 +48,7 @@ proc :: Command rw -> CreateProcess
 proc (Command _ program' arguments) = Proc.proc program' arguments
 
 
-logCommand :: Control.Monad.IO.Class.MonadIO m => Command rw -> m ()
+logCommand :: MonadIO m => Command rw -> m ()
 logCommand command@(Command logFunction _ _) =
   liftIO . logFunction lname . commandToString $ command
 
