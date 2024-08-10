@@ -16,11 +16,11 @@ import System.Posix (createLink, fileExist, removeLink)
 import Photoname.Common (CopySwitch (v), DestPath (..),
   Extension (Extension, UseExistingExtension), MoveSwitch (v),
   NoActionSwitch (v), NoDirsSwitch (NoDirsSwitch), ParentDir (ParentDir),
-  Options (copy, extension, move, noAction, noDirs, parentDir, prefix, suffix),
+  Options (copy, formatter, extension, move, noAction, noDirs, parentDir, prefix, suffix),
   Ph, Prefix (Prefix), SrcPath (SrcPath), Suffix (Suffix), ask, asks, liftIO,
   throwError)
 import Photoname.Date (PhDate (ExifDate, FilenameDate, NoDateFound),
-  formatDateHyphens, formatDateTime, formatYear)
+  formatDateHyphens, formatYear)
 import Photoname.Log (lname, noticeM, warningM)
 
 
@@ -79,7 +79,8 @@ buildDatePath :: LocalTime -> FilePath -> Ph DestPath
 buildDatePath date ext = do
    (Prefix prefixStr) <- asks prefix
    (Suffix suffixStr) <- asks suffix
-   let fileName = prefixStr <> formatDateTime date <> suffixStr
+   dateFormatter <- asks formatter
+   let fileName = prefixStr <> dateFormatter date <> suffixStr
 
    (ParentDir parentDir') <- asks parentDir
    (NoDirsSwitch noDirs') <- asks noDirs

@@ -17,6 +17,7 @@ module Photoname.Common
   , SrcPath (..)
   , Suffix (..)
   , Verbosity (..)
+  , defaultDateTimeFormat
   , readVerbosity
   , runRename
 
@@ -31,9 +32,13 @@ module Photoname.Common
 import Control.Monad.Except (ExceptT, MonadError, runExceptT, throwError)
 import Control.Monad.Reader (ReaderT, ask, asks, runReaderT)
 import Control.Monad.Trans (liftIO)
+import Data.Time.LocalTime (LocalTime)
 import System.Log.Logger (Priority (..))
 import System.Posix (CNlink)
 
+
+defaultDateTimeFormat :: String
+defaultDateTimeFormat = "%Y%m%d-%H%M%S"
 
 data Verbosity
   = Quiet
@@ -60,6 +65,8 @@ newtype ConfigPath = ConfigPath FilePath
 
 newtype CopySwitch = CopySwitch { v :: Bool }
 
+type DateFormatter = LocalTime -> String
+
 newtype NoDirsSwitch = NoDirsSwitch { v :: Bool }
 
 data Extension = Extension FilePath | UseExistingExtension
@@ -82,6 +89,7 @@ data Options = Options
   , copy       :: CopySwitch
   , noDirs     :: NoDirsSwitch
   , extension  :: Extension
+  , formatter  :: DateFormatter
   , links      :: Links
   , move       :: MoveSwitch
   , noAction   :: NoActionSwitch

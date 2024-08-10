@@ -31,8 +31,10 @@ import Photoname.Common
   , Prefix (..)
   , Suffix (..)
   , Verbosity (Verbose)
+  , defaultDateTimeFormat
   , readVerbosity
   )
+import Photoname.Date (formatDateTime, mkDateFormatter)
 
 
 parser :: Parser Options
@@ -68,6 +70,14 @@ parser = Options
         <> metavar "EXT"
         <> help "Extension to use for new image file names. Default: Keep existing extension"
         <> value UseExistingExtension
+        )
+  <*> option (mkDateFormatter <$> str)
+        (  long "date-formatter"
+        <> short 'f'
+        <> metavar "STR"
+        <> help (printf "Format string for date/time in the new filenames. Default \"%s\" See DATE FORMATTER"
+            defaultDateTimeFormat)
+        <> value formatDateTime
         )
   <*> option (Exactly <$> auto)
         (  long "links"
@@ -174,7 +184,7 @@ parseOpts' args = do
 
 
 footer' :: InfoMod a
-footer' = footerDoc . Just . string $ printf content (showVersion version)
+footer' = footerDoc . Just . string $ printf content defaultDateTimeFormat (showVersion version)
   where content = [here|OVERVIEW
 
 This software is for renaming and storing your digital photos. It will attempt to construct a meaningful filename based on the EXIF shoot date in the file or possibly date/time info in the old filename, and optionally some other information.
@@ -204,6 +214,13 @@ The -D|--no-dirs switch will suppress the directory-hierarchy-creating part of t
   <PARENTDIR>/20020502-132307.jpg
 
 Default behavior is to create hard links to the new paths and leave the original links as they were. You can use the --move switch to remove the original links. You can also use the --copy switch to make a copy instead of hard linking. Also, copying will be attempted if the hard linking fails, for instance if you're naming across different filesystems.
+
+DATE FORMATTER
+
+The default date format string is "%s" which yields strings like "yyyymmdd-HHMMSS"
+Another example: "%%Y-%%m-%%dt%%H%%M_img" -> "yyyy-mm-ddtHHMM_img"
+
+Any valid date format string is allowed for the -f|--date-formatter option. Please see the API documentation for help on format strings: https://downloads.haskell.org/ghc/latest/docs/libraries/time-1.12.2-dfcf/Data-Time-Format.html
 
 ARTIST
 

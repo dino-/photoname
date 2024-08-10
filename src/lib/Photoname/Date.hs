@@ -5,6 +5,7 @@ module Photoname.Date
   ( PhDate (..)
   , formatYear, formatDateHyphens, formatDate, formatDateTime
   , formatDateForExif
+  , mkDateFormatter
   , parseExifDate
   , parseFilenameDate
   )
@@ -19,7 +20,7 @@ import Text.Parsec (ParsecT)
 import Text.ParserCombinators.Parsec (anyChar, char, count, digit,
   lookAhead, manyTill, parse, space, try)
 
-import Photoname.Common (SrcPath (SrcPath))
+import Photoname.Common (SrcPath (SrcPath), defaultDateTimeFormat)
 
 
 data PhDate
@@ -108,31 +109,35 @@ parseFilenameDate (SrcPath srcPath) =
                (fromIntegral (read second :: Integer)))
 
 
-{- Format a Maybe LocalTime into a "yyyy" string
+{- Format a LocalTime into a "yyyy" string
 -}
 formatYear :: LocalTime -> String
 formatYear = formatTime defaultTimeLocale "%Y"
 
 
-{- Format a Maybe LocalTime into a "yyyy-mm-dd" string
+{- Format a LocalTime into a "yyyy-mm-dd" string
 -}
 formatDateHyphens :: LocalTime -> String
 formatDateHyphens = formatTime defaultTimeLocale "%Y-%m-%d"
 
 
-{- Format a Maybe LocalTime into a "yyyymmdd" string
+{- Format a LocalTime into a "yyyymmdd" string
 -}
 formatDate :: LocalTime -> String
 formatDate = formatTime defaultTimeLocale "%Y%m%d"
 
 
-{- Format a Maybe LocalTime into a "yyyymmdd-HHMMSS" string
+{- Format a LocalTime into a "yyyymmdd-HHMMSS" string
 -}
 formatDateTime :: LocalTime -> String
-formatDateTime = formatTime defaultTimeLocale "%Y%m%d-%H%M%S"
+formatDateTime = mkDateFormatter defaultDateTimeFormat
 
 
-{- Format a Maybe LocalTime into a "yyyy:mm:dd HH:MM:SS" string
+{- Format a LocalTime into a "yyyy:mm:dd HH:MM:SS" string
 -}
 formatDateForExif :: LocalTime -> String
 formatDateForExif = formatTime defaultTimeLocale "%Y:%m:%d %H:%M:%S"
+
+
+mkDateFormatter :: String -> LocalTime -> String
+mkDateFormatter = formatTime defaultTimeLocale
