@@ -13,10 +13,11 @@ import System.Directory (copyFile, createDirectoryIfMissing)
 import System.FilePath ((</>), (<.>), takeDirectory, takeExtension)
 import System.Posix (createLink, fileExist, removeLink)
 
-import Photoname.Common (CopySwitch (v), DestPath (..), MoveSwitch (v),
+import Photoname.Common (CopySwitch (v), DestPath (..),
+  Extension (Extension, UseExistingExtension), MoveSwitch (v),
   NoActionSwitch (v), NoDirsSwitch (NoDirsSwitch), ParentDir (ParentDir),
-  Options (copy, move, noAction, noDirs, parentDir, prefix, suffix), Ph,
-  Prefix (Prefix), SrcPath (SrcPath), Suffix (Suffix), ask, asks, liftIO,
+  Options (copy, extension, move, noAction, noDirs, parentDir, prefix, suffix),
+  Ph, Prefix (Prefix), SrcPath (SrcPath), Suffix (Suffix), ask, asks, liftIO,
   throwError)
 import Photoname.Date (PhDate (ExifDate, FilenameDate, NoDateFound),
   formatDateHyphens, formatDateTime, formatYear)
@@ -26,7 +27,11 @@ import Photoname.Log (lname, noticeM, warningM)
 createNewLink :: PhDate -> SrcPath -> Ph DestPath
 createNewLink imageDate srcPath@(SrcPath srcFp) = do
   opts <- ask
-  let ext = takeExtension srcFp
+
+  let ext = case opts.extension of
+        (Extension ext') -> ext'
+        UseExistingExtension -> takeExtension srcFp
+
   destPath@(DestPath destFp) <- case imageDate of
     ExifDate lt -> buildDatePath lt ext
     FilenameDate lt -> buildDatePath lt ext

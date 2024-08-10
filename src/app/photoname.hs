@@ -5,9 +5,10 @@ import Data.Functor ((<&>))
 import System.Posix (FileStatus, getFileStatus, isRegularFile)
 import Text.Printf (printf)
 
-import Photoname.Common (CopySwitch (v), Links, MoveSwitch (v),
-  NoActionSwitch (v), Options (copy, links, move, noAction, paths, verbosity),
-  Ph, SrcPath (SrcPath, v), liftIO, runRename)
+import Photoname.Common (CopySwitch (v),
+  Extension (Extension, UseExistingExtension), Links, MoveSwitch (v),
+  NoActionSwitch (v), Options (copy, extension, links, move, noAction, paths,
+  verbosity), Ph, SrcPath (SrcPath, v), liftIO, runRename)
 import Photoname.CopyLink (createNewLink)
 import Photoname.Date (PhDate, parseExifDate, parseFilenameDate)
 import Photoname.Exif (getExifDate)
@@ -59,6 +60,10 @@ main = do
 
    when opts.copy.v $
       infoM lname "Files will be copied instead of the default of hard linking"
+
+   case opts.extension of
+      Extension ext -> infoM lname $ printf "The extension '%s' will be used for all files" ext
+      UseExistingExtension -> pure ()
 
    when opts.move.v $
       infoM lname "Removing original links after new links are in place"

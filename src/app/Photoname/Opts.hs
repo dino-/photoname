@@ -21,6 +21,7 @@ import Photoname.Common
   ( Artist (..)
   , ConfigPath (..)
   , CopySwitch (..)
+  , Extension (Extension, UseExistingExtension)
   , Links (Exactly, NoLimit)
   , MoveSwitch (..)
   , NoActionSwitch (..)
@@ -61,6 +62,13 @@ parser = Options
         <> help "No subdirectory hierarchy. Just do DIR/NEWFILE"
         )
       )
+  <*> option (Extension <$> str)
+        (  long "extension"
+        <> short 'e'
+        <> metavar "EXT"
+        <> help "Extension to use for new image file names. Default: Keep existing extension"
+        <> value UseExistingExtension
+        )
   <*> option (Exactly <$> auto)
         (  long "links"
         <> short 'l'

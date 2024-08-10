@@ -5,6 +5,7 @@ module Photoname.Common
   , ConfigPath (..)
   , CopySwitch (..)
   , DestPath (..)
+  , Extension (..)
   , Links(..)
   , MoveSwitch (..)
   , NoActionSwitch (..)
@@ -61,6 +62,8 @@ newtype CopySwitch = CopySwitch { v :: Bool }
 
 newtype NoDirsSwitch = NoDirsSwitch { v :: Bool }
 
+data Extension = Extension FilePath | UseExistingExtension
+
 data Links = Exactly CNlink | NoLimit
 
 newtype MoveSwitch = MoveSwitch { v :: Bool }
@@ -78,6 +81,7 @@ data Options = Options
   , config     :: Maybe ConfigPath
   , copy       :: CopySwitch
   , noDirs     :: NoDirsSwitch
+  , extension  :: Extension
   , links      :: Links
   , move       :: MoveSwitch
   , noAction   :: NoActionSwitch
