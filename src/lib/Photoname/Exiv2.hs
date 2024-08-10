@@ -32,9 +32,17 @@ data Command rw = Command LogFunction FilePath [String]
 
 -- Construct a human-readable command-line from a Command data structure. This
 -- is purely for logging.
+-- Arguments may contain spaces but be quoted properly when this is used by
+-- System.Process.proc BUT they look odd when logged by our code. This function
+-- will put quotes around any space-containing arguments purely for human
+-- readability.
 commandToString :: Command rw -> String
 commandToString (Command _ program' arguments) =
-  unwords $ program' : arguments
+  unwords $ program' : map quoteAsNeeded arguments
+  where
+    quoteAsNeeded str = if ' ' `elem` str
+      then "'" <> str <> "'"
+      else str
 
 proc :: Command rw -> CreateProcess
 proc (Command _ program' arguments) = Proc.proc program' arguments
