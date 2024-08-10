@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedRecordDot #-}
-
 module Photoname.Exiv2
   ( getExifDateWithExiv2
   , setArtist
@@ -77,8 +75,8 @@ stripTrailingWhitespace = reverse . dropWhile isSpace . reverse
 execCommand :: Command rw -> Ph (Either String String)
 execCommand command = liftIO $ do
   eResult <- postProcess =<< try (readCreateProcessWithExitCode (proc command) "")
-  either (\msg -> debugM lname $ "** Command failed: " <> (stripTrailingWhitespace msg))
-    (\output -> debugM lname $ "Command succeeded, output: " <> (stripTrailingWhitespace output)) eResult
+  either (\msg -> debugM lname $ "** Command failed: " <> stripTrailingWhitespace msg)
+    (\output -> debugM lname $ "Command succeeded, output: " <> stripTrailingWhitespace output) eResult
   pure eResult
 
 
@@ -86,8 +84,8 @@ program :: FilePath
 program = "exiv2"
 
 
-postProcess :: (Either IOException (ExitCode, String, String)) -> IO (Either String String)
-postProcess (Left   e                             ) = pure . Left $ (printf "%s: %s" program (ioe_description e))
+postProcess :: Either IOException (ExitCode, String, String) -> IO (Either String String)
+postProcess (Left   e                             ) = pure . Left $ printf "%s: %s" program (ioe_description e)
 postProcess (Right (ExitSuccess  , stdOut, _     )) = pure . Right $ stdOut
 postProcess (Right (ExitFailure 1, _     , ""    )) = pure . Left $ "EXIF tag not found"
 postProcess (Right (ExitFailure _, _     , stdErr)) = pure . Left $ stdErr
@@ -116,7 +114,7 @@ setExifDate :: PhDate -> DestPath -> Ph ()
 
 setExifDate (FilenameDate lt) (DestPath destFp) =
   void $ execWritingCommand . Command noticeM program $
-    [ "--Modify", "set Exif.Image.DateTime Ascii " <> (formatDateForExif lt)
+    [ "--Modify", "set Exif.Image.DateTime Ascii " <> formatDateForExif lt
     , "--Modify", "set Exif.Photo.UserComment charset=Ascii DateTime is a guess", destFp
     ]
 

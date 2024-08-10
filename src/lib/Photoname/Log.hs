@@ -9,6 +9,7 @@ module Photoname.Log
   )
   where
 
+import Data.Functor ((<&>))
 import System.IO (Handle, stdout)
 import System.Log.Formatter (simpleLogFormatter)
 import System.Log.Handler (setFormatter)
@@ -43,8 +44,8 @@ handlers Quiet  = pure []
 
 -- Under the maximum verbosity (-v3), also display the logging Priority
 handlers (Verbose DEBUG) = do
-  h <- streamHandler stdout DEBUG >>=
-    (return . (flip setFormatter $ simpleLogFormatter "$prio: $msg"))
+  h <- streamHandler stdout DEBUG <&>
+    flip setFormatter (simpleLogFormatter "$prio: $msg")
   pure [h]
 
 handlers (Verbose _) = sequence [streamHandler stdout DEBUG]

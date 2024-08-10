@@ -6,6 +6,7 @@ module Photoname.Test.Unit.Date
   )
   where
 
+import Data.Foldable (fold)
 import Data.Time.Calendar
 import Data.Time.LocalTime
 import Photoname.Common (SrcPath (..))
@@ -80,5 +81,5 @@ propsPhDate = testGroup "testing the Semigroup and Monoid properties of PhDate"
   , testProperty "Monoid left identity  mempty <> x == x" $
     \(x :: PhDate) -> mempty <> x == x
   , testProperty "Monoid concatenation  mconcat xs == foldr (<>) mempty xs" $
-    \(xs :: [PhDate]) -> mconcat xs == foldr (<>) mempty xs
+    \(xs :: [PhDate]) -> mconcat xs == fold xs
   ]
