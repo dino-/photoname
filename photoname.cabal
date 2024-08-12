@@ -16,7 +16,6 @@ license: ISC
 license-file: LICENSE
 build-type: Simple
 extra-source-files:
-  changelog.md
   doc/hcar-photoname.tex
   .gitignore
   hsinstall/share/applications/photoname.desktop
@@ -33,6 +32,8 @@ extra-source-files:
   util/resources/test/noExif.jpg
   util/resources/test/notAnImage.txt
   util/resources/test/test.conf
+extra-doc-files:
+  changelog.md
 
 source-repository head
   type: git
@@ -84,6 +85,8 @@ library
     Photoname.Log
   other-modules:
     Paths_photoname
+  autogen-modules:
+    Paths_photoname
   hs-source-dirs:
     src/lib
   build-depends:
@@ -100,8 +103,10 @@ executable photoname
   import: lang
   main-is: photoname.hs
   other-modules:
-      Photoname.Opts
-      Paths_photoname
+    Photoname.Opts
+    Paths_photoname
+  autogen-modules:
+    Paths_photoname
   hs-source-dirs:
       src/app
   build-depends:
@@ -120,7 +125,6 @@ test-suite photoname-tests
     Photoname.Test.EndToEnd.Link
     Photoname.Test.EndToEnd.Util
     Photoname.Test.Unit.Date
-    Paths_photoname
   hs-source-dirs:
     src/tests
   build-depends:
