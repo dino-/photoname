@@ -5,9 +5,9 @@ module Photoname.Test.EndToEnd.Util
   )
   where
 
-import System.IO (hGetContents)
-import System.Process (ProcessHandle, runInteractiveCommand)
-import Test.Tasty.HUnit (Assertion, assertBool)
+import System.IO ( hGetContents )
+import System.Process ( ProcessHandle, runInteractiveCommand )
+import Test.Tasty.HUnit ( Assertion, assertBool )
 
 
 command :: String

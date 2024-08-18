@@ -5,17 +5,17 @@ module Photoname.Opts
    )
    where
 
-import Data.Version (showVersion)
+import Data.Version ( showVersion )
 import Options.Applicative
-import Paths_photoname (version)
-import System.Directory (doesFileExist)
-import System.Environment (getArgs, getProgName)
-import System.Exit (exitFailure)
-import System.IO (hPutStrLn, stderr)
-import System.Log (Priority (INFO))
-import Text.Heredoc (here)
-import Text.PrettyPrint.ANSI.Leijen (string)
-import Text.Printf (printf)
+import Paths_photoname ( version )
+import System.Directory ( doesFileExist )
+import System.Environment ( getArgs, getProgName )
+import System.Exit ( exitFailure )
+import System.IO ( hPutStrLn, stderr )
+import System.Log ( Priority (INFO) )
+import Text.Heredoc ( here )
+import Text.PrettyPrint.ANSI.Leijen ( string )
+import Text.Printf ( printf )
 
 import Photoname.Common
   ( Artist (..)

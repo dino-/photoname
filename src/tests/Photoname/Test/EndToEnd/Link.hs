@@ -5,11 +5,11 @@ module Photoname.Test.EndToEnd.Link
   )
   where
 
-import System.Directory (copyFile, removeDirectoryRecursive, removeFile)
-import System.FilePath.Posix ((</>), (<.>))
-import System.Posix.Files (fileExist)
-import System.Process (waitForProcess)
-import Text.Regex.Posix ((=~))
+import System.Directory ( copyFile, removeDirectoryRecursive, removeFile )
+import System.FilePath.Posix ( (</>), (<.>) )
+import System.Posix.Files ( fileExist )
+import System.Process ( waitForProcess )
+import Text.Regex.Posix ( (=~) )
 import Test.Tasty
 import Test.Tasty.HUnit
 import qualified Photoname.Test.EndToEnd.Util as Util

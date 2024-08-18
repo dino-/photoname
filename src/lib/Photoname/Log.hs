@@ -9,18 +9,18 @@ module Photoname.Log
   )
   where
 
-import Data.Functor ((<&>))
-import System.IO (Handle, stdout)
-import System.Log.Formatter (simpleLogFormatter)
-import System.Log.Handler (setFormatter)
-import System.Log.Handler.Simple (GenericHandler, streamHandler)
+import Data.Functor ( (<&>) )
+import System.IO ( Handle, stdout )
+import System.Log.Formatter ( simpleLogFormatter )
+import System.Log.Handler ( setFormatter )
+import System.Log.Handler.Simple ( GenericHandler, streamHandler )
 import System.Log.Logger
   ( Priority (DEBUG)
   , alertM, criticalM, debugM, emergencyM, errorM, infoM, noticeM, warningM
   , rootLoggerName, setHandlers, setLevel, updateGlobalLogger
   )
 
-import Photoname.Common (Verbosity (Quiet, Verbose))
+import Photoname.Common ( Verbosity (Quiet, Verbose) )
 
 
 type LogFunction = String -> String -> IO ()
