@@ -4,11 +4,11 @@ module Photoname.Links
   )
   where
 
-import System.Posix ( FileStatus, linkCount )
-import Text.Printf ( printf )
+import System.Posix (FileStatus, linkCount)
+import Text.Printf (printf)
 
-import Photoname.Common ( Links (Exactly, NoLimit) )
-import Photoname.Log ( infoM, lname )
+import Photoname.Common (Links (Exactly, NoLimit))
+import Photoname.Log (infoM, lname)
 
 
 linksTest :: Links -> FileStatus -> Bool

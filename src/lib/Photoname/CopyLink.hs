@@ -5,23 +5,23 @@ module Photoname.CopyLink
    )
    where
 
-import Control.Exception ( try )
-import Control.Monad ( unless, when )
-import Data.Time.LocalTime ( LocalTime )
-import GHC.IO.Exception ( IOException )
-import System.Directory ( copyFile, createDirectoryIfMissing )
-import System.FilePath ( (</>), ( <.>), takeDirectory, takeExtension )
-import System.Posix ( createLink, fileExist, removeLink )
+import Control.Exception (try)
+import Control.Monad (unless, when)
+import Data.Time.LocalTime (LocalTime)
+import GHC.IO.Exception (IOException)
+import System.Directory (copyFile, createDirectoryIfMissing)
+import System.FilePath ((</>), (<.>), takeDirectory, takeExtension)
+import System.Posix (createLink, fileExist, removeLink)
 
-import Photoname.Common ( CopySwitch ( v), DestPath ( ..),
-  Extension ( Extension, UseExistingExtension), MoveSwitch ( v),
-  NoActionSwitch ( v), NoDirsSwitch ( NoDirsSwitch), ParentDir ( ParentDir),
-  Options ( copy, formatter, extension, move, noAction, noDirs, parentDir, prefix, suffix),
-  Ph, Prefix ( Prefix), SrcPath ( SrcPath), Suffix ( Suffix), ask, asks, liftIO,
-  throwError )
-import Photoname.Date ( PhDate ( ExifDate, FilenameDate, NoDateFound),
-  formatDateHyphens, formatYear )
-import Photoname.Log ( lname, noticeM, warningM )
+import Photoname.Common (CopySwitch (v), DestPath (..),
+  Extension (Extension, UseExistingExtension), MoveSwitch (v),
+  NoActionSwitch (v), NoDirsSwitch (NoDirsSwitch), ParentDir (ParentDir),
+  Options (copy, formatter, extension, move, noAction, noDirs, parentDir, prefix, suffix),
+  Ph, Prefix (Prefix), SrcPath (SrcPath), Suffix (Suffix), ask, asks, liftIO,
+  throwError)
+import Photoname.Date (PhDate (ExifDate, FilenameDate, NoDateFound),
+  formatDateHyphens, formatYear)
+import Photoname.Log (lname, noticeM, warningM)
 
 
 createNewLink :: PhDate -> SrcPath -> Ph DestPath

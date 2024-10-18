@@ -6,20 +6,20 @@ module Photoname.Exiv2
   where
 
 import Control.Exception
-import Control.Monad ( void )
-import Control.Monad.IO.Class ( MonadIO )
+import Control.Monad (void)
+import Control.Monad.IO.Class (MonadIO)
 import Data.Char (isSpace)
-import Data.Monoid ( First (..) )
+import Data.Monoid (First (..))
 import GHC.IO.Exception
-import System.Process hiding ( proc )
+import System.Process hiding (proc)
 import qualified System.Process as Proc
 import Text.Printf (printf)
 
-import Photoname.Common ( Artist ( Artist), DestPath ( DestPath),
-  NoActionSwitch ( NoActionSwitch), Options ( artist, noAction), Ph,
-  SrcPath ( SrcPath), asks, liftIO )
-import Photoname.Date ( PhDate ( FilenameDate), formatDateForExif )
-import Photoname.Log ( LogFunction, debugM, infoM, lname, noticeM )
+import Photoname.Common (Artist (Artist), DestPath (DestPath),
+  NoActionSwitch (NoActionSwitch), Options (artist, noAction), Ph,
+  SrcPath (SrcPath), asks, liftIO)
+import Photoname.Date (PhDate (FilenameDate), formatDateForExif)
+import Photoname.Log (LogFunction, debugM, infoM, lname, noticeM)
 
 
 data Reading
