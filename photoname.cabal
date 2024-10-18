@@ -50,6 +50,7 @@ common lang
     DeriveTraversable
     EmptyCase
     GeneralizedNewtypeDeriving
+    ImportQualifiedPost
     InstanceSigs
     KindSignatures
     LambdaCase
@@ -92,6 +93,7 @@ library
   build-depends:
       base >=4.5 && <5.0
     , containers
+    , formatting
     , hsexif
     , hslogger
     , mtl
@@ -112,6 +114,7 @@ executable photoname
   build-depends:
       ansi-wl-pprint
     , base >=4.5 && <5.0
+    , formatting
     , heredoc
     , hslogger
     , optparse-applicative

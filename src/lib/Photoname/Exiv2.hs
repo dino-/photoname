@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Photoname.Exiv2
   ( getExifDateWithExiv2
   , setArtist
@@ -10,10 +12,10 @@ import Control.Monad (void)
 import Control.Monad.IO.Class (MonadIO)
 import Data.Char (isSpace)
 import Data.Monoid (First (..))
+import Formatting ((%), (%+), formatToString, string)
 import GHC.IO.Exception
 import System.Process hiding (proc)
 import qualified System.Process as Proc
-import Text.Printf (printf)
 
 import Photoname.Common (Artist (Artist), DestPath (DestPath),
   NoActionSwitch (NoActionSwitch), Options (artist, noAction), Ph,
@@ -86,7 +88,8 @@ program = "exiv2"
 
 
 postProcess :: Either IOException (ExitCode, String, String) -> IO (Either String String)
-postProcess (Left   e                             ) = pure . Left $ printf "%s: %s" program (ioe_description e)
+postProcess (Left   e                             ) =
+  pure . Left $ formatToString (string % ":" %+ string) program (ioe_description e)
 postProcess (Right (ExitSuccess  , stdOut, _     )) = pure . Right $ stdOut
 postProcess (Right (ExitFailure 1, _     , ""    )) = pure . Left $ "EXIF tag not found"
 postProcess (Right (ExitFailure _, _     , stdErr)) = pure . Left $ stdErr

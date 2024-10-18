@@ -5,7 +5,7 @@ module Photoname.Exif
   )
   where
 
-import Control.Monad.Except (MonadIO, liftIO)
+import Control.Monad.Trans (MonadIO, liftIO)
 import qualified Data.Map as M
 import Data.Monoid (First (..))
 import Graphics.HsExif (ExifTag, ExifValue, dateTime, dateTimeDigitized,

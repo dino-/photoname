@@ -1,9 +1,9 @@
-{-# LANGUAGE OverloadedRecordDot #-}
+{-# LANGUAGE OverloadedRecordDot, OverloadedStrings #-}
 
 import Control.Monad (filterM, forM_, when)
+import Formatting ((%), (%+), formatToString, string)
 import Data.Functor ((<&>))
 import System.Posix (FileStatus, getFileStatus, isRegularFile)
-import Text.Printf (printf)
 
 import Photoname.Common (CopySwitch (v),
   Extension (Extension, UseExistingExtension), Links, MoveSwitch (v),
@@ -40,6 +40,7 @@ processFile srcPath = do
 -- doesn't match our links amount which is either passed in by the user with
 -- the -l|--links switch or any number of links is fine.
 filterWantedFiles :: Links -> [FilePath] -> IO [SrcPath]
+{- HLINT ignore "Use fmap" -}
 filterWantedFiles links inputFiles = map SrcPath <$> filterM (\p ->
     getFileStatus p <&> testFile) inputFiles
   where
@@ -62,7 +63,7 @@ main = do
       infoM lname "Files will be copied instead of the default of hard linking"
 
    case opts.extension of
-      Extension ext -> infoM lname $ printf "The extension '%s' will be used for all files" ext
+      Extension ext -> infoM lname $ formatToString ("The extension '" % string % "' will be used for all files") ext
       UseExistingExtension -> pure ()
 
    when opts.move.v $
@@ -76,9 +77,7 @@ main = do
    forM_ actualPaths $ \srcPath -> do
       result <- runRename opts $ processFile srcPath
       either
-        {- HLINT ignore "Avoid lambda" -}
-        -- Because the compiler can't figure out printf is expecting an argument at compile time
-        (\em -> errorM lname $ printf "** Processing %s: %s" srcPath.v em)
+        (errorM lname . formatToString ("** Processing" %+ string % ":" %+ string) srcPath.v)
         pure result
 
    -- Perhaps we should get an ExitCode back from all this above?

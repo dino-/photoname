@@ -6,6 +6,7 @@ module Photoname.Opts
    where
 
 import Data.Version (showVersion)
+import Formatting ((%), (%+), formatToString, string)
 import Options.Applicative
 import Paths_photoname (version)
 import System.Directory (doesFileExist)
@@ -14,8 +15,7 @@ import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import System.Log (Priority (INFO))
 import Text.Heredoc (here)
-import Text.PrettyPrint.ANSI.Leijen (string)
-import Text.Printf (printf)
+import Text.PrettyPrint.ANSI.Leijen qualified as Leijen
 
 import Photoname.Common
   ( Artist (..)
@@ -75,7 +75,8 @@ parser = Options
         (  long "date-formatter"
         <> short 'f'
         <> metavar "STR"
-        <> help (printf "Format string for date/time in the new filenames. Default \"%s\" See DATE FORMATTER"
+        <> help (formatToString
+            ("Format string for date/time in the new filenames. Default \"" % string % "\" See DATE FORMATTER")
             defaultDateTimeFormat)
         <> value formatDateTime
         )
@@ -151,7 +152,7 @@ loadConfig (ConfigPath path) = do
 
 versionHelper :: String -> Parser (a -> a)
 versionHelper progName =
-  infoOption (printf "%s %s" progName (showVersion version)) $ mconcat
+  infoOption (formatToString (string %+ string) progName (showVersion version)) $ mconcat
   [ long "version"
   , help "Show version information"
   , hidden
@@ -176,7 +177,7 @@ parseOpts' args = do
   handleParseResult $ execParserPure
     defaultPrefs
     ( info (parser <**> helper <**> versionHelper pn)
-      ( header (printf "%s - Rename and move photo files based on EXIF data" pn)
+      ( header (formatToString (string %+ "- Rename and move photo files based on EXIF data") pn)
       <> footer'
       )
     )
@@ -184,7 +185,8 @@ parseOpts' args = do
 
 
 footer' :: InfoMod a
-footer' = footerDoc . Just . string $ printf content defaultDateTimeFormat (showVersion version)
+footer' = footerDoc . Just . Leijen.string
+  $ formatToString content defaultDateTimeFormat (showVersion version)
   where content = [here|OVERVIEW
 
 This software is for renaming and storing your digital photos. It will attempt to construct a meaningful filename based on the EXIF shoot date in the file or possibly date/time info in the old filename, and optionally some other information.
@@ -217,7 +219,7 @@ Default behavior is to create hard links to the new paths and leave the original
 
 DATE FORMATTER
 
-The default date format string is "%s" which yields strings like "yyyymmdd-HHMMSS"
+The default date format string is|] %+ string %+ [here|which yields strings like "yyyymmdd-HHMMSS"
 Another example: "%%Y-%%m-%%dt%%H%%M_img" -> "yyyy-mm-ddtHHMM_img"
 
 Any valid date format string is allowed for the -f|--date-formatter option. Please see the API documentation for help on format strings: https://downloads.haskell.org/ghc/latest/docs/libraries/time-1.12.2-dfcf/Data-Time-Format.html
@@ -270,4 +272,4 @@ Example config contents:
   parent-dir=~/mypics
   suffix=_dwm
 
-Version %s  Dino Morelli <dino@ui3.info>|]
+Version|] %+ string %+ " Dino Morelli <dino@ui3.info>"
