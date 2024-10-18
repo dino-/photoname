@@ -70,7 +70,8 @@ common lang
     -Wpartial-fields
     -Wredundant-constraints
   build-depends:
-      directory
+      base >=4.5 && <5.0
+    , directory
     , filepath
     , unix
 
@@ -91,8 +92,7 @@ library
   hs-source-dirs:
     src/lib
   build-depends:
-      base >=4.5 && <5.0
-    , containers
+      containers
     , formatting
     , hsexif
     , hslogger
@@ -113,7 +113,6 @@ executable photoname
       src/app
   build-depends:
       ansi-wl-pprint
-    , base >=4.5 && <5.0
     , formatting
     , heredoc
     , hslogger
@@ -131,8 +130,7 @@ test-suite photoname-tests
   hs-source-dirs:
     src/tests
   build-depends:
-      base >=4.5 && <5.0
-    , photoname
+      photoname
     , process
     , regex-posix
     , tasty
