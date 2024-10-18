@@ -9,6 +9,7 @@ import Control.Exception
 import Control.Monad ( void )
 import Control.Monad.IO.Class ( MonadIO )
 import Data.Char (isSpace)
+import Data.Monoid ( First (..) )
 import GHC.IO.Exception
 import System.Process hiding ( proc )
 import qualified System.Process as Proc
@@ -104,10 +105,19 @@ setArtist (DestPath destFp) = do
 
 
 getExifDateWithExiv2 :: SrcPath -> Ph (Maybe String)
-getExifDateWithExiv2 (SrcPath srcFp) = do
-  let tag = "Exif.Image.DateTime"
-  eResult <- execReadingCommand $ Command infoM program ["--Print", "v", "--grep", tag, srcFp]
-  pure . either (const Nothing) Just $ eResult
+getExifDateWithExiv2 (SrcPath srcFp) =
+  getFirst  -- Remove the First wrapper
+  . mconcat  -- Collapse these to the first not-Nothing
+  . map First -- Wrap in First data structures
+  -- Look up all of them (resulting in Ph [Maybe ExifValue])
+  <$> mapM mbResult
+  -- EXIF tags we're intersted in, in the order we want them left-to-right
+  ["Exif.Photo.DateTimeOriginal", "Exif.Photo.DateTimeDigitized", "Exif.Image.DateTime"]
+
+  where
+    mbResult tag = do
+      eResult <- execReadingCommand $ Command infoM program ["--Print", "v", "--grep", tag, srcFp]
+      pure . either (const Nothing) Just $ eResult
 
 
 setExifDate :: PhDate -> DestPath -> Ph ()
