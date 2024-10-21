@@ -13,7 +13,7 @@ import System.Directory (doesFileExist)
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import System.Log (Priority (INFO))
+import System.Log (Priority (NOTICE))
 import Text.Heredoc (here)
 import Text.PrettyPrint.ANSI.Leijen qualified as Leijen
 
@@ -129,7 +129,7 @@ parser = Options
         <> metavar "NUM"
         <> help "Verbosity level. 0=quiet, 1=normal messages, 2=more info, 3=debug"
         <> showDefault
-        <> value (Verbose INFO)
+        <> value (Verbose NOTICE)
         )
   <*> some ( strArgument
         $ metavar "FILES..."

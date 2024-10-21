@@ -14,7 +14,7 @@ import Photoname.Date (PhDate, parseExifDate, parseFilenameDate)
 import Photoname.Exif (getExifDate)
 import Photoname.Exiv2 (getExifDateWithExiv2, setArtist, setExifDate)
 import Photoname.Links (describeHardLinkPolicy, linksTest)
-import Photoname.Log (errorM, initLogging, infoM, lname)
+import Photoname.Log (errorM, initLogging, lname, noticeM)
 import Photoname.Opts (parseOpts)
 
 
@@ -29,7 +29,7 @@ acquireDate srcPath = do
 
 processFile :: SrcPath -> Ph ()
 processFile srcPath = do
-  liftIO . infoM lname $ "----------"
+  liftIO . noticeM lname $ "----------"
   imageDate <- acquireDate srcPath
   destPath <- createNewLink imageDate srcPath
   setExifDate imageDate destPath
@@ -57,17 +57,17 @@ main = do
 
    -- Notify user of the switches that will be in effect.
    when opts.noAction.v $
-      infoM lname "No-action mode, nothing will be changed"
+      noticeM lname "No-action mode, nothing will be changed"
 
    when opts.copy.v $
-      infoM lname "Files will be copied instead of the default of hard linking"
+      noticeM lname "Files will be copied instead of the default of hard linking"
 
    case opts.extension of
-      Extension ext -> infoM lname $ formatToString ("The extension '" % string % "' will be used for all files") ext
+      Extension ext -> noticeM lname $ formatToString ("The extension '" % string % "' will be used for all files") ext
       UseExistingExtension -> pure ()
 
    when opts.move.v $
-      infoM lname "Removing original links after new links are in place"
+      noticeM lname "Removing original links after new links are in place"
 
    describeHardLinkPolicy $ links opts
 
