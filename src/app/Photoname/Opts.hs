@@ -220,7 +220,7 @@ Default behavior is to create hard links to the new paths and leave the original
 DATE FORMATTER
 
 The default date format string is|] %+ string %+ [here|which yields strings like "yyyymmdd-HHMMSS"
-Another example: "%%Y-%%m-%%dt%%H%%M_img" -> "yyyy-mm-ddtHHMM_img"
+Another example: "%Y-%m-%dt%H%M_img" -> "yyyy-mm-ddtHHMM_img"
 
 Any valid date format string is allowed for the -f|--date-formatter option. Please see the API documentation for help on format strings: https://downloads.haskell.org/ghc/latest/docs/libraries/time-1.12.2-dfcf/Data-Time-Format.html
 
