@@ -20,8 +20,8 @@ linksTest NoLimit                   _          = True
 
 describeHardLinkPolicy :: Links -> IO ()
 describeHardLinkPolicy l = case l of
-  Exactly 1 -> noticeM lname          "Only processing files with 1 hard link"
-  Exactly n -> noticeM lname
-    $ formatToString ("Only processing files with" %+ int %+ "hard links") (toInteger n)
+  Exactly 1 -> noticeM lname "Only processing files with 1 hard link"
+  Exactly n -> noticeM lname $ formatToString
+    ("Only processing files with" %+ int %+ "hard links") (toInteger n)
   NoLimit   -> pure ()
 
