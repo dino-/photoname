@@ -1,3 +1,15 @@
+5.3 (2024-11-18)
+
+  * Now looking for the 3 EXIF tags when using exiv2
+  * Switched from Text.Printf to Formatting
+  * Moved base dependency to lang stanza
+  * Changed default verbosity
+  * Fixed a bug with doubled percent symbols in usage
+  * Changed log level for links behavior to NOTICE
+  * Cleaned up some whitespace
+  * Switched order back to DateTimeDigitized, DateTimeOriginal...
+
+
 5.2 (2024-08-10)
 
   * Add an option to specify date format string
