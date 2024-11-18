@@ -198,7 +198,7 @@ Normal operation builds a subdirectory hierarchy consisting of directories for t
 A photo shot on 2002-May-02 01:23:07 PM:
   img_1790.jpg -> <PARENTDIR>/2002/2002-05-02/20020502-132307.jpg
 
-The EXIF date/time stamp used for naming is the first of these fields to be found: Exif.Photo.DateTimeOriginal, Exif.Photo.DateTimeDigitized, Exif.Image.DateTime
+The EXIF date/time stamp used for naming is the first of these fields to be found: Exif.Photo.DateTimeDigitized, Exif.Photo.DateTimeOriginal, Exif.Image.DateTime
 
 If none of the EXIF tags listed above is found, the program will try to gather date/time info from the filename itself. Filenames that are parsable look like:
 
