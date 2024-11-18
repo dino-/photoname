@@ -71,9 +71,9 @@ common lang
     -Wredundant-constraints
   build-depends:
       base >=4.5 && <5.0
-    , directory
-    , filepath
-    , unix
+    , directory >= 1.3.6 && < 1.4
+    , filepath >= 1.4.2 && < 1.5
+    , unix >= 2.7.2 && < 2.8
 
 library
   import: lang
@@ -92,14 +92,14 @@ library
   hs-source-dirs:
     src/lib
   build-depends:
-      containers
-    , formatting
-    , hsexif
-    , hslogger
-    , mtl
-    , parsec
-    , process
-    , time
+      containers >= 0.6.5 && < 0.7
+    , formatting >= 7.2.0 && < 7.3
+    , hsexif >= 0.6.1 && < 0.7
+    , hslogger >= 1.3.1 && < 1.4
+    , mtl >= 2.2.2 && < 2.3
+    , parsec >= 3.1.15 && < 3.2
+    , process >= 1.6.16 && < 1.7
+    , time >= 1.11.1 && < 1.13
 
 executable photoname
   import: lang
@@ -112,11 +112,11 @@ executable photoname
   hs-source-dirs:
       src/app
   build-depends:
-      ansi-wl-pprint
-    , formatting
-    , heredoc
-    , hslogger
-    , optparse-applicative
+      ansi-wl-pprint >= 0.6.9 && < 0.7
+    , formatting >= 7.2.0 && < 7.3
+    , heredoc >= 0.2.0 && < 0.3
+    , hslogger >= 1.3.1 && < 1.4
+    , optparse-applicative >= 0.17.1 && < 0.18
     , photoname
 
 test-suite photoname-tests
@@ -131,9 +131,9 @@ test-suite photoname-tests
     src/tests
   build-depends:
       photoname
-    , process
+    , process >= 1.6.16 && < 1.7
     , regex-posix
     , tasty
     , tasty-hunit
     , tasty-quickcheck
-    , time
+    , time >= 1.11.1 && < 1.13

@@ -8,6 +8,7 @@
   * Changed log level for links behavior to NOTICE
   * Cleaned up some whitespace
   * Switched order back to DateTimeDigitized, DateTimeOriginal...
+  * Added bounds to cabal deps
 
 
 5.2 (2024-08-10)
