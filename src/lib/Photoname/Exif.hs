@@ -36,4 +36,4 @@ extractDate (Right exifMap) =
   -- Look up all of them (resulting in [Maybe ExifValue]), wrap in First data structures
   . map (First . flip M.lookup exifMap)
   -- EXIF tags we're intersted in, in the order we want them left-to-right
-  $ [dateTimeDigitized, dateTimeOriginal, dateTime])
+  $ [dateTimeOriginal, dateTimeDigitized, dateTime])
