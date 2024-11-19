@@ -1,7 +1,7 @@
 cabal-version: 2.2
 
 name: photoname
-version: 5.3
+version: 5.4
 synopsis: Rename photo image files based on EXIF shoot date
 description: Command-line utility for renaming/moving photo image files based
   on EXIF tags.
